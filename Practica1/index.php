@@ -28,7 +28,7 @@
             <input type="radio" name="sexo" id="hombre" value="hombre" /> <label for="hombre">Hombre</label></br>
             <input type="radio" name="sexo" id="mujer" value="mujer" /> <label for="mujer">Mujer</label>
         </p>
-        <p> 
+        <p>
             <label for="foto">Incluir foto</label>
             <input type="file" name="foto" id="foto" accept="image/*"> <!--accept es para que solo acepte imagenes -->
         </p>
