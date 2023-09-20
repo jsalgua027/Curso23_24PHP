@@ -8,6 +8,7 @@
 </head>
 
 <body>
+<form action="recogida.php" method="post" enctype="multipart/form-data">
     <h1>Esta es mi super página</h1>
     <p>
 
