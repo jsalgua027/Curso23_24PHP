@@ -8,15 +8,15 @@
 </head>
 
 <body>
-    <form action="recogida.php" method="get" enctype="multipart/form-data">
+    <form action="recogida.php" method="post" enctype="multipart/form-data">
         <!-- get envia y muestra post envia y oculta en el url para realizar pruebas se usa el get-->
 
         <h1>Rellena tu CV</h1>
-        <p> <label for="nombre">Nombre </label> </br>
+        <p> <label for="nombre">Nombre </label> </br>  <!--label para que si pinchas en el p te lleve al input-->
             <input type="text" name="nombre" id="nombre" /> <!--Tengo que añadir el name para que mande el valor -->
         </p>
         <p><label for="Apellidos">Apellidos </label> </br>
-            <input type="text" name="apelidos" id="apellidos" />
+            <input type="text" name="apellidos" id="apellidos" />
         </p>
         <p><label for="clave">Clave </label> </br>
             <input type="password" name="clave" id="clave" />
@@ -26,17 +26,17 @@
         </p>
         <p>Sexo</br> <!-- fundamental poner el value para que se sepa el valor de la seleccion en la url-->
             <input type="radio" name="sexo" id="hombre" value="hombre" /> <label for="hombre">Hombre</label></br>
-            <input type="radio" name="sexo" id="mujer" value="mujer" /> <label for="mujer">Mujer</label>
+            <input type="radio" name="sexo"   id="mujer" value="mujer" /> <label for="mujer">Mujer</label> <!-- checked para que salga seleccionado por defecto -->
         </p>
         <p>
             <label for="foto">Incluir foto</label>
             <input type="file" name="foto" id="foto" accept="image/*"> <!--accept es para que solo acepte imagenes -->
         </p>
         <p>
-            Nacido en:
+            <label for="nacido">Nacido en:</label> 
             <select name="nacimiento" id="nacimiento">
 
-                <option value="malaga">Malaga</option>
+                <option value="malaga" selected >Malaga</option>  <!-- selected para que salga seleccionado por defecto -->
                 <option value="cadiz">Cadiz</option>
                 <option value="sevilla">Sevilla</option>
 
@@ -45,9 +45,10 @@
 
         </p>
 
-        <p>Comentarios
+        <p>
+            <label for="comentarios">Comentarios</label>
 
-            <textarea></textarea>
+            <textarea id="comentarios" name="comentarios"></textarea>
         </p>
 
         <p>
@@ -57,8 +58,8 @@
         </p>
         <p>
 
-            <button type="submit"> Guardar cambios</button>
-            <button type="reset"> Borrar los datos</button>
+            <button type="submit" name="guardar"> Guardar cambios</button>
+            <button type="reset" name="borrar"> Borrar los datos</button>
 
         </p>
 
