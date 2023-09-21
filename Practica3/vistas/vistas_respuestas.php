@@ -15,7 +15,7 @@
         echo "<p><strong>Nombre: </strong>" . $_POST["nombre"] . "</p>";
         echo "<p><strong>Apellidos: </strong>" . $_POST["apellidos"] . "</p>";
         echo "<p><strong>Contraseña: </strong>" . $_POST["clave"] . "</p>";
-        echo "<p><strong>DNI: </strong>" . $_POST["dni"] . "</p>";
+       
         // isset es si existe el dato muy importante
         if (isset($_POST["sexo"])) {
             echo "<p><strong>Sexo: </strong>" . $_POST["sexo"] . "</p>";

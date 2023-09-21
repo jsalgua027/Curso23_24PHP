@@ -80,8 +80,8 @@
                 <label for="nacido">Nacido en:</label>
                 <select name="nacimiento" id="nacimiento">
 
-                    <option value="malaga" <?php if(!isset($_POST['nacido'])|| (isset($_POST['nacido']) && $_POST['nacido']== 'malaga')) echo 'selected'?> >Malaga</option> <!-- selected para que salga seleccionado por defecto -->
-                    <option value="cadiz"<?php if(!isset($_POST['nacido'])|| (isset($_POST['nacido']) && $_POST['nacido']== 'cadiz')) echo 'selected'?>>Cadiz</option>
+                    <option value="malaga" <?php if( (isset($_POST['nacido']) && $_POST['nacido']== 'malaga')) echo 'selected'?> >Malaga</option> <!-- selected para que salga seleccionado por defecto -->
+                    <option value="cadiz"<?php if((isset($_POST['nacido']) && $_POST['nacido']== 'cadiz')) echo 'selected'?>>Cadiz</option>
                     <option value="sevilla"<?php if(!isset($_POST['nacido'])|| (isset($_POST['nacido']) && $_POST['nacido']== 'sevilla')) echo 'selected'?>>Sevilla</option>
 
                 </select>
