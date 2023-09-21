@@ -22,7 +22,7 @@
         } else {
             echo "<p><strong>Sexo: </strong>No seleccionado.</p>";
         }
-        echo "<p><strong>Nacido: </strong>" . $_POST["nacimiento"] . "</p>";
+        echo "<p><strong>Nacido: </strong>" . $_POST["nacido"] . "</p>";
 
         echo "<p><strong>Comentarios: </strong>" . $_POST["comentarios"] . "</p>";
 

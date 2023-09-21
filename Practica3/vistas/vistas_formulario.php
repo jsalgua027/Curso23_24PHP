@@ -18,7 +18,9 @@
 
             <h1>Rellena tu CV</h1>
             <p> <label for="nombre">Nombre </label> </br> <!--label para que si pinchas en el p te lleve al input-->
-                <input type="text" name="nombre" id="nombre" value="<?php if (isset($_POST['nombre'])) echo $_POST['nombre'] ?>" /> <!--Tengo que añadir el name para que mande el valor -->
+                <input type="text" name="nombre" id="nombre" value="<?php if (isset($_POST['nombre'])) {
+                                                                                                        echo $_POST['nombre'];
+                                                                                                        } ?>" /> <!--Tengo que añadir el name para que mande el valor -->
                 <!--  se añade eñ value para que recupere el valor ya metido-->
                 <?php
 
@@ -32,7 +34,9 @@
 
             </p>
             <p><label for="Apellidos">Apellidos </label> </br>
-                <input type="text" name="apellidos" id="apellidos" value="<?php if (isset($_POST['apellidos'])) echo $_POST['apellidos'] ?>" />
+                <input type="text" name="apellidos" id="apellidos" value="<?php if (isset($_POST['apellidos'])){
+                                                                                                                 echo $_POST['apellidos'] ;
+                                                                                                                 }?>" />
 
                 <?php
 
@@ -69,8 +73,9 @@
 
 
                 ?>
-                <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo']=='hombre') echo 'checked' ?> name="sexo" id="hombre" value="hombre" /> <label for="hombre">Hombre</label></br>
-                <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo']=='mujer') echo 'checked' ?> name="sexo" id="mujer" value="mujer" /> <label for="mujer">Mujer</label> <!-- checked para que salga seleccionado por defecto -->
+                <!-- Aqui el if (isset) lo uso sin llaves cuando es solo una sentencia en una linea-->
+                <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo']=='hombre') echo 'checked'; ?> name="sexo" id="hombre" value="hombre" /> <label for="hombre">Hombre</label></br>
+                <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo']=='mujer') echo 'checked'; ?> name="sexo" id="mujer" value="mujer" /> <label for="mujer">Mujer</label> <!-- checked para que salga seleccionado por defecto -->
             </p>
             <p>
                 <label for="foto">Incluir foto</label>
@@ -78,11 +83,17 @@
             </p>
             <p>
                 <label for="nacido">Nacido en:</label>
-                <select name="nacimiento" id="nacimiento">
-
-                    <option value="malaga" <?php if( (isset($_POST['nacido']) && $_POST['nacido']== 'malaga')) echo 'selected'?> >Malaga</option> <!-- selected para que salga seleccionado por defecto -->
-                    <option value="cadiz"<?php if((isset($_POST['nacido']) && $_POST['nacido']== 'cadiz')) echo 'selected'?>>Cadiz</option>
-                    <option value="sevilla"<?php if(!isset($_POST['nacido'])|| (isset($_POST['nacido']) && $_POST['nacido']== 'sevilla')) echo 'selected'?>>Sevilla</option>
+                <select name="nacido" id="nacido">
+                    <!--Gestiono para se quede seleccionado la primera decisión del usuario por si no completa otras opciones pues  no tenga que elegir otra vez esta opcion -->
+                    <option value="malaga" <?php if( (isset($_POST['nacido']) && $_POST['nacido']=='malaga')) {
+                                                                                                                 echo 'selected';
+                                                                                                                 }?> >Malaga</option> <!-- selected para que salga seleccionado por defecto -->
+                    <option value="cadiz"<?php if((isset($_POST['nacido']) && $_POST['nacido']=='cadiz')){ 
+                                                                                                            echo 'selected';
+                                                                                                            }?>>Cadiz</option>
+                    <option value="sevilla"<?php if(!isset($_POST['nacido']) || (isset($_POST['nacido']) && $_POST['nacido']== 'sevilla')) {
+                                                                                                                            echo 'selected';
+                                                                                                                                }?>>Sevilla</option>
 
                 </select>
 
@@ -92,7 +103,7 @@
             <p>
                 <label for="comentarios">Comentarios</label>
 
-                <textarea id="comentarios" name="comentarios" <?php if (isset($_POST['comentarios'])) echo $_POST['comentarios'] ?>></textarea>
+                <textarea id="comentarios" name="comentarios" <?php if (isset($_POST['comentarios'])) echo $_POST['comentarios']; ?>></textarea>
 
                 <?php
 
