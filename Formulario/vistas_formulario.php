@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- añado estilo rojo a los errores de campos vacios -->
+    <style>
+    .error{
+
+        color:red
+    }
+
+</style>
 </head>
 <body>
     <form action="vistas_respuestas.php" method="post" enctype="multipar/form-data">
@@ -32,7 +40,7 @@
             <label for="hombre">Hombre</label>
             <input type="radio" name="sexo"id="hombre" value="hombre">
             <label for="mujer">mujer</label>
-            <input type="radio" name="mujer" id="mujer" value="mujer">
+            <input type="radio" name="sexo" id="mujer" value="mujer">
 
         </p>
 
