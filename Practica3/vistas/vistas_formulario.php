@@ -18,12 +18,13 @@
 
             <h1>Rellena tu CV</h1>
             <p> <label for="nombre">Nombre </label> </br> <!--label para que si pinchas en el p te lleve al input-->
-                <input type="text" name="nombre" id="nombre" value="<?php if (isset($_POST['nombre'])) {
+                <input type="text" name="nombre" id="nombre" value="<?php if (isset($_POST['nombre'])) { // si hay valor se envia
                                                                                                         echo $_POST['nombre'];
                                                                                                         } ?>" /> <!--Tengo que añadir el name para que mande el valor -->
                 <!--  se añade eñ value para que recupere el valor ya metido-->
+                
                 <?php
-
+                    // si le damos al boton y nos salta error porque esta vacio (error controlado en el index)
                 if (isset($_POST["guardar"]) && $error_nombre) {
                     echo "<span class='error'>Campo vacio </span>";
                 }

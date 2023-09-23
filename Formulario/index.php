@@ -1,7 +1,7 @@
 <?php
 $error_form=false;
 
-if (isset($_POST['guardar'])) {
+if (isset($_POST['enviar'])) {
     # genero variables de error por cada campo del formulario
 
     //RECUERDA!! = es asignación , == es si tiene el valor
@@ -9,16 +9,16 @@ if (isset($_POST['guardar'])) {
 
     $error_nombre = $_POST['nombre']== "";
     $error_sexo = !isset($_POST['sexo']);
-   
-    $error_form= $error_nombre || $error_sexo;
+    $error_comentarios = $_POST["coment"] == "";
+    $error_form= $error_nombre || $error_sexo ;
 } 
-if(isset($_POST['guardar'])&& !$error_form){
+if(isset($_POST['enviar'])&& !$error_form){
 
-    require "vistas_respuestas.php";
+    require "vistas/vistas_respuestas.php";
 
 }else{
 
-    require "vistas_formulario";
+    require "vistas/vistas_formulario.php";
 
 }
 

@@ -23,7 +23,7 @@
     }
     // primero controlo que marque uno de los tres
     if (isset($_POST['deportes']) || isset($_POST['lectura']) || isset($_POST['otros'])) {
-        echo "<p><strong>Aficiones: </strong>Has seleccionado algo.</p>";
+      
         //tengo que mostar 1.el que sea 2. el que sea   
             // creo un array donde voy a meter los datos para despues mostrarlo por el html
             $aficiones=[];
@@ -49,11 +49,12 @@
             }
 
     } else{
-
+            //si no hay aficiones seleccionadas
         echo "<p><strong>No has seleccionado ninguna afición</strong>.</p>";
     }
-    if (isset($_POST['comentarios'])) {
-       echo "<p><strong>El comentario enviado es: </strong>".$_POST['comentarios']."</p>";
+    //comentarios
+    if (isset($_POST['coment'])) {
+       echo "<p><strong>El comentario enviado es: </strong>".$_POST['coment']."</p>";
     }else{
 
         echo "<p><strong>No has echo ningun comentario </strong></p>";
