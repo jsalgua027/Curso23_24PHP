@@ -9,10 +9,16 @@ if (isset($_POST['guardar'])) {
 
     $error_nombre = $_POST['nombre']== "";
     $error_sexo = !isset($_POST['sexo']);
-    if(!isset($_POST['deportes']) && !isset($_POST['lectura']) !isset($_POST['otro'])){
+   
+    $error_form= $error_nombre || $error_sexo;
+} 
+if(isset($_POST['guardar'])&& !$error_form){
 
-        $error_aficiones = echo 
-    }
+    require "vistas_respuestas.php";
+
+}else{
+
+    require "vistas_formulario";
 
 }
 
