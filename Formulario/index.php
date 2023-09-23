@@ -9,7 +9,7 @@ if (isset($_POST['enviar'])) {
 
     $error_nombre = $_POST['nombre']== "";
     $error_sexo = !isset($_POST['sexo']);
-    $error_comentarios = $_POST["coment"] == "";
+   // $error_comentarios = $_POST["coment"] == "";
     $error_form= $error_nombre || $error_sexo ;
 } 
 if(isset($_POST['enviar'])&& !$error_form){
