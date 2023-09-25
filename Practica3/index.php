@@ -1,4 +1,14 @@
 <?php
+// si le doy a borrar, borrame toda la pagina
+    if(isset($_POST["borrar"])){
+        unset($_POST);
+            // otra forma de hacerlo el 
+            /*
+            header("Location:index.php");
+            exit;
+            */
+    }
+
 
 $error_form = false;
 
