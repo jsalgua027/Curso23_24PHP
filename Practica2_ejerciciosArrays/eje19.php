@@ -83,7 +83,9 @@ $ciudades = array(
 );
 
 foreach ($ciudades as $ciudad => $datosCiudad) {
+   // echo "<ul>";
     echo "<ol>";
+   
     echo "Amigos en " . $ciudad . " :<br><br>";
     foreach ($datosCiudad["personas"] as $persona) {
         echo "<li>";
@@ -93,6 +95,7 @@ foreach ($ciudades as $ciudad => $datosCiudad) {
         echo "</li>";
     }
     echo "</ol>";
+   // echo "</ul>";
 }
 
 ?>
