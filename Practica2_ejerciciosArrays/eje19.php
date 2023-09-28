@@ -9,28 +9,29 @@
     <h1>Ejercicio 19</h1>
 
     <?php
-/* $ciudades=array(
+    /*$ciudades=array(
 
 "Madrid"=>array(
 "personas"=>array("nombre"=>array("Pedro","Antonio","Nacho"),
 "personas"=>array("edad"=>array("32","25","42")),
-"personas" => array("telefonos"=>("4567","789456","13215")))
+"personas" => array("telefonos"=>array("4567","789456","13215")))
 
 ),
 "Barcelona"=>array(
 "personas"=>array("nombre"=>array("Susana"),
 "personas"=>array("edad"=>array("34")),
-"personas" => array("telefonos"=>("13215")))
+"personas" => array("telefonos"=>array("13215")))
 
 ),
 
 "Valencia"=>array(
 "personas"=>array("nombre"=>array("Nombre","Nombre1","Nombre3"),
 "personas"=>array("edad"=>array("42","43","41")),
-"personas" => array("telefonos"=>("98561","98742","78531")))
+"personas" => array("telefonos"=>array("98561","98742","78531")))
 
-);
+));
  */
+ 
 
 $ciudades = array(
     "Madrid" => array(
