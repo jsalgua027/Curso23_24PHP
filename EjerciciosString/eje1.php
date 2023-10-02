@@ -81,12 +81,15 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
         <div class="verde">
             <h1>Ripios_Resultados</h1>
             <?php
+            // las pongo en mayusculasa para evitar errores
+            $texto1_m=strtoupper($_POST["primera"]);
+            $texto2_m=strtoupper($_POST["segunda"]);
             // palabras que riman 3
-             $palabra1de3=substr($_POST["primera"],-3);
-             $palabra2de3=substr($_POST["segunda"],-3);
+             $palabra1de3=substr($texto1_m,-3);
+             $palabra2de3=substr($texto2_m,-3);
             //palabras que riman 2
-             $palabra1de2=substr($_POST["primera"],-2);
-             $palabra2de2=substr($_POST["segunda"],-2);
+             $palabra1de2=substr($texto1_m,-2);
+             $palabra2de2=substr($texto2_m,-2);
 
              
             if($palabra1de3== $palabra2de3){ echo "<p><strong>Las palabras riman</p></strong>";}

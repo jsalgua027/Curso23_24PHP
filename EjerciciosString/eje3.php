@@ -2,7 +2,7 @@
 // si hay campos vacios envia el error
 if (isset($_POST["comprobar"])) {
 
-    $textoPrimera = trim($_POST["palabra_numero"]);
+    $textoPrimera = trim($_POST["frase"]);
 
     // tengo que controlar el tamaño de la palabra
     // lo mejor meterlo  en una variable y de hay generar los errores
@@ -45,13 +45,13 @@ if (isset($_POST["comprobar"])) {
 palíndromo o un número capicúa:
         
 -->
-    <form action="eje2.php" method="post" enctype="multipar/form-data">
+    <form action="eje3.php" method="post" enctype="multipar/form-data">
         <div class="palabras">
-            <h1>Palíndormos / capicuas - Formulario</h1>
-            <p>Dime una palabra o un número y te dire si es un palíndormo o un número capicùa-</p>
+            <h1>Frases palíndromas - Formulario</h1>
+            <p>Dime una frase te dire si es un palíndorma</p>
             <p>
-                <label for="palabra_numero">Palabra o número</label>
-                <input type="text" name="palabra_numero" id="p_n" value="<?php if (isset($_POST["palabra_numero"])) echo $_POST["palabra_numero"] ?>">
+                <label for="frase">Frase: </label>
+                <input type="text" name="frase" id="g1" value="<?php if (isset($_POST["frase"])) echo $_POST["frase"] ?>">
                 <?php
                 if (isset($_POST["comprobar"]) && $error_primeraPalabra)   echo "<span class='error'>*Campo Obligatorio* </span>";
                 else if (isset($_POST["comprobar"]) && $error_primeraPalabraTama) echo "<span class='error'>*La palabra tiene que tener 3 caracteres como mínimo* </span>";
@@ -71,28 +71,45 @@ palíndromo o un número capicúa:
         <div class="verde">
             <h1>Palíndromos / capícuas-Resultado</h1>
             <?php
-            //Compruebo
-            if(is_numeric($_POST["palabra_numero"])){
-                $numero = intval($_POST["palabra_numero"]); // Convertir la entrada a un número entero
-    
-                $num_invertido = strrev($numero); // Invertir el número
-                if ($numero == $num_invertido) {
-                    echo "<p>El número " . $_POST["palabra_numero"] . " es capicúa</p>";
-                } else {
-                    echo "<p>El número " . $_POST["palabra_numero"] . " No es capicúa</p>";
-                }  
+            
+            $frase_con_ma = strtoupper($_POST["frase"]);
 
-            }else{ // si no es un número
-                $texto_m= strtoupper($_POST["palabra_numero"]);
-                $palabra_invertida= strrev($texto_m); // invierto el string
-                if ($texto_m == $palabra_invertida) {
-                    echo "<p>La palabra " . $_POST["palabra_numero"] . " es palíndromo</p>";
-                } else {
-                    echo "<p>La palabra " . $_POST["palabra_numero"] . " No  es palíndromo</p>";
-                }  
+            
 
-
+            function quitarEspacios($frase)
+            {
+                $res=""; //genero un string
+                for ($i = 0; $i < strlen($frase); $i++) {
+                    if ($frase[$i] != " ") {
+                       $res.=$frase[$i]; // concateno los resultados al string OJO SE CONCATENA CON EL .=
+                    }
+                }
+                return $res;
             }
+            $texto = quitarEspacios($frase_con_ma);
+            $i = 0; //valor hacia delante
+            $j = strlen($texto) -1; // ultimo valor del indice del array
+            $bien = true;
+
+            while ($i < $j && $bien) {
+
+                if ($texto[$i] == $texto[$j]) {
+                    $i++;
+                    $j--;
+                } else {
+                    $bien = false;
+                }
+            }
+
+            if ($bien) {
+
+                echo "<p>La frase " . $_POST["frase"] . " es palíndroma</p>";
+            } else {
+                echo "<p>La frase " . $_POST["frase"] . " No  es palíndroma</p>";
+            }
+
+
+
             ?>
 
         </div>
