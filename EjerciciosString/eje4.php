@@ -10,21 +10,78 @@
     primero controlar que metas las letras basicas
     segundo que las meta en el orden correcto
     tercera que no metra mas de 4 caracteres por  tipo  de número
+    siempre la anotacion romana es de mas grande al mas chico 
 -->
 <?php
+// defino un array para usar en los metodos
+const VALOR = array("M" => 1000, "D" => 500, "C" => 100, "L" => 50, "X" => 10, "V" => 5, "I" => 1);
+//compruebo las letras
+function letras_bien($texto)
+{
+    $bien = true;
+    for ($i = 0; $i < strlen($texto); $i++) {
+        if (!isset(VALOR[$texto[$i]])) {
+            $bien = false;
+            break;
+        }
+    }
+    return $bien;
+}
+// compruebo el orden
+
+function orden_bueno($texto)
+{
+    $bien = true;
+    for ($i = 0; $i < strlen($texto) - 1; $i++) {
+        if (VALOR[$texto[$i]] < VALOR[$texto[$i + 1]]) {
+            $bien = false;
+            break;
+        }
+    }
+    return $bien;
+}
+
+//compruebo que no hay mas de 4
+
+function repite_bien($texto)
+{
+
+    $veces = array("I" => 4, "V" => 1, "X" => 4, "L" => 1, "C" => 4, "D" => 1, "M" => 4);
+
+    $bien = true;
+
+    for ($i = 0; $i < strlen($texto); $i++) {
+        $veces[$texto[$i]]--;
+        if ($veces[$texto[$i]] == -1) {
+            $bien = false;
+            break;
+        }
+    }
+    return $bien;
+}
+
+
+
+function es_correcto_romano($texto)
+{
+
+    return letras_bien($texto) && orden_bueno($texto) && repite_bien($texto);
+}
+
+
 // si hay campos vacios envia el error
 if (isset($_POST["convertir"])) {
 
-    $textoPrimera = trim($_POST["numero"]);
-
+    $texto = trim($_POST["numero"]); // le quito los espacios en blanco
+    $texto_m = strtoupper($texto);
     // tengo que controlar el tamaño de la palabra
     // lo mejor meterlo  en una variable y de hay generar los errores
-    $error_numero_vacio = $textoPrimera == "";
+    $error_numero_vacio = $texto == "";
     //aqui tengo que controlar que de cada uno de los número en romano no sea mayor de 4
-   // $error_primeraPalabraTama = strlen($textoPrimera) < 3;
+    // $error_primeraPalabraTama = strlen($textoPrimera) < 3;
 
 
-    $error_form =$error_numero_vacio || $error_primeraPalabraTama;
+    $error_form = $error_numero_vacio ||  !es_correcto_romano($texto_m);
 }
 ?>
 
@@ -64,10 +121,18 @@ palíndromo o un número capicúa:
             <p>Dime un número en números romanos y lo convertire a cifras árabes</p>
             <p>
                 <label for="numero">Número: </label>
-                <input type="text" name="numero" id="n1" value="<?php if (isset($_POST["numero"])) echo $_POST["numero"] ?>">
+                <input type="text" name="numero" id="n1" value="<?php if (isset($_POST["numero"])) echo $texto ?>">
                 <?php
-                if (isset($_POST["convertir"]) &&$error_numero_vacio)   echo "<span class='error'>*Campo Obligatorio* </span>";
-               // else if (isset($_POST["convertir"]) && $error_primeraPalabraTama) echo "<span class='error'>*La palabra tiene que tener 3 caracteres como mínimo* </span>";
+                if (isset($_POST["convertir"]) && $error_form) {
+
+                    if ($texto == "") {
+                        echo "<span class='error'>*Campo Obligatorio* </span>";
+                    } else {
+
+                        echo "<span class='error'>*No has metido el numero romano correcto* </span>";
+                    }
+                }
+
                 ?>
             </p>
 
@@ -80,49 +145,19 @@ palíndromo o un número capicúa:
     // si se le da ha comparar y no hay errores
     if (isset($_POST["convertir"]) && !$error_form) {
     ?>
+
         <br>
         <div class="verde">
             <h1>Romanos a árabes-Resultado</h1>
             <?php
+            //guardo la suma
+            $res = 0;
+            for ($i = 0; $i < strlen($texto_m); $i++) {
 
-            $frase_con_ma = strtoupper($_POST["numero"]);
-
-
-
-            function quitarEspacios($frase)
-            {
-                $res = ""; //genero un string
-                for ($i = 0; $i < strlen($frase); $i++) {
-                    if ($frase[$i] != " ") {
-                        $res .= $frase[$i]; // concateno los resultados al string OJO SE CONCATENA CON EL .=
-                    }
-                }
-                return $res;
-            }
-            $texto = quitarEspacios($frase_con_ma);
-            $i = 0; //valor hacia delante
-            $j = strlen($texto) - 1; // ultimo valor del indice del array
-            $bien = true;
-
-            while ($i < $j && $bien) {
-
-                if ($texto[$i] == $texto[$j]) {
-                    $i++;
-                    $j--;
-                } else {
-                    $bien = false;
-                }
+                $res += VALOR[$texto_m[$i]];
             }
 
-            if ($bien) {
-
-                echo "<p>La frase " . $_POST["numero"] . " es palíndroma</p>";
-            } else {
-                echo "<p>La frase " . $_POST["numero"] . " No  es palíndroma</p>";
-            }
-
-
-
+            echo "<p>El número romano " . $texto_m . " en Arabe es: " . $res . "</p>"
             ?>
 
         </div>
