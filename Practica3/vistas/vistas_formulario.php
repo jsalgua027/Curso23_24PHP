@@ -64,6 +64,27 @@
 
 
             </p>
+            <p><label for="dni">DNI </label> </br>
+                <input type="text"  name="dni" placeholder="DNI: 11223344Z" id="dni" value="<?php if(isset($_POST["dni"])) echo $_POST["dni"]?>" /> <!--No le metemos value para que siempre tenga que meterlo-->
+
+                <?php
+
+                if (isset($_POST["guardar"]) && $error_dni) {
+                    if($_POST["dni"]=="")
+                    echo "<span class='error'>Campo vacio </span>";
+                    elseif(!dni_bien_escrito((strtoupper($_POST["dni"])))){
+                        echo "<span class='error'>El dni no esta bien escrito </span>";
+                    }else{
+
+                        echo "<span class='error'>El dni no es valido </span>";
+                    }
+                }
+
+
+                ?>
+
+
+            </p>
 
             <p>Sexo</br> <!-- fundamental poner el value para que se sepa el valor de la seleccion en la url-->
                 <?php

@@ -15,6 +15,7 @@
         echo "<p><strong>Nombre: </strong>" . $_POST["nombre"] . "</p>";
         echo "<p><strong>Apellidos: </strong>" . $_POST["apellidos"] . "</p>";
         echo "<p><strong>Contraseña: </strong>" . $_POST["clave"] . "</p>";
+        echo "<p><strong>Contraseña: </strong>" . $_POST["dni"] . "</p>";
        
         // isset es si existe el dato muy importante
         // sexo si esta seleccionado muestro sino indicico que no esta seleccionado 
