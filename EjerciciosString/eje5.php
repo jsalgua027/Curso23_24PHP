@@ -5,12 +5,12 @@
 if (isset($_POST["convertir"])) {
 
     $num = trim($_POST["numero"]); // le quito los espacios en blanco
- 
+
     $error_numero_vacio = $num == "";
-    
 
 
-    $error_form = $error_numero_vacio || !is_numeric($num) || $num<=0 || $num <5000;
+
+    $error_form = $error_numero_vacio || !is_numeric($num) || $num <= 0 || $num < 5000;
 }
 ?>
 
@@ -79,7 +79,8 @@ palíndromo o un número capicúa:
         <div class="verde">
             <h1>Romanos a árabes-Resultado</h1>
             <?php
-            //guardo la suma
+            /*
+           //guardo la suma
             $res = 0;
             $numero=$num;
             while($numero>0){
@@ -95,8 +96,39 @@ palíndromo o un número capicúa:
                 }
 
             }
+           */
+            function convertirArabeRomano($texto)
+            {
+                $res = "";
+                $num = $texto;
+                while ($num > 0) {
+                    if ($num >= 1000) {
+                        $num -= 1000;
+                        $res .= "M";
+                    } else if ($num >= 500) {
+                        $num -= 500;
+                        $res .= "D";
+                    } else if ($num >= 100) {
+                        $num -= 100;
+                        $res .= "C";
+                    } else if ($num >= 50) {
+                        $num -= 50;
+                        $res .= "L";
+                    } else if ($num >= 10) {
+                        $num -= 10;
+                        $res .= "X";
+                    } else if ($num >= 5) {
+                        $num -= 5;
+                        $res .= "V";
+                    } else {
+                        $num -= 1;
+                        $res .= "I";
+                    }
+                }
+                return $res;
+            }
 
-           
+
             ?>
 
         </div>
