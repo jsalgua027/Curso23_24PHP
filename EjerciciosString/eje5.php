@@ -79,24 +79,7 @@ palíndromo o un número capicúa:
         <div class="verde">
             <h1>Romanos a árabes-Resultado</h1>
             <?php
-            /*
-           //guardo la suma
-            $res = 0;
-            $numero=$num;
-            while($numero>0){
-
-                switch ($num) {
-                    case 1000:
-                        # code...
-                        break;
-                    
-                    default:
-                        # code...
-                        break;
-                }
-
-            }
-           */
+          
             function convertirArabeRomano($texto)
             {
                 $res = "";
