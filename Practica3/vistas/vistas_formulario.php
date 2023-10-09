@@ -100,20 +100,22 @@
             <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo'] == 'mujer') echo 'checked'; ?> name="sexo" id="mujer" value="mujer" /> <label for="mujer">Mujer</label> <!-- checked para que salga seleccionado por defecto -->
         </p>
         <p>
-            <label for="archivo">Incluir foto</label>
+            <label for="archivo">Incluir foto(MAX.500KB)</label>
             <input type="file" name="archivo" id="archivo" accept="image/*">
             <!--accept es para que solo acepte imagenes -->
             <?php
+            // le damos al boton y hay un error....¿pero cual?
             if (isset($_POST["guardar"]) && $error_archivo) {
-                // si hay un error al subir al servidor
+                // si hay un error al subir al servidor (vemos los errores)
                 if ($_FILES["archivo"]["name"] != "") {
                     // si no se almacena correctamente al servidor
                     if ($_FILES["archivo"]["error"]) {
                         echo "<span class='error'> No se ha podido subir el archivo al servidor</span>";
                     } elseif (!getimagesize($_FILES["archivo"]["tmp_name"])) {
-
+                            
                         echo "<span class='error'>El archivo seleccionado no es una fotografia</span>";
                     } else {
+                        // si te pasas de tamanio
                         echo "<span class='error'> El archivo seleccionado supera los 500 MAX</span>";
                     }
                 }
