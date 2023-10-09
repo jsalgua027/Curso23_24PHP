@@ -2,9 +2,7 @@
 // si hay campos vacios envia el error
 if (isset($_POST["calcular"])) {
 
-    // $textoPrimera = trim($_POST["fecha1"]);
-    // $textoSegunda = trim($_POST["fecha2"]);
-    // tengo que controlar el tamaño de la palabra
+    
     // lo mejor meterlo  en una variable y de hay generar los errores
     $error_primeraFecha  = $_POST["fecha1"]== "";
     $error_segundaFecha  = $_POST["fecha2"]== "";
