@@ -8,10 +8,10 @@ if (isset($_POST["calcular"])) {
     $buenos_separadores1 = substr($_POST["fecha1"], 2, 1) == "/" && substr($_POST["fecha1"], 5, 1) == "/";
     $array_num1 = explode("/", $_POST["fecha1"]);
     $numeros_buenos1 =is_numeric($array_num1[0]) && is_numeric($array_num1[1]) && is_numeric($array_num1[2]);
-    $fecha_valida2 = checkdate($array_num1[1], $array_num1[0], $array_num1[2]);
+    $fecha_valida1 = checkdate($array_num1[1], $array_num1[0], $array_num1[2]);
     $error_fecha1 =  $_POST["fecha1"] == "" || strlen($_POST["fecha1"]) != 10 ||!$buenos_separadores1 || !$numeros_buenos1 || !$fecha_valida1;
     //errores de fec2
-    $buenos_separadores1 = substr($_POST["fecha2"], 2, 1) == "/" && substr($_POST["fecha2"], 5, 1) == "/";
+    $buenos_separadores2 = substr($_POST["fecha2"], 2, 1) == "/" && substr($_POST["fecha2"], 5, 1) == "/";
     $array_num2 = explode("/", $_POST["fecha2"]);
     $numeros_buenos2 = is_numeric($array_num2[0]) && is_numeric($array_num2[1]) && is_numeric($array_num2[2]);
     $fecha_valida2 = checkdate($array_num2[1], $array_num2[0], $array_num2[2]);
@@ -60,10 +60,11 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 <label for="fecha1">Introduce una fecha:(DD/MM/YYYY)</label>
                 <input type="text" name="fecha1" id="fecha1" value="<?php if (isset($_POST["fecha1"])) echo $_POST["fecha1"] ?>">
                 <?php
-                if (isset($_POST["calcular"]) &&  $error_primeraFecha )   echo "<span class='error'>*Campo Obligatorio* </span>";
-                else if (isset($_POST["calcular"]) && $error_primeraFechaTama) echo "<span class='error'>*La fecha No tiene 10 carcatere* </span>";
-                else if (isset($_POST["calcular"]) &&   $error_formatoSeparadoresFecha1) echo "<span class='error'>No ha usado / para indicar la fecha* </span>";
-                else if (isset($_POST["calcular"]) &&   $error_formatoNumeroFecha1) echo "<span class='error'>No ha usado numeros para dar la fecha* </span>";
+                if (isset($_POST["calcular"]) &&  $error_fecha1 ){
+                    echo "<span class='error'>*Campo Obligatorio* </span>";
+
+                }   
+               
                 ?>
             </p>
             <p>
@@ -72,10 +73,11 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 <input type="text" name="fecha2" id="fecha2" value="<?php if (isset($_POST["fecha2"])) echo $_POST["fecha2"] ?>">
                 <!--Dentro del <p> controlo el error del campo vacio con mensaje de error -->
                 <?php
-                if (isset($_POST["calcular"]) &&  $error_segundaFecha )   echo "<span class='error'>*Campo Obligatorio* </span>";
-                else if (isset($_POST["calcular"]) && $error_segundaFechaTama) echo "<span class='error'>*La fecha No tiene 10 carcatere* </span>";
-                else if (isset($_POST["calcular"]) &&   $error_formatoSeparadoresFecha2) echo "<span class='error'>No ha usado / para indicar la fecha* </span>";
-                else if (isset($_POST["calcular"]) &&   $error_formatoNumeroFecha2) echo "<span class='error'>No ha usado numeros para dar la fecha* </span>";
+                if (isset($_POST["calcular"]) &&  $error_fecha2 ){
+                    echo "<span class='error'>*Campo Obligatorio* </span>";
+
+                }   
+               
                 ?>
             </p>
             <p>
