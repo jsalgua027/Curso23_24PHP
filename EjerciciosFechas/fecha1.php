@@ -3,18 +3,20 @@
 if (isset($_POST["calcular"])) {
 
     
-    // lo mejor meterlo  en una variable y de hay generar los errores
-    $error_primeraFecha  = $_POST["fecha1"]== "";
-    $error_segundaFecha  = $_POST["fecha2"]== "";
-    $error_primeraFechaTama = strlen($_POST["fecha1"]) == 9;
-    $error_segundaFechaTama = strlen($_POST["fecha2"]) == 9;
-    $error_formatoSeparadoresFecha1 = substr($_POST["fecha1"], 2, 1) == "/" && substr($_POST["fecha1"], 5, 1) == "/";
-    $error_formatoSeparadoresFecha2 = substr($_POST["fecha2"], 2, 1) == "/" && substr($_POST["fecha2"], 5, 1) == "/";
-    $error_formatoNumeroFecha1 = is_numeric(substr($_POST["fecha1"], 0, 2)) && is_numeric(substr($_POST["fecha1"], 4, 2)) &&  is_numeric(substr($_POST["fecha1"], 6, 4));
-    $error_formatoNumeroFecha2 = is_numeric(substr($_POST["fecha2"], 0, 2)) && is_numeric(substr($_POST["fecha2"], 4, 2)) &&  is_numeric(substr($_POST["fecha2"], 6, 4));
-    $error_form = $error_primeraFecha || $error_segundaFecha || $error_segundaFechaTama || $error_primeraFechaTama ||  $error_formatoSeparadoresFecha1 ||
-        $error_formatoSeparadoresFecha2 ||  $error_formatoNumeroFecha1 ||   $error_formatoNumeroFecha2;
-}
+    
+    //errores de fec1
+    $buenos_separadores1 = substr($_POST["fec1"], 2, 1) == "/" && substr($_POST["fec1"], 5, 1) == "/";
+    $numeros_buenos1 = is_numeric(substr($_POST["fec1"], 0, 2)) && is_numeric(substr($_POST["fec1"], 3, 2)) && is_numeric(substr($_POST["fec1"], 6, 4));
+    $fecha_valida1 = checkdate(substr($_POST["fec1"], 3, 2), substr($_POST["fec1"], 0, 2), substr($_POST["fec1"], 6, 4));
+    $error_fecha1 =  $_POST["fec1"] == "" || strlen($_POST["fec1"]) != 10 ||!$buenos_separadores1 || !$numeros_buenos1 || !$fecha_valida1;
+    //errores de fec2
+    $buenos_separadores1 = substr($_POST["fec2"], 2, 1) == "/" && substr($_POST["fec2"], 5, 1) == "/";
+    $array_num2 = explode("/", $_POST["fec2"]);
+    $numeros_buenos2 = is_numeric($array_num2[0]) && is_numeric($array_num2[1]) && is_numeric($array_num2[2]);
+    $fecha_valida2 = checkdate($array_num2[1], $array_num2[0], $array_num2[2]);
+    $error_fecha2 = $_POST["fec2"] == "" || strlen($_POST["fec2"]) != 10  || !$buenos_separadores2 || !$numeros_buenos2 || !$fecha_valida2;
+    //--
+    $error_form = $error_fecha1 || $error_fecha2;
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +27,7 @@ if (isset($_POST["calcular"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        .palabras {
+        .fechas {
             background-color: #D8EDF2;
             border: 2px solid black;
         }
@@ -49,7 +51,7 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
         
 -->
     <form action="fecha1.php" method="post" enctype="multipar/form-data">
-        <div class="palabras">
+        <div class="fechas">
             <h1>Fecha-Formulario</h1>
             <p> cálculo de la diferencias de días entres dos fechas dadas.</p>
             <p>
@@ -87,7 +89,16 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
         <div class="verde">
             <h1>Ripios_Resultados</h1>
             <?php
-           
+
+                $fecha1=strtotime($_POST["fecha1"]);
+                $fecha2=strtotime($_POST["fecha2"]);
+                $resultadoSegundos= abs($fecha1-$fecha2);
+                $resultadoDias=$resultadoSegundos/86400;
+
+                echo "<p>La diferencia en días entre las dos fechas es".$resultadoDias."</p>"
+
+
+
             ?>
 
         </div>
