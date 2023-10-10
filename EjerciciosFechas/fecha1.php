@@ -17,6 +17,7 @@ if (isset($_POST["calcular"])) {
     $error_fecha2 = $_POST["fec2"] == "" || strlen($_POST["fec2"]) != 10  || !$buenos_separadores2 || !$numeros_buenos2 || !$fecha_valida2;
     //--
     $error_form = $error_fecha1 || $error_fecha2;
+}
 ?>
 
 <!DOCTYPE html>
