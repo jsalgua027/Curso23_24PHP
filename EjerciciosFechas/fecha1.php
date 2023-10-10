@@ -5,16 +5,17 @@ if (isset($_POST["calcular"])) {
     
     
     //errores de fec1
-    $buenos_separadores1 = substr($_POST["fec1"], 2, 1) == "/" && substr($_POST["fec1"], 5, 1) == "/";
-    $numeros_buenos1 = is_numeric(substr($_POST["fec1"], 0, 2)) && is_numeric(substr($_POST["fec1"], 3, 2)) && is_numeric(substr($_POST["fec1"], 6, 4));
-    $fecha_valida1 = checkdate(substr($_POST["fec1"], 3, 2), substr($_POST["fec1"], 0, 2), substr($_POST["fec1"], 6, 4));
-    $error_fecha1 =  $_POST["fec1"] == "" || strlen($_POST["fec1"]) != 10 ||!$buenos_separadores1 || !$numeros_buenos1 || !$fecha_valida1;
+    $buenos_separadores1 = substr($_POST["fecha1"], 2, 1) == "/" && substr($_POST["fecha1"], 5, 1) == "/";
+    $array_num1 = explode("/", $_POST["fecha1"]);
+    $numeros_buenos1 =is_numeric($array_num1[0]) && is_numeric($array_num1[1]) && is_numeric($array_num1[2]);
+    $fecha_valida2 = checkdate($array_num1[1], $array_num1[0], $array_num1[2]);
+    $error_fecha1 =  $_POST["fecha1"] == "" || strlen($_POST["fecha1"]) != 10 ||!$buenos_separadores1 || !$numeros_buenos1 || !$fecha_valida1;
     //errores de fec2
-    $buenos_separadores1 = substr($_POST["fec2"], 2, 1) == "/" && substr($_POST["fec2"], 5, 1) == "/";
-    $array_num2 = explode("/", $_POST["fec2"]);
+    $buenos_separadores1 = substr($_POST["fecha2"], 2, 1) == "/" && substr($_POST["fecha2"], 5, 1) == "/";
+    $array_num2 = explode("/", $_POST["fecha2"]);
     $numeros_buenos2 = is_numeric($array_num2[0]) && is_numeric($array_num2[1]) && is_numeric($array_num2[2]);
     $fecha_valida2 = checkdate($array_num2[1], $array_num2[0], $array_num2[2]);
-    $error_fecha2 = $_POST["fec2"] == "" || strlen($_POST["fec2"]) != 10  || !$buenos_separadores2 || !$numeros_buenos2 || !$fecha_valida2;
+    $error_fecha2 = $_POST["fecha2"] == "" || strlen($_POST["fecha2"]) != 10  || !$buenos_separadores2 || !$numeros_buenos2 || !$fecha_valida2;
     //--
     $error_form = $error_fecha1 || $error_fecha2;
 }
