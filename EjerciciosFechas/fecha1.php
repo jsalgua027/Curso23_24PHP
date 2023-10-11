@@ -1,21 +1,37 @@
 <?php
+
+function buenos_separadores($texto){
+
+    return substr($texto, 2, 1) == "/" && substr($texto, 5, 1) == "/";
+
+}
+
+function numeros_buenos($texto){
+  return is_numeric(substr($texto,0,2)) && is_numeric(substr($texto,3,2)) && is_numeric(substr($texto,6,4));
+    
+}
+
+function fecha_valida($texto){
+return checkdate(substr($texto,3,2),substr($texto,0,2),substr($texto,6,2));
+
+}
+
 // si hay campos vacios envia el error
 if (isset($_POST["calcular"])) {
 
     
     
     //errores de fec1
-    $buenos_separadores1 = substr($_POST["fecha1"], 2, 1) == "/" && substr($_POST["fecha1"], 5, 1) == "/";
-    $array_num1 = explode("/", $_POST["fecha1"]);
-    $numeros_buenos1 =is_numeric($array_num1[0]) && is_numeric($array_num1[1]) && is_numeric($array_num1[2]);
-    $fecha_valida1 = checkdate($array_num1[1], $array_num1[0], $array_num1[2]);
-    $error_fecha1 =  $_POST["fecha1"] == "" || strlen($_POST["fecha1"]) != 10 ||!$buenos_separadores1 || !$numeros_buenos1 || !$fecha_valida1;
+  
+   
+  
+    $error_fecha1 =  $_POST["fecha1"] == "" || strlen($_POST["fecha1"]) != 10 ||!buenos_separadores($_POST["fecha1"]) || !numeros_buenos($_POST["fecha1"]) || !fecha_valida($_POST["fecha1"]);
     //errores de fec2
-    $buenos_separadores2 = substr($_POST["fecha2"], 2, 1) == "/" && substr($_POST["fecha2"], 5, 1) == "/";
-    $array_num2 = explode("/", $_POST["fecha2"]);
-    $numeros_buenos2 = is_numeric($array_num2[0]) && is_numeric($array_num2[1]) && is_numeric($array_num2[2]);
-    $fecha_valida2 = checkdate($array_num2[1], $array_num2[0], $array_num2[2]);
-    $error_fecha2 = $_POST["fecha2"] == "" || strlen($_POST["fecha2"]) != 10  || !$buenos_separadores2 || !$numeros_buenos2 || !$fecha_valida2;
+    
+   
+ 
+   
+    $error_fecha2 = $_POST["fecha2"] == "" || strlen($_POST["fecha2"]) != 10  || !buenos_separadores($_POST["fecha2"]) ||  !numeros_buenos($_POST["fecha2"]) || !fecha_valida($_POST["fecha2"]);
     //--
     $error_form = $error_fecha1 || $error_fecha2;
 }
@@ -61,7 +77,13 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 <input type="text" name="fecha1" id="fecha1" value="<?php if (isset($_POST["fecha1"])) echo $_POST["fecha1"] ?>">
                 <?php
                 if (isset($_POST["calcular"]) &&  $error_fecha1 ){
-                    echo "<span class='error'>*Campo Obligatorio* </span>";
+                    if($_POST["fecha1"]==""){
+
+                        echo "<span class='error'>*Campo vacio* </span>";
+                    }else{
+                        echo "<span class='error'>*Fecha no validad* </span>";
+                        }
+                  
 
                 }   
                
@@ -74,7 +96,13 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 <!--Dentro del <p> controlo el error del campo vacio con mensaje de error -->
                 <?php
                 if (isset($_POST["calcular"]) &&  $error_fecha2 ){
-                    echo "<span class='error'>*Campo Obligatorio* </span>";
+                    if($_POST["fecha2"]==""){
+
+                        echo "<span class='error'>*Campo vacio* </span>";
+                    }else{
+                        echo "<span class='error'>*Fecha no validad* </span>";
+                        }
+                  
 
                 }   
                
@@ -94,13 +122,24 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
             <h1>Ripios_Resultados</h1>
             <?php
 
-                $fecha1=strtotime($_POST["fecha1"]);
-                $fecha2=strtotime($_POST["fecha2"]);
-                $resultadoSegundos= abs($fecha1-$fecha2);
-                $resultadoDias=$resultadoSegundos/86400;
+             
+             
+                // resuelvo
+                $array_fecha1=explode("/",$_POST["fecha1"]);
+                $array_fecha2=explode("/",$_POST["fecha2"]);
 
-                echo "<p>La diferencia en días entre las dos fechas es".$resultadoDias."</p>"
+                //una forma-------------> la comentada mejor
+                //$tiempo1=mktime(0,0,0, $array_fecha1[1], $array_fecha1[0], $array_fecha1[2]);
+                //$tiempo2=mktime(0,0,0, $array_fecha2[1], $array_fecha2[0], $array_fecha2[2]);
+                // la otra forma
+                $tiempo1=strtotime($array_fecha1[2]."/".$array_fecha1[1]."/".$array_fecha1[0]);
+                $tiempo2=strtotime($array_fecha2[2]."/".$array_fecha2[1]."/".$array_fecha2[0]);
 
+                $dif_segundos=abs($tiempo1-$tiempo2);
+
+                $dias_pasados=floor($dif_segundos/(60*60*24));
+                
+                echo "<p>La diferencia en días entre las dos fechas es: ".$dias_pasados."</p>";
 
 
             ?>
