@@ -36,14 +36,14 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
             <p> cálculo de la diferencias de días entres dos fechas dadas.</p>
             <p>
                 <label for="fecha1">Dia:</label>
-                <input type="date" id="fecha1" name="fecha1" value="1970-01-01" min="1970-01-01" max="2024-01-01" />
+                <input type="date" id="fecha1" name="fecha1" value="<?php if (isset($_POST["fecha1"])) echo $_POST["fecha1"] ?>" min="1970-01-01" max="2024-01-01" />
 
 
 
             </p>
             <p>
                 <label for="fecha2">Dia:</label>
-                <input type="date" id="fecha2" name="fecha2" value="1970-01-01" min="1970-01-01" max="2024-01-01" />
+                <input type="date" id="fecha2" name="fecha2" value="<?php if (isset($_POST["fecha2"])) echo $_POST["fecha2"] ?>" min="1970-01-01" max="2024-01-01" />
             </p>
             <p>
                 <button type="submit" name="calcular">Calcular</button>
@@ -60,16 +60,16 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
             <?php
             $fecha1 = $_POST["fecha1"];
             $fecha2 = $_POST["fecha2"];
-            $pedazos_fecha1 = explode('/', $fecha1);
-            $pedazos_fecha2 = explode('/', $fecha2);
+            $pedazos_fecha1 = explode('-', $fecha1);
+            $pedazos_fecha2 = explode('-', $fecha2);
 
-            $ano1 = $pedazos_fecha1[2];
+            $ano1 = $pedazos_fecha1[0];
             $mes1 = $pedazos_fecha1[1];
-            $dia1 = $pedazos_fecha1[0];
+            $dia1 = $pedazos_fecha1[2];
 
-            $ano2 = $pedazos_fecha2[2];
+            $ano2 = $pedazos_fecha2[0];
             $mes2 = $pedazos_fecha2[1];
-            $dia2 = $pedazos_fecha2[0];
+            $dia2 = $pedazos_fecha2[2];
 
 
             //una forma-------------> la comentada mejor
