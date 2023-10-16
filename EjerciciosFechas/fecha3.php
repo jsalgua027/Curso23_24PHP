@@ -1,3 +1,21 @@
+
+<?php
+
+    if (isset($_POST["calcular"])) {
+
+        $error_fecha1= $_POST["fecha1"]=="";
+        $error_fecha2= $_POST["fecha2"]=="";
+
+        $error_form= $error_fecha1||$error_fecha2;
+        # code...
+    }
+
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,12 +56,29 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 <label for="fecha1">Dia:</label>
                 <input type="date" id="fecha1" name="fecha1" value="<?php if (isset($_POST["fecha1"])) echo $_POST["fecha1"] ?>" min="1970-01-01" max="2024-01-01" />
 
+                <?php
+                  if(isset($_POST["calcular"]) && $error_fecha1){
 
+                    echo"<p>tiene que seleccionar fecha</p>";
+
+                  }
+
+                ?>
+              
 
             </p>
             <p>
                 <label for="fecha2">Dia:</label>
                 <input type="date" id="fecha2" name="fecha2" value="<?php if (isset($_POST["fecha2"])) echo $_POST["fecha2"] ?>" min="1970-01-01" max="2024-01-01" />
+
+                <?php
+                  if(isset($_POST["calcular"]) && $error_fecha2){
+
+                    echo"<p>tiene que seleccionar fecha</p>";
+
+                  }
+
+                ?>
             </p>
             <p>
                 <button type="submit" name="calcular">Calcular</button>

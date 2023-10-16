@@ -4,12 +4,7 @@
 
 
 
-function fecha_valida($dia,$mes,$anio)
-{
-    return checkdate($mes,$dia,$anio);
-}
 
-// si hay campos vacios envia el error
 if (isset($_POST["calcular"])) {
 
 
@@ -18,13 +13,13 @@ if (isset($_POST["calcular"])) {
 
 
 
-    $error_fecha1 =   !fecha_valida($_POST["dia1"], $_POST["mes1"], $_POST["anyo1"]);
+    $error_fecha1 =   checkdate($_POST["mes1"], $_POST["dia1"], $_POST["anyo1"]);
     //errores de fec2
 
 
 
 
-    $error_fecha2 = !fecha_valida($_POST["dia2"], $_POST["mes2"], $_POST["anyo2"]);
+    $error_fecha2 = checkdate($_POST["mes2"], $_POST["dia2"], $_POST["anyo2"]);
     //--
     $error_form = $error_fecha1 || $error_fecha2;
 }
@@ -71,8 +66,13 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 <select name="dia1" id="dia1">
                     <?php
                     for ($i = 1; $i <= 31; $i++) {
-                        echo  "<option value='" . $i . "' >" . $i . "</option>";
+                        if (isset($_POST["calcular"]) && $_POST["dia1"] == $i) {
+                            echo  "<option selected value='" . $i . "' >" . $i . "</option>";
+                        } else {
+                            echo  "<option value='" . $i . "' >" . $i . "</option>";
+                        }
                     }
+
                     ?>
 
                 </select>
@@ -82,22 +82,40 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                     <?php
                     $meses = [1 => "enero", 2 => "febrero", 3 => "marzo", 4 => "abril", 5 => "mayo", 6 => "junio", 7 => "julio", 8 => "agosto", 9 => "septiembre", 10 => "octubre", 11 => "noviembre", 12 => "diciembre"];
                     foreach ($meses as $key => $value) {
-                        echo  "<option value='" . $key . "' >" . $value . "</option>";
+                        if (isset($_POST["calcular"]) && $_POST["mes1"] == $i) {
+
+                            echo  "<option selected value='" . $key . "' >" . $value . "</option>";
+                        } else {
+                            echo  "<option value='" . $key . "' >" . $value . "</option>";
+                        }
                     }
-
-
+                    // con esta variable me coge el año actual
+                    $anio_actual = date("Y");
                     ?>
 
                 </select>
+
                 <label for="anyo1">Año:</label>
                 <select name="anyo1" id="anyo1">
                     <?php
-                    for ($i = 1970; $i <= 2023; $i++) {
-                        echo  "<option value='" . $i . "' >" . $i . "</option>";
+                    for ($i = 1970; $i <= $anio_actual; $i++) {
+                        if (isset($_POST["calcular"]) && $_POST["anyo1"] == $i) {
+
+                            echo  "<option selected value='" . $i . "' >" . $i . "</option>";
+                        } else {
+                            echo  "<option value='" . $i . "' >" . $i . "</option>";
+                        }
                     }
+
+
                     ?>
 
                 </select>
+                <?php
+                if (isset($_POST["calcular"]) && $error_fecha1) {
+                    echo "<p class='error'>La fecha es erronea</p>";
+                }
+                ?>
 
             </p>
             <p>
@@ -105,8 +123,13 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 <select name="dia2" id="dia2">
                     <?php
                     for ($i = 1; $i <= 31; $i++) {
-                        echo  "<option value='" . $i . "' >" . $i . "</option>";
+                        if (isset($_POST["calcular"]) && $_POST["dia2"] == $i) {
+                            echo  "<option selected value='" . $i . "' >" . $i . "</option>";
+                        } else {
+                            echo  "<option value='" . $i . "' >" . $i . "</option>";
+                        }
                     }
+
                     ?>
 
                 </select>
@@ -116,22 +139,40 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                     <?php
                     $meses = [1 => "enero", 2 => "febrero", 3 => "marzo", 4 => "abril", 5 => "mayo", 6 => "junio", 7 => "julio", 8 => "agosto", 9 => "septiembre", 10 => "octubre", 11 => "noviembre", 12 => "diciembre"];
                     foreach ($meses as $key => $value) {
-                        echo  "<option value='" . $key . "' >" . $value . "</option>";
+                        if (isset($_POST["calcular"]) && $_POST["mes2"] == $i) {
+
+                            echo  "<option selected value='" . $key . "' >" . $value . "</option>";
+                        } else {
+                            echo  "<option value='" . $key . "' >" . $value . "</option>";
+                        }
                     }
-
-
+                    // con esta variable me coge el año actual
+                    $anio_actual = date("Y");
                     ?>
 
                 </select>
                 <label for="anyo2">Año:</label>
                 <select name="anyo2" id="anyo2">
                     <?php
-                    for ($i = 1970; $i <= 2023; $i++) {
-                        echo  "<option value='" . $i . "' >" . $i . "</option>";
+                    for ($i = 1970; $i <= $anio_actual; $i++) {
+                        if (isset($_POST["calcular"]) && $_POST["anyo2"] == $i) {
+
+                            echo  "<option selected value='" . $i . "' >" . $i . "</option>";
+                        } else {
+                            echo  "<option value='" . $i . "' >" . $i . "</option>";
+                        }
                     }
+
+
                     ?>
 
                 </select>
+                <?php
+                if (isset($_POST["calcular"]) && $error_fecha2) {
+                    echo "<p class='error'>La fecha es erronea</p>";
+                }
+                ?>
+
 
             </p>
             <p>
@@ -149,13 +190,13 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
             <?php
 
 
-//!fecha_valida($_POST["dia1"], $_POST["mes1"], $_POST["anyo1"]);
-            
+            //!fecha_valida($_POST["dia1"], $_POST["mes1"], $_POST["anyo1"]);
+
 
             //una forma-------------> la comentada mejor
-            $tiempo1=mktime(0,0,0, $_POST["mes1"], $_POST["dia1"], $_POST["anyo1"]);
-            $tiempo2=mktime(0,0,0, $_POST["mes2"], $_POST["dia2"], $_POST["anyo2"]);
-           
+            $tiempo1 = mktime(0, 0, 0, $_POST["mes1"], $_POST["dia1"], $_POST["anyo1"]);
+            $tiempo2 = mktime(0, 0, 0, $_POST["mes2"], $_POST["dia2"], $_POST["anyo2"]);
+
 
             $dif_segundos = abs($tiempo1 - $tiempo2);
 
