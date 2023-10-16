@@ -1,0 +1,4 @@
+Esto es la primera linea
+Esto es la segunda linea 
+Esto es la cuarta lineaNo me vas a dejar esciribir
+Escribo con la constante final de linea
