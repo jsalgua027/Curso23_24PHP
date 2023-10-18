@@ -43,10 +43,7 @@ if (isset($_POST["contar"])) {
                 }
             }
 
-
-
             ?>
-
 
         </P>
         <p>
