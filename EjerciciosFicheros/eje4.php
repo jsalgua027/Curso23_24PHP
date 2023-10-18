@@ -73,7 +73,7 @@ if (isset($_POST["contar"])) {
         }
 
 
-
+        fclose($fd);
 
         //echo "<h3>El numero de palabras que contiene el archivo seleccionado es " . str_word_count($contenido) . "</h3>";
         echo "<h3>El numero de palabras que contiene el archivo seleccionado es " . $n_palabras . "</h3>";
