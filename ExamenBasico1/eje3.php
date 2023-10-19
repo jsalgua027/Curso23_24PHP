@@ -1,5 +1,13 @@
+<?php
+if (isset($_POST["comprobar"])) {
+    $erro_form = $_POST["frase"] == "";
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,20 +23,75 @@ introducido nada
 
 
     -->
+    <style>
+        .error {
+
+            color: red;
+        }
+    </style>
+
 </head>
+
 <body>
     <form action="eje3.php" method="post" enctype="multipart/form-data">
         <label for="frase">Escriba una frase</label>
-        <input type="text" name="frase" id="frase" value="">
+        <input type="text" name="frase" id="frase" value="<?php if (isset($_POST["frase"])) echo $_POST["frase"] ?>">
+
         <select name="separacion" id="separacion">
             <option value=",">,</option>
             <option value=";">;</option>
             <option value=" ">espacio</option>
             <option value=":">:</option>
-            
+
         </select>
 
         <button type="submit" name="comprobar">Comprobar</button>
+        <?php
+        if (isset($_POST["comprobar"]) && $erro_form) {
+            echo "<p class='error'>El campo esta vacio</p>";
+        }
+
+
+        ?>
     </form>
+    <?php
+    if (isset($_POST["comprobar"]) && !$erro_form) {
+        $frase = $_POST["frase"];
+        echo "<p>La frase es:     " . $frase . "</p>";
+        $contador = 0;
+        $posiciones = 0;
+
+        if ($_POST["separacion"] == ",") {
+            while (isset($frase[$posiciones])) {
+                if ($frase[$posiciones] == ",") $contador++;
+                $posiciones++;
+            }
+
+            echo "<p>hay " . ($contador + 1) . " palabras </p>";
+        } else if ($_POST["separacion"] == " ") {
+            while (isset($frase[$posiciones])) {
+                if ($frase[$posiciones] == " ") $contador++;
+                $posiciones++;
+            }
+            echo "<p>hay " . ($contador + 1) . " palabras </p>";
+        } else if ($_POST["separacion"] == ";") {
+            while (isset($frase[$posiciones])) {
+                if ($frase[$posiciones] == ";") $contador++;
+                $posiciones++;
+            }
+            echo "<p>hay " . ($contador + 1) . " palabras </p>";
+        } else if ($_POST["separacion"] == ":") {
+            while (isset($frase[$posiciones])) {
+                if ($frase[$posiciones] == ":") $contador++;
+                $posiciones++;
+            }
+            echo "<p>hay " . ($contador + 1) . " palabras </p>";
+        }
+    }
+
+
+    ?>
+
 </body>
+
 </html>
