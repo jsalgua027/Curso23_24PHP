@@ -15,18 +15,24 @@
 <body>
         <form action="eje1.php" method="post" enctype="multipart/form-data">
             <label for="palabras">Escribe lo que quieras, vamos a contar Caracteres</label>
-            <input type="text" name="palabras" id="palabras" value="">
+            <input type="text" name="palabras" id="palabras" value="<?php if (isset($_POST["palabras"])) echo $_POST["palabras"]
+                # code...
+            ?>">
             <button type="submit" name="comprobar">Comprobar</button>
         </form>    
 
     <?php
-    $contador=0;
-    $texto=$_POST["palabras"];
+    if(isset($_POST["comprobar"])){
+        $contador=0;
+        $texto=$_POST["palabras"];
+        
+            while (isset($texto[$contador])) {
+                $contador++;
+            }
     
-        while (isset($texto[$contador])) {
-            $contador++;
-        }
+        echo"<h2>La palabra contiene: ".$contador."</h2>";
 
+    }
     
     
     ?>
