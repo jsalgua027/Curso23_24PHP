@@ -65,6 +65,9 @@ introducido nada
             while (isset($frase[$posiciones])) {
                 if ($frase[$posiciones] == ",") $contador++;
                 $posiciones++;
+                if(end($frase)== ","){
+                    $contador--;
+                }
             }
 
             echo "<p>hay " . ($contador + 1) . " palabras </p>";
@@ -72,18 +75,27 @@ introducido nada
             while (isset($frase[$posiciones])) {
                 if ($frase[$posiciones] == " ") $contador++;
                 $posiciones++;
+                if(end($frase)== " "){
+                    $contador--;
+                }
             }
             echo "<p>hay " . ($contador + 1) . " palabras </p>";
         } else if ($_POST["separacion"] == ";") {
             while (isset($frase[$posiciones])) {
                 if ($frase[$posiciones] == ";") $contador++;
                 $posiciones++;
+                if(end($frase)== ";"){
+                    $contador--;
+                }
             }
             echo "<p>hay " . ($contador + 1) . " palabras </p>";
         } else if ($_POST["separacion"] == ":") {
             while (isset($frase[$posiciones])) {
                 if ($frase[$posiciones] == ":") $contador++;
                 $posiciones++;
+                if(end($frase)== ":"){
+                    $contador--;
+                }
             }
             echo "<p>hay " . ($contador + 1) . " palabras </p>";
         }
