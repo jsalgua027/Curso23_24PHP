@@ -61,7 +61,33 @@ introducido nada
         $contador = 0;
         $posiciones = 0;
 
-        if ($_POST["separacion"] == ",") {
+        // mi explode
+        function miExplode($frase, $separador)
+        {
+            $palabras = [];
+            $contador = 0;
+            $posiciones = 0;
+            while (isset($frase[$posiciones])) {
+                if ($frase[$posiciones] != $separador) {
+                    $palabras[$contador] .= $frase[$posiciones];
+                    $posiciones++;
+                } else  {
+                    $contador++;
+                    $posiciones++;
+                }
+            }
+            return $palabras;
+        }
+        $sep=$_POST["separacion"];
+       
+
+      echo "<p>hay " .  count(miExplode($frase,$sep)) . " palabras </p>";
+
+
+
+        /*
+  
+ if ($_POST["separacion"] == ",") {
             while (isset($frase[$posiciones])) {
                 if ($frase[$posiciones] == ",") $contador++;
                 $posiciones++;
@@ -99,6 +125,9 @@ introducido nada
             }
             echo "<p>hay " . ($contador + 1) . " palabras </p>";
         }
+
+  
+ */
     }
 
 
