@@ -50,9 +50,24 @@ if (isset($_POST["subir"])) {
 
     <?php
     if(isset($_POST["subir"])&& !$error_form){
+
+        $fd=fopen( $_FILES["archivo"]["name"],"r");
+
+        if(!$fd){
+            die("<p>No se ha podido crear el fichero</p>");
+        }
+        echo "<p>Leyendo...</p>";
         
+        while ($linea=fgets($fd)) {
+            // divido por tabulador
+            $datos_linea=explode("\t",$linea);
+            // me quedo con la primera posicion y divido por , pasa sacar los porfesores
+            $profesores[]=$datos_linea[0];
+        }
+  
     ?>
-    <!DOCTYPE html>
+    <!-- 
+  <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -60,21 +75,67 @@ if (isset($_POST["subir"])) {
         <title>Document</title>
     </head>
     <body>
+   
+    -->
+ 
         <h1>Ejercicio 4</h1>
         <h2>Horarios de los profesores</h2>
-        <form action="eje4.php" method="get" enctype="multipart/form-data">
+       <!--<form action="eje4.php" method="post" enctype="multipart/form-data"> --> 
             <p>
                 <label for="horarios"></label>
-                <option value="" names="opt" id="opt">
+                <select name="horarios" id="horarios">
+                    <?php
+                        for ($i=0; $i <count($profesores) ; $i++) { 
+                            if (isset($_POST["profesores"])&& $_POST["profesores"]==$profesores[$i]) {
 
-                </option>
+                                echo "<option selected value='" .$profesores[$i] . "'>" .$profesores[$i] . "</option>";  
+                                
+                            }else {
+                                echo "<option value='" . $profesores[$i] . "'>" .$profesores[$i] . "</option>";
+                            }
+
+
+                        }    
+                    
+                    ?>
+                </select>
+                <button type="submit" name="horarios" >Ver horarios</button>
             </p>
-        </form>
-    </body>
-    </html>
+      <!--  </form> -->
+        <?php
+            if (isset($_POST["horarios"])&& $_POST["profesores"]==$profesores[$i]) {
 
-    <?php    
+                echo "<h2> estoy aqui</h2>";
+
+              echo " <table border='1'>";
+               echo "<tr>";
+                   echo" <th></th>";
+                   echo" <th>Lunes</th>";
+                   echo"<th>Martes</th>";
+                   echo" <th>Miércoles</th>";
+                   echo" <th>Jueves</th>";
+                   echo" <th>Viernes</th>";
+                   echo" <th>Sábado</th>";
+                   echo" <th>Domingo</th>";
+              echo"</tr>";
+
+
+
+            }
+        
+        
+        ?>
+
+
+ <!-- 
+  </body>
+    </html>
+-->
+  
+    <?php
+     
     }
+ 
     ?>
 
 
