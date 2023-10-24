@@ -49,7 +49,8 @@ if (isset($_POST["subir"])) {
     </form>
 
     <?php
-    if (isset($_POST["subir"]) && !$error_form) {
+    if ((isset($_POST["subir"]) && !$error_form) || isset($_POST["horarios"])) {
+
 
         $fd = fopen("Horarios/" . $_FILES["archivo"]["name"], "r");
 
