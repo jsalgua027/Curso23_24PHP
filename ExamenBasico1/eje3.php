@@ -34,17 +34,21 @@ introducido nada
 
 <body>
     <form action="eje3.php" method="post" enctype="multipart/form-data">
-        <label for="frase">Escriba una frase</label>
-        <input type="text" name="frase" id="frase" value="<?php if (isset($_POST["frase"])) echo $_POST["frase"] ?>">
+        <p>
+            <label for="frase">Escriba una frase</label>
+            <input type="text" name="frase" id="frase" value="<?php if (isset($_POST["frase"])) echo $_POST["frase"] ?>">
+        </p>
+        <p>
+            <label for="separador">Elija el separador</label>
+            <select name="separacion" id="separacion">
+                <!-- mantengo los campos, si existe el boton y el value de la opcion me pones selected-->
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == ",") echo "selected" ?> value=",">,</option>
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == ";") echo "selected" ?> value=";">;</option>
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == " ") echo "selected" ?> value=" ">espacio</option>
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == ":") echo "selected" ?> value=":">:</option>
 
-        <select name="separacion" id="separacion">
-            <option value=",">,</option>
-            <option value=";">;</option>
-            <option value=" ">espacio</option>
-            <option value=":">:</option>
-
-        </select>
-
+            </select>
+        </p>
         <button type="submit" name="comprobar">Comprobar</button>
         <?php
         if (isset($_POST["comprobar"]) && $erro_form) {
@@ -60,8 +64,8 @@ introducido nada
         echo "<p>La frase es:     " . $frase . "</p>";
         $contador = 0;
         $posiciones = 0;
-
-        // mi explode
+        /*
+          // mi explode
         function miExplode($frase, $separador)
         {
             $palabras = [];
@@ -71,63 +75,51 @@ introducido nada
                 if ($frase[$posiciones] != $separador) {
                     $palabras[$contador] .= $frase[$posiciones];
                     $posiciones++;
-                } else  {
+                } else {
                     $contador++;
                     $posiciones++;
                 }
             }
             return $palabras;
         }
-        $sep=$_POST["separacion"];
-       
-
-      echo "<p>hay " .  count(miExplode($frase,$sep)) . " palabras </p>";
+        $sep = $_POST["separacion"];
 
 
+        echo "<p>hay " .  count(miExplode($sep, $frase)) . " palabras </p>";
+        */
 
-        /*
-  
- if ($_POST["separacion"] == ",") {
-            while (isset($frase[$posiciones])) {
-                if ($frase[$posiciones] == ",") $contador++;
-                $posiciones++;
-                if(end($frase)== ","){
-                    $contador--;
+      
+
+        // funcion miguel angel
+        function explodeMA($texto, $sepa)
+        {
+            $aux = [];
+            $longitud = strlen($texto);
+            $i = 0;
+
+            while ($i < $longitud && $texto[$i] != $sepa)
+                $i++;
+
+            if ($i < $longitud) {
+                $j = 0;
+                $aux[$j] = $texto[$i];
+                for ($i = $i + 1; $i < $longitud; $i++) {
+                    if ($texto[$i] != $sepa) {
+                        $aux[$j] .= $texto[$i];
+                    } else {
+                        while ($i < $longitud && $texto[$i] == $sepa)
+                            $i++;
+
+                        if ($i < $longitud) {
+                            $j++;
+                            $aux[$j] = $texto[$i];
+                        }
+                    }
                 }
             }
-
-            echo "<p>hay " . ($contador + 1) . " palabras </p>";
-        } else if ($_POST["separacion"] == " ") {
-            while (isset($frase[$posiciones])) {
-                if ($frase[$posiciones] == " ") $contador++;
-                $posiciones++;
-                if(end($frase)== " "){
-                    $contador--;
-                }
-            }
-            echo "<p>hay " . ($contador + 1) . " palabras </p>";
-        } else if ($_POST["separacion"] == ";") {
-            while (isset($frase[$posiciones])) {
-                if ($frase[$posiciones] == ";") $contador++;
-                $posiciones++;
-                if(end($frase)== ";"){
-                    $contador--;
-                }
-            }
-            echo "<p>hay " . ($contador + 1) . " palabras </p>";
-        } else if ($_POST["separacion"] == ":") {
-            while (isset($frase[$posiciones])) {
-                if ($frase[$posiciones] == ":") $contador++;
-                $posiciones++;
-                if(end($frase)== ":"){
-                    $contador--;
-                }
-            }
-            echo "<p>hay " . ($contador + 1) . " palabras </p>";
+            return $aux;
         }
-
-  
- */
+        echo "<p>El número de palabras separadas por el separador es de : " . count(explodeMA( $_POST["frase"],$_POST["separacion"])) . "</p>";
     }
 
 

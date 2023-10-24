@@ -49,93 +49,73 @@ if (isset($_POST["subir"])) {
     </form>
 
     <?php
-    if(isset($_POST["subir"])&& !$error_form){
+    if (isset($_POST["subir"]) && !$error_form) {
 
-        $fd=fopen( $_FILES["archivo"]["name"],"r");
+        $fd = fopen("Horarios/" . $_FILES["archivo"]["name"], "r");
 
-        if(!$fd){
+        if (!$fd) {
             die("<p>No se ha podido crear el fichero</p>");
         }
         echo "<p>Leyendo...</p>";
-        
-        while ($linea=fgets($fd)) {
+
+        while ($linea = fgets($fd)) {
             // divido por tabulador
-            $datos_linea=explode("\t",$linea);
+            $datos_linea = explode("\t", $linea);
             // me quedo con la primera posicion y divido por , pasa sacar los porfesores
-            $profesores[]=$datos_linea[0];
+            $profesores[] = $datos_linea[0];
         }
-  
+
     ?>
-    <!-- 
-  <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-   
-    -->
- 
+
         <h1>Ejercicio 4</h1>
         <h2>Horarios de los profesores</h2>
-       <!--<form action="eje4.php" method="post" enctype="multipart/form-data"> --> 
+        <form action="eje4.php" method="post" enctype="multipart/form-data">
             <p>
                 <label for="horarios"></label>
                 <select name="horarios" id="horarios">
                     <?php
-                        for ($i=0; $i <count($profesores) ; $i++) { 
-                            if (isset($_POST["profesores"])&& $_POST["profesores"]==$profesores[$i]) {
+                    for ($i = 0; $i < count($profesores); $i++) {
+                        if (isset($_POST["profesores"]) && $_POST["profesores"] == $profesores[$i]) {
 
-                                echo "<option selected value='" .$profesores[$i] . "'>" .$profesores[$i] . "</option>";  
-                                
-                            }else {
-                                echo "<option value='" . $profesores[$i] . "'>" .$profesores[$i] . "</option>";
-                            }
+                            echo "<option selected value='" . $profesores[$i] . "'>" . $profesores[$i] . "</option>";
+                            $datos_profesor_seleci=$datos_linea;
+                        } else {
+                            echo "<option value='" . $profesores[$i] . "'>" . $profesores[$i] . "</option>";
+                        }
+                    }
 
-
-                        }    
-                    
                     ?>
                 </select>
-                <button type="submit" name="horarios" >Ver horarios</button>
+                <button type="submit" name="horarios">Ver horarios</button>
             </p>
-      <!--  </form> -->
+        </form>
         <?php
-            if (isset($_POST["horarios"])&& $_POST["profesores"]==$profesores[$i]) {
+        if (isset($_POST["horarios"]) ) {
 
-                echo "<h2> estoy aqui</h2>";
+            echo "<h2> estoy aqui</h2>";
 
-              echo " <table border='1'>";
-               echo "<tr>";
-                   echo" <th></th>";
-                   echo" <th>Lunes</th>";
-                   echo"<th>Martes</th>";
-                   echo" <th>Miércoles</th>";
-                   echo" <th>Jueves</th>";
-                   echo" <th>Viernes</th>";
-                   echo" <th>Sábado</th>";
-                   echo" <th>Domingo</th>";
-              echo"</tr>";
+            echo " <table border='1'>";
+            echo "<tr>";
+            echo " <th></th>";
+            echo " <th>Lunes</th>";
+            echo "<th>Martes</th>";
+            echo " <th>Miércoles</th>";
+            echo " <th>Jueves</th>";
+            echo " <th>Viernes</th>";
+            echo " <th>Sábado</th>";
+            echo " <th>Domingo</th>";
+            echo "</tr>";
+        }
 
 
-
-            }
-        
-        
         ?>
 
 
- <!-- 
-  </body>
-    </html>
--->
-  
+
     <?php
-     
+
     }
- 
+
     ?>
 
 
