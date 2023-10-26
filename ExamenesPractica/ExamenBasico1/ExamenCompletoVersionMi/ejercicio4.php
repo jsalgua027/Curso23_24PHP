@@ -86,6 +86,8 @@ if(isset($_POST["btnSubir"]))
     else
     {
         require "vistas/vista_form_subida.php";
+
+        
     }
     ?>
 </body>

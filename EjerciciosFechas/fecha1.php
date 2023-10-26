@@ -134,7 +134,7 @@ las dos últimas tiene que decir que riman un poco y si no, que no riman.
                 // la otra forma
                 $tiempo1=strtotime($array_fecha1[2]."/".$array_fecha1[1]."/".$array_fecha1[0]);
                 $tiempo2=strtotime($array_fecha2[2]."/".$array_fecha2[1]."/".$array_fecha2[0]);
-
+                       
                 $dif_segundos=abs($tiempo1-$tiempo2);
 
                 $dias_pasados=floor($dif_segundos/(60*60*24));
