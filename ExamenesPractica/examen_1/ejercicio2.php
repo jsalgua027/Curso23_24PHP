@@ -1,15 +1,9 @@
-<?php
-if (isset($_POST["contar"])) {
-    // solo hay error si no escribe nada
-    // me aseguro que el texto no tenga espacios al principio y al final 
-    $texto = trim($_POST["texto"]);
-    $error_form = $texto == "";
+<<?php
+if (isset($_POST["comprobar"])) {
+    $erro_form = $_POST["frase"] == "";
 }
 
-
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,81 +12,121 @@ if (isset($_POST["contar"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+  
+    
     <style>
         .error {
 
-            color: red
+            color: red;
         }
     </style>
+
 </head>
 
 <body>
+    <h1>Contar palabras sin las vocales (a, e ,i ,o u)</h1>
     <form action="ejercicio2.php" method="post" enctype="multipart/form-data">
-        <h1>Ejercicio 2. Contar Palabras sin las vocales (a,e,i,o,u,A,E,I,o,U)</h1>
-
-        <p><label for="texti">introduce un Texto</label>
-            <input type="text" id="texto" name="texto" value="<?php if (isset($_POST["texto"])) echo $_POST["texto"] ?>">
-            <?php
-            if (isset($_POST["contar"]) && $error_form) {
-
-                echo "<p class=error>El campo esta Vacio </p>";
-            }
-
-
-            ?>
+        <p>
+            <label for="frase">Escriba una frase</label>
+            <input type="text" name="frase" id="frase" value="<?php if (isset($_POST["frase"])) echo $_POST["frase"] ?>">
         </p>
-        <p><label for="sep">Elija el separador</label>
-            <select name="sep" id="sep">
-                <option value=",">Coma</option>
-                <option value=";">Punto y Coma</option>
-                <option value=" ">Espacio</option>
-                <option value=":">Dos Puntos</option>
+        <p>
+            <label for="separador">Elija el separador</label>
+            <select name="separacion" id="separacion">
+                <!-- mantengo los campos, si existe el boton y el value de la opcion me pones selected-->
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == ",") echo "selected" ?> value=",">,</option>
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == ";") echo "selected" ?> value=";">;</option>
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == " ") echo "selected" ?> value=" ">espacio</option>
+                <option <?php if (isset($_POST["comprobar"]) && $_POST["separacion"] == ":") echo "selected" ?> value=":">:</option>
+
             </select>
-
         </p>
-        <button type="submit" name="contar">Contar</button>
+        <button type="submit" name="comprobar">Comprobar</button>
+        <?php
+        if (isset($_POST["comprobar"]) && $erro_form) {
+            echo "<p class='error'>El campo esta vacio</p>";
+        }
 
+
+        ?>
     </form>
     <?php
-    if (isset($_POST["contar"]) && !$error_form) {
-
-        echo "<h1>Respuesta</h1>";
-
-        $sep = $_POST["sep"];
-        $texto = trim($_POST["texto"]);
-        $vocalesNoMay="ÁÉÍÓÚ";
-        $vocalesNomin="áéíóú";
-        $contador=0;
+    if (isset($_POST["comprobar"]) && !$erro_form) {
+        $palabras_por_separador=ExplodeMA($_POST["frase"],$_POST["separacion"]);
+        $palabras_sin_vocales=filtrar_sin_vocales($palabras_por_separador);
        
-       
-        function contadorPalbaras($tex, $separador)
+        
+        function explodeMA($texto, $sepa)
         {
-            $pala="";
-            $arrPalabras=[];
-            $fin=strlen($tex);
-            for ($i = 0; $i < strlen($tex); $i++) {
+            $aux = [];
+            $longitud = strlen($texto);
+            $i = 0;
 
-                if ($tex[0] != $separador && $tex[$fin]-1 != $separador) {
-                    $i++;
-                    $pala.+$tex[$i];
-                    if($tex[$i]==$separador){
-                        $pala.array_push($arrPalabras);
+            while ($i < $longitud && $texto[$i] != $sepa)
+                $i++;
+
+            if ($i < $longitud) {
+                $j = 0;
+                $aux[$j] = $texto[$i];
+                for ($i = $i + 1; $i < $longitud; $i++) {
+                    if ($texto[$i] != $sepa) {
+                        $aux[$j] .= $texto[$i];
+                    } else {
+                        while ($i < $longitud && $texto[$i] == $sepa)
+                            $i++;
+
+                        if ($i < $longitud) {
+                            $j++;
+                            $aux[$j] = $texto[$i];
+                        }
                     }
                 }
             }
-            return count($arrPalabras);
-       }
+            return $aux;
+        }
+
+        function filtrar_sin_vocales($arr_palabras){
+            $respuesta=[];
+            for($i=0; $i<count($arr_palabras);$i++)
+            {
+                if(!tiene_vocales($arr_palabras[$i]))
+                    $respuesta=$arr_palabras[$i];
+            }
+            return $respuesta;
+        }
 
 
-       $resultado=contadorPalbaras($texto,$sep);
-       
+        function tiene_vocales($palabra){
 
-       
-       $resultado=strlen($texto);
-       echo $resultado;
+            $tiene=false;
+            //array asociativo y con isset le pregunto
+            $vocales["a"]=1; 
+            $vocales["A"]=1; 
+            $vocales["e"]=1; 
+            $vocales["E"]=1; 
+            $vocales["i"]=1; 
+            $vocales["I"]=1; 
+            $vocales["o"]=1; 
+            $vocales["O"]=1; 
+            $vocales["u"]=1; 
+            $vocales["U"]=1; 
+        
+        
+            for ($i=0; $i <strlen($palabra) ; $i++) { 
+        
+                if(isset($vocales[$palabra[$i]])){
+                    $tiene=true;
+                    break;
+                }
+            }
+        
+            return $tiene;
+        }
 
 
+       // echo "<p>El número de palabras separadas por el separador es de : " . count(explodeMA( $_POST["frase"],$_POST["separacion"])) . "</p>";
     }
+
 
     ?>
 
