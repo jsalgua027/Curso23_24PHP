@@ -123,7 +123,7 @@ if (isset($_POST["comprobar"])) {
             return $tiene;
         }
 
-
+        //OJO FALTA TERMINAR EL ECHO
        // echo "<p>El número de palabras separadas por el separador es de : " . count(explodeMA( $_POST["frase"],$_POST["separacion"])) . "</p>";
     }
 
