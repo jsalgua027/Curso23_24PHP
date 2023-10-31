@@ -35,9 +35,10 @@
                                                                         //OJO el die termina todo y necesita un fin de body y de html
                 die("<p class='error'>No he podido conectarme a la base de datos: ".$e->getMessage()." </p></body></html>");
             }
-            //genero la variable que hace la consulta a la base de datos
-            $consulta="select * from t_alumnos"; 
+           
             try {
+                 //genero la variable que hace la consulta a la base de datos
+                $consulta="select * from t_alumnos"; 
                // le paso la consulta al metodo y guardo la consulta en el resultado
                $resultado= mysqli_query($conexion,$consulta);
 
