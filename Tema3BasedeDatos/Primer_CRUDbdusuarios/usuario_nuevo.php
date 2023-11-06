@@ -14,24 +14,23 @@ function error_page($title, $body)
     return $page;
 }
 
-function repetido($conexion,$tabla,$columna,$valor)
+function repetido($conexion, $tabla, $columna, $valor)
 {
 
-  //REALIZO LA CONSULTA
-  try {
-    $consulta = "select * from ".$tabla." where ".$columna."='" . $valor . "'";
-    $resultado = mysqli_query($conexion, $consulta);
-    $respuesta=mysqli_num_rows($resultado)>0;
-} catch (Exception $e) {
+    //REALIZO LA CONSULTA
+    try {
+        $consulta = "select * from " . $tabla . " where " . $columna . "='" . $valor . "'";
+        $resultado = mysqli_query($conexion, $consulta);
+        $respuesta = mysqli_num_rows($resultado) > 0;
+        mysqli_free_result($resultado);
+    } catch (Exception $e) {
 
-    mysqli_close($conexion);
+        mysqli_close($conexion);
 
-    $respuesta=error_page("Practica 1 CURD", "<p class='error'>No he podido hacer la consulta " . $e->getMessage() . " </p>");
-  
-}
+        $respuesta = error_page("Practica 1 CURD", "<p class='error'>No he podido hacer la consulta " . $e->getMessage() . " </p>");
+    }
 
-return $respuesta;
-    
+    return $respuesta;
 }
 
 if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnConInsertar"])) {  //la condicion de insertar es por si hay errores al darle continuar y hay errores
@@ -55,16 +54,12 @@ if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnConInsertar"])) {  //la
                 die(error_page("Practica 1 CURD", "<p class='error'>No he podido conectarme a la base de datos: " . $e->getMessage() . " </p>"));
             }
 
-         $error_usuario= repetido($conexion,"usuarios","usuario",$_POST["usuario"]);
+            $error_usuario = repetido($conexion, "usuarios", "usuario", $_POST["usuario"]);
 
-            if(is_string($error_usuario)){
-              
+            if (is_string($error_usuario)) {
+
                 die($error_usuario);
-
             }
-           
-
-
         }
 
 
@@ -88,11 +83,10 @@ if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnConInsertar"])) {  //la
                 }
             }
             //REALIZO LA CONSULTA
-            $error_email= repetido($conexion,"usuarios","usuario",$_POST["email"]);
+            $error_email = repetido($conexion, "usuarios", "usuario", $_POST["email"]);
 
-            if(is_string($error_email))
-            die($error_email);
-
+            if (is_string($error_email))
+                die($error_email);
         }
 
         $error_form = $error_nombre || $error_usuario || $error_clave || $error_email;
@@ -100,31 +94,27 @@ if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnConInsertar"])) {  //la
         if (!$error_form) {
             //los header location hay que hacerlos antes de escibir el hmtl
 
-         
+
             try {
-                $consulta="insert into usuario (nombre,usuario,clave,email) values ('".$_POST["nombre"]."','".$_POST["usuario"]."','".md5($_POST["clave"])."','".$_POST["email"]."'))";
-               mysqli_query($conexion, $consulta);
+                $consulta = "insert into usuario (nombre,usuario,clave,email) values ('" . $_POST["nombre"] . "','" . $_POST["usuario"] . "','" . md5($_POST["clave"]) . "','" . $_POST["email"] . "'))";
+                mysqli_query($conexion, $consulta);
             } catch (Exception $e) {
 
 
-
-                die(error_page("Practica 1 CURD", "<p class='error'>No he podido hacer la consulta " . $e->getMessage() . " </p>"));
                 // si falla , cierro conexión
                 mysqli_close($conexion);
+                die(error_page("Practica 1 CURD", "<p class='error'>No he podido hacer la consulta " . $e->getMessage() . " </p>"));
             }
 
             mysqli_close($conexion);
 
             header("Location:index.php");
+            exit;
         }
         // por aqui continuo solo si hay errores en el formulario
-        if(isset($conexion)){
+        if (isset($conexion)) {
             mysqli_close($conexion);
-
         }
-
-
-
     }
 
 
@@ -179,6 +169,8 @@ if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnConInsertar"])) {  //la
                     elseif (strlen($_POST["usuario"]) > 20) {
 
                         echo "<span class='error'>Has superado los 20 caracteres</span>";
+                    } else {
+                        echo "<span class='error'> Usuario repetido</span>";
                     }
                 }
 
@@ -187,7 +179,15 @@ if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnConInsertar"])) {  //la
 
             <p>
                 <label for="clave">Contraseña:</label>
-                <input type="password" name="clave" maxlength="15">
+                <input type="password" name="clave" maxlength="15" id="clave">
+                <?php
+                if (isset($_POST["btnContInsertar"]) && $error_clave) {
+                    if ($_POST["clave"] == "")
+                        echo "<span class='error'> Campo vacío</span>";
+                    else
+                        echo "<span class='error'> Has tecleado más de 15 caracteres</span>";
+                }
+                ?>
             </p>
 
             <p>
@@ -202,9 +202,9 @@ if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnConInsertar"])) {  //la
 
                         echo "<span class='error'>Has superado los 50 caracteres</span>";
                     } elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
-                        echo "<span class='error'>error sintactico</span>";
+                        echo "<span class='error'> Email sintáxticamente incorrecto</span>";
                     } else {
-                        echo "<span class='error'>El campo no tiene el formato valido</span>";
+                        echo "<span class='error'> Email repetido</span>";
                     }
                 }
 
