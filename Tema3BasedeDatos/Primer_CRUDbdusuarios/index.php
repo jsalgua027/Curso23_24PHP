@@ -66,7 +66,9 @@
     echo "<p><button type='submit' name='btnNuevoUsuario'>Insertar nuevo usuario</button></p>";
     echo "</form>";
   
+    //libero el cache
 
+    mysqli_free_result($resultado);
     //cierro conexión
     mysqli_close($conexion)
     
