@@ -15,7 +15,7 @@ function error_page($title,$body)
 
 function repetido($conexion,$tabla,$columna,$valor)
 {
-
+ //REALIZO LA CONSULTA
     try{
         $consulta="select * from ".$tabla." where ".$columna."='".$valor."'";
         $resultado=mysqli_query($conexion, $consulta);
@@ -33,18 +33,25 @@ function repetido($conexion,$tabla,$columna,$valor)
 
 if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"]) )
 {
+    //la condicion de insertar es por si hay errores al darle continuar y hay errores
+    //si pulso insertar controlo error del formulario de esta pagina
     if(isset($_POST["btnContInsertar"])) // compruebo errores
     {
+
         $error_nombre=$_POST["nombre"]==""|| strlen($_POST["nombre"])>30;
         $error_usuario=$_POST["usuario"]==""|| strlen($_POST["usuario"])>20;
+        //si no hay error en el usuario compruebo en la base de datos que no este repetido
         if(!$error_usuario)
         {
             try{
                 $conexion=mysqli_connect("localhost","jose","josefa","bd_foro");
+                 // traduce los caracteres de la base de datos a nuestro codigo; hay que hacerlo 
                 mysqli_set_charset($conexion,"utf8");
             }
             catch(Exception $e)
             {
+                //si no logro conectarme
+                //OJO el die termina todo  y le paso a mi metodo el titulo y el body
                 die(error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No he podido conectarse a la base de batos: ".$e->getMessage()."</p>"));
             }
 
@@ -59,8 +66,10 @@ if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"]) )
         $error_email=$_POST["email"]=="" || strlen($_POST["email"])>50 || !filter_var($_POST["email"],FILTER_VALIDATE_EMAIL);
         if(!$error_email)
         {
+             //si no hay conexexion conectate
             if(!isset($conexion))
             {
+                 // REALIZO LA CONEXION
                 try{
                     $conexion=mysqli_connect("localhost","jose","josefa","bd_foro");
                     mysqli_set_charset($conexion,"utf8");
@@ -70,6 +79,7 @@ if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"]) )
                     die(error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No he podido conectarse a la base de batos: ".$e->getMessage()."</p>"));
                 }
             }
+             //REALIZO LA CONSULTA
             $error_email=repetido($conexion,"usuarios","email",$_POST["email"]);
             
             if(is_string($error_email))
@@ -88,7 +98,7 @@ if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"]) )
                 mysqli_close($conexion);
                 die(error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No se ha podido hacer la consulta: ".$e->getMessage()."</p>"));
             }
-            
+              // si falla , cierro conexión
             mysqli_close($conexion);
 
             header("Location:index.php");
