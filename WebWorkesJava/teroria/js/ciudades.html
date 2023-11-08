@@ -8,10 +8,12 @@ function muestraSugerencia(str) {
  } else {
    var xmlhttp = new XMLHttpRequest();
    xmlhttp.onreadystatechange = function() {
+    // 4 es open y 200 es que no hay errores
      if (this.readyState == 4 && this.status == 200) {
        document.getElementById("txtSugerencia").innerHTML = this.responseText;
      }
    };
+   
    xmlhttp.open("GET", "http://localhost/Proyectos/Curso23_24PHP/WebWorkesJava/teroria/js/ciudades.php?param=" + str, true);
    // La dirección anterior corresponde a la ubicación de la página php en el servidor localhost
    // Esta dirección podrá diferir dependiendo de la necesidad del programador.
