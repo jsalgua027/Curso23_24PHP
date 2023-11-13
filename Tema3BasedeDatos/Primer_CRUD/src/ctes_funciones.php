@@ -1,4 +1,11 @@
-<?php 
+<?php
+//CTES base de datos
+
+define("SERVIDOR_BD","localhost");
+define("USUARIO_BD","jose");
+define("CLAVE_BD","josefa");
+define("NOMBRE_BD","bd_foro");
+
 
 function error_page($title,$body)
 {
@@ -16,7 +23,7 @@ function error_page($title,$body)
 
 function repetido($conexion,$tabla,$columna,$valor)
 {
- //REALIZO LA CONSULTA
+
     try{
         $consulta="select * from ".$tabla." where ".$columna."='".$valor."'";
         $resultado=mysqli_query($conexion, $consulta);
@@ -33,7 +40,7 @@ function repetido($conexion,$tabla,$columna,$valor)
 
 function repetido_editando($conexion,$tabla,$columna,$valor,$columna_clave,$valor_clave)
 {
- //REALIZO LA CONSULTA
+
     try{
         $consulta="select * from ".$tabla." where ".$columna."='".$valor."' AND ".$columna_clave."<>'".$valor_clave."'";
         $resultado=mysqli_query($conexion, $consulta);
