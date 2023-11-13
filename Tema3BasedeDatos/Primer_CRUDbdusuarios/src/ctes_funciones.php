@@ -1,4 +1,12 @@
 <?php 
+//CTES base de datos
+
+define("SERVIDOR_BD","localhost");
+define("USUARIO_BD","jose");
+define("CLAVE_BD","josefa");
+define("NOMBRE_BD","bd_foro");
+
+
 
 function error_page($title,$body)
 {
