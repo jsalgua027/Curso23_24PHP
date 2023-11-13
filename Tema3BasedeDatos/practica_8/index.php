@@ -30,17 +30,18 @@ try {
 <body>
 <h1>Práctica 8</h1>
 <?php
-
+// so le damos al boton detalle
  if(isset($_POST["btnDetalle"])){
     require("vistas/vista_detalle.php");
 
-
-
+ }
+ if(isset($_POST["btnNuevoUsu"])){
+    require("vistas/vista_nuevo.php");
+    
  }
 
 
-// muestro la consulta
-
+// muestro la consulta generaal de la tabla INICIO
 require ("vistas/vista_tabla.php");
 
 
