@@ -30,6 +30,15 @@ try {
 <body>
 <h1>Práctica 8</h1>
 <?php
+
+ if(isset($_POST["btnDetalle"])){
+    require("vistas/vista_detalle.php");
+
+
+
+ }
+
+
 // muestro la consulta
 
 require ("vistas/vista_tabla.php");
