@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <ol id="lista">
+        <li>Perico</li>
+        <li>Juanico</li>
+        <ul>
+            <li>Jose</li>
+            <ul>
+                <li>Roman</li>
+                <li>Marco</li>
+                <li>Rodrigo</li>
+            </ul>
+            <li>Jose</li>
+
+            <li>Lorenzo</li>
+            <ul>
+                <li>Dimas</li>
+                <li>Gestas</li>
+                <li>Malakatos</li>
+                <li>Jose</li>
+            </ul>
+        </ul>
+        <li>Sofoclis</li>
+    </ol>
+    <script>
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {  // dentro de la conexion 
+              
+                let objJSON = this.responseText; // obtenemos la informacion del json
+                objJSON = JSON.parse(objJSON) // parseo
+                objJSON.map(e => changeMan(document.getElementById("lista"), e.NOMBREI, e.NOMBREF)) // recorro el json y llamo al metodo changeMan
+            }
+        };
+        xhttp.open("GET", "data.json", true);
+        xhttp.send();
+
+        const changeMan = (nodo, man1, man2) => { //
+            if (nodo.innerHTML.toUpperCase() == man1.toUpperCase()) nodo.innerHTML = man2;
+            for (let i = 0; i < nodo.children.length; i++) changeMan(nodo.children[i], man1, man2)
+        }
+
+
+       
+    </script>
+</body>
+
+</html>
