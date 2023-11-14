@@ -14,9 +14,9 @@
         <p>Introduce usuario y password:</p>
         <input type="text" id="usuario" name="usuario" placeholder="usuario"></br>
         <input type="password" id="clave" name="clave" placeholder="clave"></br>
-        <button type="submit" name="login" onclick="recogerDatos()">Login In</button>
+        <button  onclick="recogerDatos()">Login In</button>
 
-        <h2 id="respuesta"></h2>
+       <p> <span id="respuesta"></span></p>
  
 
 
@@ -25,7 +25,7 @@
         const recogerDatos = () => {
             let user = document.getElementById("usuario").value;
                 let clave = document.getElementById("clave").value;
-
+                console.log(user+" "+ clave)
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
               
@@ -33,17 +33,14 @@
                     document.getElementById("respuesta").innerHTML = this.responseText
                     console.log(this.responseText)
                 }
-                
-                xmlhttp.open("GET", "login.php?usuario=" + user + "&clave=" + clave, true)
+               
+            };
+            xmlhttp.open("GET", "http://localhost/Proyectos/Curso23_24PHP/WebWorkesJava/CapítuloVJsonAJAX/ejercicios/LOGGING-USER-PASSWORD/login.php?usuario=" +user + "&clave="+ clave, true)
                 xmlhttp.send();
-
-            }
-
+   
         }
-
-
-
-
+ //  xmlhttp.open("GET", "http://localhost/Proyectos/Curso23_24PHP/WebWorkesJava/CapítuloVJsonAJAX/ejercicios/LOGGING-USER-PASSWORD/login.php?usuario=" +user + "&clave="+ clave, true)
+//   xmlhttp.open("GET", "login.php?usuario=" + user + "&clave=" + clave, true)  EN CLASE
 
 
     </script>

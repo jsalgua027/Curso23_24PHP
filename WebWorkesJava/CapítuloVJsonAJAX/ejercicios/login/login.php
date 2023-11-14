@@ -1,18 +1,18 @@
 <?php
     $usuario=$_REQUEST["usuario"];
-    $clave=$_REQUEST["clave"];
+    $codigo=$_REQUEST["clave"];
 
-    $usuVal="adim";
+    $usuVal="admi";
     $claveVal="1234";
 
-   if($usuario==$usuVal && $clave==$claveVal){
-    echo"USUARIO VALIDO";
+   if($usuario==$usuVal && $codigo==$claveVal){
+   return "USUARIO VALIDO";
 
    }else{
-    echo"USUARIO NO VALIDO";
+   return "USUARIO NO VALIDO";
    }
-
-
+    
+  
 
 
 ?>

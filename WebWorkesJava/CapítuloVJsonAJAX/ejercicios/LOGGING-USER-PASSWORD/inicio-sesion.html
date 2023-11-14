@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loggin</title>
+</head>
+<body>
+
+    <h1>Loggin</h1>
+   
+    <p>Introduzca usuario y password:</p>
+    <p>
+        <input type="text" name="usuario" id="usuario" placeholder="usuario">
+    </p>
+    <p>
+        <input type="password" name="clave" id="clave" placeholder="password">
+    </p>
+    <p>
+        <button onclick="validarUsuario()">Log In</button>
+        
+    </p>
+    <p><span id="resultado"></span></p>
+
+    
+
+    <script>
+        const validarUsuario=()=>{
+
+     //recojo los datos
+     let usuario= document.getElementById("usuario").value;
+     let clave= document.getElementById("clave").value;
+     
+     console.log(usuario+" "+ clave)
+     
+    var xmlhttp = new XMLHttpRequest();
+   xmlhttp.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+       document.getElementById("resultado").innerHTML = this.responseText;
+     }
+   };
+   xmlhttp.open("GET", "http://localhost/Proyectos/JS-XAMP/tema5JS/LOGGING-USER-PASSWORD/login.php?usuario=" + usuario+"&clave="+clave, true);
+                xmlhttp.send();
+ 
+   // La dirección anterior corresponde a la ubicación de la página php en el servidor localhost
+   // Esta dirección podrá diferir dependiendo de la necesidad del programador.
+   xmlhttp.send();
+            }
+
+        
+    </script>
+</body>
+</html>
