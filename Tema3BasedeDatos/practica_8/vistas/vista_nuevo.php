@@ -1,5 +1,5 @@
 <?php
-    // lamo a la pagina con mis funciones 
+    // llamo a la pagina con mis funciones 
 
     require "src/funciones.php";
     
