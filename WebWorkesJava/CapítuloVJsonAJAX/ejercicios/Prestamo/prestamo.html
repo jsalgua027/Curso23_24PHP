@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Cálcular cuota préstamo</h2>
+    <p>
+        <input type="text" name="capi" id="capi">
+    </p>
+    <p>
+        <input type="text" name="interes" id="interes">
+    </p>
+    <p>
+        <input type="text" name="plazos" id="plazos">
+    </p>
+    <p>
+        <button onclick="recogerDatos()">Calcular</button>
+        
+    </p>
+    <p>Su cuota mensual será de: <span id="resultado"></span></p>
+    <script>
+
+            const recogerDatos=()=>{
+                
+                let capital=document.getElementById("capi").value;
+                let interes=document.getElementById("interes").value;
+                let plazos=document.getElementById("plazos").value;
+
+                var xmlhttp= new XMLHttpRequest();
+
+                xmlhttp.onreadystatechange = function () {
+                    if(this.readyState == 4 && this.status==200){
+                        document.getElementById("resultado").innerHTML=this.responseText;
+                    }
+                    
+                };
+                   xmlhttp.open("GET", "http://localhost/Proyectos/Curso23_24PHP/WebWorkesJava/CapítuloVJsonAJAX/ejercicios/LOGGING-USER-PASSWORD/login.php?usuario=" +user + "&clave="+ clave, true)
+
+
+
+            }
+
+
+    </script>
+</body>
+
+</html>

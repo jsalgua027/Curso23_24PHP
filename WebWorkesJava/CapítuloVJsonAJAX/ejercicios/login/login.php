@@ -6,10 +6,10 @@
     $claveVal="1234";
 
    if($usuario==$usuVal && $codigo==$claveVal){
-   return "USUARIO VALIDO";
+   return "USUARIO VALIDOaaaaaaa";
 
    }else{
-   return "USUARIO NO VALIDO";
+   return "USUARIO NO VALIDaaaaaaO";
    }
     
   
