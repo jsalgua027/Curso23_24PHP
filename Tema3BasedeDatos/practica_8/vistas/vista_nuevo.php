@@ -46,8 +46,11 @@ if (isset($_POST["btnGuardar"])) {
     if (!$error_form) {
 
         try {
-            $consulta = "insert into usuarios (nombre,usuario,clave,dni,sexo) values ('" . $_POST["nombre"] . "','" . $_POST["usuario"] . "','" . $_POST["clave"] . "','" . $_POST["dni"] . "','" . $_POST["sexo"] . "')";
+          
+           $consulta = "insert into usuarios (nombre,usuario,clave,dni,sexo) values ('" . $_POST["nombre"] . "','" . $_POST["usuario"] . "','" . $_POST["clave"] . "','" . $_POST["dni"] . "','" . $_POST["sexo"] . "')";
+           mysqli_query($conexion,$consulta);
         } catch (Exception $e) {
+            mysqli_close($conexion);
             die(error_page("Práctica 8", "<h1>Práctica 8 </h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
         }
         mysqli_close($conexion);

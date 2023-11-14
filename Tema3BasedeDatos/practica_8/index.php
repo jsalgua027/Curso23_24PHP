@@ -39,6 +39,16 @@ try {
     require("vistas/vista_nuevo.php");
     
  }
+ /*
+ SI LE DOY A EL BOTON GUARDAR NO SE SI TENGO QUE HACER ESTO EN EL INDEX
+
+  if(isset($_POST["btnGuardar"])){
+    require("vistas/vista_nuevo.php");
+    
+ }
+
+ */
+
 
 
 // muestro la consulta generaal de la tabla INICIO
