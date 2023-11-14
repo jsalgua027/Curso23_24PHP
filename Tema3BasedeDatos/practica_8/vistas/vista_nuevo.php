@@ -37,7 +37,13 @@
 
         </p>
         <p>
-            <input type="file" name="archivo" >
+        <label for="archivo">Seleccione un archivo imagen(Max 500KB)</label>
+            <input type="file" name="archivo"  id="archivo" accept="image/*" >
+        </p>
+
+        <p>
+            <button ></button>
+
         </p>
     </form>
 

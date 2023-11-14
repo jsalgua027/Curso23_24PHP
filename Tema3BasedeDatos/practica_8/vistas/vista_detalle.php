@@ -27,3 +27,25 @@ else{
     echo "<p>El usuario seleccionado ya no se encuentra registrado en la BD</p>";
 
 }
+/* 
+        TEORIA
+
+$con= mysqli_connect("localHost","my_user","my_password","mydb");
+if(mysqli_connect_errno()){
+    echo "Failed to connect to MysQL: ", mysqli_connect_error();
+    exit();
+
+}
+mysqli_query($con, "INSERT INTO Person (FirstName, LastName, Age) VALUES ('Glen','Quagmire', 33)");
+
+// print auto-generate id
+
+echo "New record has id: ", mysqli_insert_id($con); // esto coge la última id usadfa
+
+mysqli_close($con);
+
+// para borrar la foto 
+unlink("Img/....jpg");
+mysqli_insert_id($con);
+ */ 
+
