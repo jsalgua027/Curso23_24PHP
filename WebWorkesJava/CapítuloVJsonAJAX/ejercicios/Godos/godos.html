@@ -12,6 +12,7 @@
     <ul id="lista"></ul>
 
     <script>
+        
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -20,38 +21,44 @@
                 let reyes = JSON.parse(reyesJSON);
                 //  console.log(reyesJSON);
                 //  console.log(reyes);
-                generarLista(reyes.reyesgodos, "lista");
+                generarLista(reyes.reyesgodos, ulHtml);
             }
 
         };
         xhttp.open("GET", "godos.php", true);
         xhttp.send()
 
-        const generarLista = (json, listapadre) => {
 
-            for (let i = 0; i < json.length; i++) {
-                    console.log(json[i])
-                if (typeof json[i]==="object") {
-                    let padre=document.createElement("li");
-                    let textoPadre=document.createTextNode(json[i].nombre);
-                    let contendorHijos=document.createElement("ul")
-                    listapadre.appendChild(padre)
-                    padre.appendChild(textoPadre);
-                    padre.appendChild(contendorHijos);
-                    generarLista(json.hijos, contendorHijos);
-                    
-                } else {
-                  let liHijos =document.createElement("li");
-                  let textHijos= ocument.createTextNode(json[i]);
-                  contendorHijos.appendChild(liHijos);
-                 
-                }
-
-            }
-
+  // recibo el objeto y las lista padre      
+const generarLista = (json, listapadre) => {
+    for (let i = 0; i < json.length; i++) {//recorro todo
+       
+        if (json[i] != null && typeof json[i] === "object") {  // si lo que te encuentras no es null y es un objeto
+            //genero un LI
+            let padre = document.createElement("li");
+            //genero  texto que meto en ese LI 
+            let textoPadre = document.createTextNode(json[i].nombre);
+            //genero los UL que van dentro de esos li
+            let contendorHijos = document.createElement("ul");
+            //conecto la los LI nuevos con la lista original del html(listapadre)
+            listapadre.appendChild(padre);
+            //a los nuevos ul les meto los textos
+            padre.appendChild(textoPadre);
+            //al padre(los nuevos li)les meto los nuevo ul que se generen 
+            padre.appendChild(contendorHijos);
+            //hago la llamdada recursiva parase mueva por los hijos del rey y genere todo
+            generarLista(json[i].hijos, contendorHijos);
+        } else {
+            
+             let liHijos = document.createElement("li");
+            let textHijos = document.createTextNode(json[i]);
+            listapadre.appendChild(liHijos);
+            liHijos.appendChild(textHijos);
+            
+           
         }
-
-
+    }
+}
 
 
 
