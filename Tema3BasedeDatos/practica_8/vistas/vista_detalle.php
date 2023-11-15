@@ -1,4 +1,11 @@
 <?php
+try {
+    $conexion=mysqli_connect("localhost","jose","josefa","bd_cv");
+    mysqli_set_charset($conexion,"utf8");
+} catch (Exception $e) {
+   die("<p>No se ha podido conectarse a la base de datos: ".$e->getMessage()."</p></body></html>");
+ 
+}
 echo "<h3>Detalles del usuario con id: " . $_POST["btnDetalle"] . "</h3>";
 try {
     $consulta = "select * from usuarios where id_usuario='" . $_POST["btnDetalle"] . "'";

@@ -43,7 +43,7 @@ function repetido_variable($conexion, $tabla, $columna, $valor, $columna_clave =
         mysqli_free_result($resultado);
     } catch (Exception $e) {
         mysqli_close($conexion);
-        $respuesta = error_page("Práctica 1º CRUD", "<h1>Práctica 1º CRUD</h1><p>No se ha podido hacer la consulta: " . $e->getMessage() . "</p>");
+        $respuesta = error_page("Práctica 8º CRUD", "<h1>Práctica 1º CRUD</h1><p>No se ha podido hacer la consulta: " . $e->getMessage() . "</p>");
     }
     return $respuesta;
 }
