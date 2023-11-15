@@ -18,7 +18,7 @@ function calcularCuotaMensual($cap, $int, $nMes) {
     return $cuotaMensual;
 }
 
-$resultado=calcularCuotaMensual($num,$num2,$num3);
+$resultado=calcularCuotaMensual($num1,$num2,$num3);
 
 echo  "$resultado";
 

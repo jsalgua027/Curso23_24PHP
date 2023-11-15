@@ -30,6 +30,10 @@
                 let capital=document.getElementById("capi").value;
                 let interes=document.getElementById("interes").value;
                 let plazos=document.getElementById("plazos").value;
+                console.log(capital);
+                console.log(interes);
+                console.log(plazos);
+
 
                 var xmlhttp= new XMLHttpRequest();
 
@@ -39,8 +43,8 @@
                     }
                     
                 };
-                   xmlhttp.open("GET", "http://localhost/Proyectos/Curso23_24PHP/WebWorkesJava/CapítuloVJsonAJAX/ejercicios/Prestamo/prestamo.php?capi=" +capital + "&interes="+ interes+ "&plazos=" + plazos, true)
-
+                   xmlhttp.open("GET", "prestamo.php?capi=" +capital + "&interes="+ interes+ "&plazos=" + plazos, true)
+                    xmlhttp.send();
 
 
             }
