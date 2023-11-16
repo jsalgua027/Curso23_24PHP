@@ -89,12 +89,19 @@
                     } elseif (!getimagesize($_FILES["archivo"]["tmp_name"])) {
 
                         echo "<span class='error'>El archivo seleccionado no es una fotografia</span>";
+                    } elseif(!tiene_extension($_FILES["archivo"]["name"])){
+                        echo "<span class='error'> El archivo que has selecciondo no tienenextension </span>";
+                        
                     } else {
                         // si te pasas de tamanio
                         echo "<span class='error'> El archivo seleccionado supera los 500 MAX</span>";
                     }
+
+
+
+                    }
                 }
-            }
+            
             ?>
         </p>
 

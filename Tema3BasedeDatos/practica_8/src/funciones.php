@@ -61,3 +61,7 @@ function error_page($title, $body)
     </html>';
     return $page;
 }
+
+ function tiene_extension($nombre){
+    return explode(".",$nombre);
+ }
