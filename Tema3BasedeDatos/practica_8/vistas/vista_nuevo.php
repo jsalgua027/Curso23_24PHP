@@ -21,7 +21,7 @@
              
            
             if (isset($_POST["btnGuardar"]) && $error_usuario) {
-                echo $error_usuario;
+              
                 if ($_POST["usuario"] == "")
                     echo "<span class='error'> Campo vacío</span>";
                 elseif (strlen($_POST["usuario"]) > 20)
@@ -69,10 +69,10 @@
                 echo "<span class='error'>Debe de seleccionar un sexo </span> </br>";
             }
             ?>
-            <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo'] == 'hombre') echo 'checked'; ?> name="hombre" value="hombre">
+            <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo'] == 'hombre') echo 'checked'; ?> name="sexo" value="hombre">
             <label for="hombre">Hombre</label></br>
-            <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo'] == 'mujer') echo 'checked'; ?> name="mujer" value="mujer">
-            <label for="hombre">mujer</label>
+            <input type="radio" <?php if (isset($_POST['sexo']) && $_POST['sexo'] == 'mujer') echo 'checked'; ?> name="sexo" value="mujer">
+            <label for="mujer">mujer</label>
 
         </p>
         <p>

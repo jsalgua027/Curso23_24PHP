@@ -3,7 +3,7 @@
 
 require "src/funciones.php";
 
-if (isset($_POST["btnGuardar"])) {
+if (isset($_POST["btnGuardar"])) { // btnGuardar es btnContinuar
    
     $error_nombre = $_POST["nombre"] == "" || strlen($_POST["nombre"]) > 50;
     $error_usuario = $_POST["usuario"] == "" || strlen($_POST["usuario"]) > 30;
@@ -15,10 +15,10 @@ if (isset($_POST["btnGuardar"])) {
         } catch (Exception $e) {
             die(error_page("Práctica 8", "<h1>Práctica 8 </h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
         }
-        $error_usuario_repetido = repetido_variable($conexion, "usuarios", "usuario", $_POST["usuario"]);
+        $error_usuario = repetido_variable($conexion, "usuarios", "usuario", $_POST["usuario"]);
 
-        if (is_string($error_usuario_repetido))
-            die($error_usuario_repetido);
+        if (is_string($error_usuario))
+          die(error_page("Práctica 8", "<h1>Práctica 8 </h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
     }
     $error_clave = $_POST["clave"] == "" || strlen($_POST["clave"]) > 50;
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
@@ -31,13 +31,16 @@ if (isset($_POST["btnGuardar"])) {
         } catch (Exception $e) {
             die(error_page("Práctica 8", "<h1>Práctica 8 </h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
         }
-        $error_dni_repetido= repetido_variable($conexion, "usuarios", "usuario", $_POST["dni"]);
+        $error_dni= repetido_variable($conexion, "usuarios", "dni", $_POST["dni"]);
 
-        if (is_string($error_dni_repetido))
-            die($error_dni_repetido);
+        if (is_string($error_dni))
+        die(error_page("Práctica 8", "<h1>Práctica 8 </h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
     }
     $error_sexo = !isset($_POST["sexo"]); // si no existe 
+
+
     $error_archivo =  $_FILES["archivo"]["name"] != "" &&  ($_FILES["archivo"]["error"] || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024);
+    
 
     $error_form = $error_nombre || $error_usuario || $error_clave || $error_dni || $error_sexo || $error_archivo;
 
@@ -46,7 +49,9 @@ if (isset($_POST["btnGuardar"])) {
     if (!$error_form) {
 
         try {
-          
+
+           $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_cv");
+            mysqli_set_charset($conexion, "utf8");
            $consulta = "insert into usuarios (nombre,usuario,clave,dni,sexo) values ('" . $_POST["nombre"] . "','" . $_POST["usuario"] . "','" . $_POST["clave"] . "','" . $_POST["dni"] . "','" . $_POST["sexo"] . "')";
            mysqli_query($conexion,$consulta);
         } catch (Exception $e) {
