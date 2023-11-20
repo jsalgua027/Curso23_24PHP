@@ -1,21 +1,99 @@
 <?php
 
-
 require "src/funciones.php";
 
 if (isset($_post["btnConEditar"])) {
     //aqui el control de errores de continuar editar
 
+    //nombre y usuario (btnCinEditar)
+    $error_nombre = $_POST["nombre"] == "" || strlen($_POST["nombre"]) > 50;
+    $error_usuario = $_POST["usuario"] == "" || strlen($_POST["usuario"]) > 50;
+    if (!$error_usuario) {
+        try {
+            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_cv");
+            mysqli_set_charset($conexion, "utf8");
+        } catch (Exception $e) {
+            die(error_page("Práctica 8", "<h1>Práctica 8</h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
+        }
 
+        $error_usuario = repetido_variable($conexion, "usuarios", "usuario", $_POST["usuario"], "id_usuario", $_POST["btnContEditar"]);
 
+        if (is_string($error_usuario)) {
+            mysqli_close($conexion);
+            die(error_page("Práctica 8", "<h1>Práctica 8</h1><p>No se ha podido realizar la consulta: " . $error_usuario . "</p>"));
+        }
+    }
+    // clave dni fotos
+    $error_clave = strlen($_POST["clave"]) > 15;
 
+    $dni_may = strtoupper($_POST["dni"]);
+    $error_dni = $_POST["dni"] == "" || !dni_bien_escrito($dni_may) || !dni_valido($dni_may);
+    if (!$error_dni) {
+        if (!isset($conexion)) {
+            try {
+                $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_cv");
+                mysqli_set_charset($conexion, "utf8");
+            } catch (Exception $e) {
+                die(error_page("Práctica 8", "<h1>Práctica 8</h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
+            }
+        }
+        $error_dni = repetido_variable($conexion, "usuarios", "dni", $dni_may, "id_usuario", $_POST["btnContEditar"]);
 
+        if (is_string($error_dni)) {
+            mysqli_close($conexion);
+            die(error_page("Práctica 8", "<h1>Práctica 8</h1><p>No ha podido realizarse la consulta: " . $error_dni . "</p>"));
+        }
+    }
+    $error_archivo = $_FILES["archivo"]["name"] != "" && ($_FILES["archivo"]["error"] || !getimagesize($_FILES["archivo"]["tmp_name"]) || !tiene_extension($_FILES["archivo"]["name"]) || $_FILES["archivo"]["size"] > 500 * 1024);
 
+    $error_form = $error_nombre || $error_usuario || $error_clave || $error_dni || $error_archivo;
+    // si no hay error
+    if (!$error_form) {
+        //TODO el código para actualizar
+        try {
 
+            if ($_POST["clave"] == "") // si no esta rellenado la clave
+            {
+                $consulta = "update usuarios set nombre='" . $_POST["nombre"] . "', usuario='" . $_POST["usuario"] . "', dni='" . $dni_may . "' where id_usuario='" . $_POST["btnContEditar"] . "'";
+            } else {
+                $consulta = "update usuarios set nombre='" . $_POST["nombre"] . "', usuario='" . $_POST["usuario"] . "', clave='" . md5($_POST["clave"]) . "', dni='" . $dni_may . "' where id_usuario='" . $_POST["btnContEditar"] . "'";
+            }
 
+            mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {
+            mysqli_close($conexion);
+            die(error_page("Práctica 1º CRUD", "<h1>Práctica 1º CRUD</h1><p>No se ha podido realizar la consulta:" . $e->getMessage() . "</p>"));
+        }
+
+        if ($_FILES["archivo"]["name"] != "") { // si tiene foto seleccionada
+
+            $array_nombre = explode(".", $_FILES["archivo"]["name"]);
+            $nombre_foto = "img_" . $_POST["btnContEditar"] . "." . end($array_nombre);
+
+            @$var = move_uploaded_file($_FILES["archivo"]["tmp_name"], "Img/" . $nombre_foto);
+            if ($var) {
+                if ($_POST["foto_bd"] != $nombre_foto) {
+                    //Actualizo en BD
+                    try {
+                        $consulta = "update usuarios set foto='" . $nombre_foto . "' where id_usuario='" . $_POST["btnContEditar"] . "'";
+                        mysqli_query($conexion, $consulta);
+                    } catch (Exception $e) {
+                        //Al no poder actualizar borro la nueva que acabo de mover
+                        unlink("Img/" . $nombre_foto);
+                        mysqli_close($conexion);
+                        die(error_page("Práctica 8", "<h1>Práctica 8</h1><p>No se ha podido realizar la consulta: " . $e->getMessage() . "</p>"));
+                    }
+                    //Borro la antigua que había con otra extensión
+                    unlink("Img/" . $_POST["foto_bd"]);
+                }
+            }
+        }
+
+        mysqli_close($conexion);
+        header("Location:index.php");
+        exit;
+    }
 }
-
-
 
 if (isset($_POST["btnGuardar"])) { // btnGuardar es btnContinuar
 
@@ -31,12 +109,13 @@ if (isset($_POST["btnGuardar"])) { // btnGuardar es btnContinuar
         }
         $error_usuario = repetido_variable($conexion, "usuarios", "usuario", $_POST["usuario"]);
 
-        if (is_string($error_usuario))
+        if (is_string($error_usuario)) {
             die(error_page("Práctica 8", "<h1>Práctica 8 </h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
+        }
     }
     $error_clave = $_POST["clave"] == "" || strlen($_POST["clave"]) > 50;
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
-    // compruebo que el dni no este repetido 
+    // compruebo que el dni no este repetido
     if (!$error_dni) {
 
         try {
@@ -47,14 +126,13 @@ if (isset($_POST["btnGuardar"])) { // btnGuardar es btnContinuar
         }
         $error_dni = repetido_variable($conexion, "usuarios", "dni", $_POST["dni"]);
 
-        if (is_string($error_dni))
+        if (is_string($error_dni)) {
             die(error_page("Práctica 8", "<h1>Práctica 8 </h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
+        }
     }
-    $error_sexo = !isset($_POST["sexo"]); // si no existe 
+    $error_sexo = !isset($_POST["sexo"]); // si no existe
 
-
-    $error_archivo =  $_FILES["archivo"]["name"] != "" &&  ($_FILES["archivo"]["error"] || !getimagesize($_FILES["archivo"]["tmp_name"]) || !tiene_extension($_FILES["archivo"]["name"]) || $_FILES["archivo"]["size"] > 500 * 1024);
-
+    $error_archivo = $_FILES["archivo"]["name"] != "" && ($_FILES["archivo"]["error"] || !getimagesize($_FILES["archivo"]["tmp_name"]) || !tiene_extension($_FILES["archivo"]["name"]) || $_FILES["archivo"]["size"] > 500 * 1024);
 
     $error_form = $error_nombre || $error_usuario || $error_clave || $error_dni || $error_sexo || $error_archivo;
 
@@ -63,7 +141,6 @@ if (isset($_POST["btnGuardar"])) { // btnGuardar es btnContinuar
     if (!$error_form) {
 
         try {
-
 
             $consulta = "insert into usuarios (nombre,usuario,clave,dni,sexo) values ('" . $_POST["nombre"] . "','" . $_POST["usuario"] . "','" . $_POST["clave"] . "','" . $_POST["dni"] . "','" . $_POST["sexo"] . "')";
             mysqli_query($conexion, $consulta);
@@ -101,7 +178,6 @@ if (isset($_POST["btnGuardar"])) { // btnGuardar es btnContinuar
             }
         }
 
-
         mysqli_close($conexion);
         header("Location:index.php");
         exit;
@@ -125,10 +201,9 @@ if (isset($_POST["btnBorrar"])) {
         die(error_page("Práctica 8", "<h1>Listado de los usuarios</h1><p>No ha podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
     }
 
-    if ($_POST["nombre_foto"] != "no_imagen.jpg")
+    if ($_POST["nombre_foto"] != "no_imagen.jpg") {
         unlink("Img/" . $_POST["nombre_foto"]);
-
-
+    }
 
     mysqli_close($conexion);
     header("Location:index.php");
@@ -184,10 +259,10 @@ if (isset($_POST["btnBorrar"])) {
     <?php
     // so le damos al boton detalle
     if (isset($_POST["btnDetalle"])) {
-        require("vistas/vista_detalle.php");
+        require "vistas/vista_detalle.php";
     }
     if (isset($_POST["btnNuevoUsu"]) || isset($_POST["btnGuardar"])) {
-        require("vistas/vista_nuevo.php");
+        require "vistas/vista_nuevo.php";
     }
     //gestión de EDITAR
     if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"])) {
@@ -197,7 +272,7 @@ if (isset($_POST["btnBorrar"])) {
         } else {
             $id_usuario = $_POST["btnConEditar"];
         }
-        //abro conexión si no 
+        //abro conexión si no
         if (!isset($conexion)) {
 
             try {
@@ -208,14 +283,13 @@ if (isset($_POST["btnBorrar"])) {
             }
         }
         try {
-            $consulta = "select * from usuarios where id_usuario='" .   $id_usuario  . "'";
+            $consulta = "select * from usuarios where id_usuario='" . $id_usuario . "'";
             $resultado = mysqli_query($conexion, $consulta);
         } catch (Exception $e) {
             mysqli_close($conexion);
             die("<p>No se ha podido realizar la consulta: " . $e->getMessage() . "</p></body></html>");
         }
         if (mysqli_num_rows($resultado) > 0) {
-
             //recojo datos
             if (isset($_POST["btnEditar"])) {
                 $datos_usuario = mysqli_fetch_assoc($resultado);
@@ -244,20 +318,20 @@ if (isset($_POST["btnBorrar"])) {
             echo "<p><button type='submit'>Volver</button></p>";
             echo "</form>";
         } else {
-            // ponfo el formulario
+            // pongo el formulario
     ?>
-
-            <h2>editando el usuario <?php echo $id_usuario ?> </h2>
+            <h2>editando el usuario con id <?php echo $id_usuario ?> </h2>
             <form action="index.php" method="post" enctype="multipart/form-data">
                 <p>
                     <label for="nombre">Nombre</label></br>
                     <input type="text" name="nombre" id="nombre" maxlength="50" value="<?php echo $nombre; ?>">
                     <?php
                     if (isset($_POST["btnConEditar"]) && $error_nombre) {
-                        if ($_POST["nombre"] == "")
+                        if ($_POST["nombre"] == "") {
                             echo "<span class='error'> Campo vacío</span>";
-                        else
+                        } else {
                             echo "<span class='error'> Has tecleado más de 50 caracteres</span>";
+                        }
                     }
                     ?>
                 </p>
@@ -265,60 +339,59 @@ if (isset($_POST["btnBorrar"])) {
                     <label for="usuario">Usuario</label></br>
                     <input type="text" name="usuario" id="usuario" maxlength="30" value="<?php echo $usuario; ?>">
                     <?php
-
-
                     if (isset($_POST["btnConEditar"]) && $error_usuario) {
 
-                        if ($_POST["usuario"] == "")
+                        if ($_POST["usuario"] == "") {
                             echo "<span class='error'> Campo vacío</span>";
-                        elseif (strlen($_POST["usuario"]) > 20)
+                        } elseif (strlen($_POST["usuario"]) > 20) {
                             echo "<span class='error'> Has tecleado más de 20 caracteres</span>";
-                        else
+                        } else {
                             echo "<span class='error'> Usuario repetido</span>";
+                        }
                     }
                     ?>
                 </p>
                 <p>
                     <label for="clave">Contraseña</label></br>
-                    <input type="password" name="clave" id="clave" maxlength="50"><!--NO pongo value poque no se guarda la contraseña si hay error, la tiene que escribir otra vez-->
+                    <input type="password" name="clave" id="clave" maxlength="15"><!--NO pongo value poque no se guarda la contraseña si hay error, la tiene que escribir otra vez-->
                     <?php
                     if (isset($_POST["btnConEditar"]) && $error_clave) {
-                        if ($_POST["clave"] == "")
+                        if ($_POST["clave"] == "") {
                             echo "<span class='error'> Campo vacío</span>";
-                        else
+                        } else {
                             echo "<span class='error'> Has tecleado más de 15 caracteres</span>";
+                        }
                     }
                     ?>
                 </p>
                 <p>
                     <label for="dni">DNI</label></br>
-                    <input type="text" name="dni" id="dni" maxlength="50" value="<?php echo $dni; ?>" />
+                    <input type="text" name="dni" id="dni" maxlength="9" value="<?php echo $dni; ?>" />
                     <?php
-
                     if (isset($_POST["btnContEditar"]) && $error_dni) {
-                        if ($_POST["dni"] == "")
-                            echo "<span class='error'>Campo vacio </span>";
-                        elseif (!dni_bien_escrito((strtoupper($_POST["dni"])))) {
-                            echo "<span class='error'>El dni no esta bien escrito </span>";
+                        if ($_POST["dni"] == "") {
+                            echo "<span class='error'> Campo vacío </span>";
+                        } elseif (!dni_bien_escrito($dni_may)) {
+                            echo "<span class='error'> DNI no está bien escrito </span>";
+                        } elseif (!dni_valido($dni_may)) {
+                            echo "<span class='error'> DNI no válido </span>";
                         } else {
-
-                            echo "<span class='error'>El dni no es valido </span>";
+                            echo "<span class='error'> DNI repetido </span>";
                         }
                     }
-
-
                     ?>
                 </p>
                 <p>
                     <label for="sexo">Sexo</label></br>
-                    <?php
-                    if (isset($_POST["btnContEditar"]) && $error_sexo) {
-                        echo "<span class='error'>Debe de seleccionar un sexo </span> </br>";
-                    }
-                    ?>
-                    <input type="radio" <?php if ($sexo == "hombre") echo 'checked'; ?> name="sexo" value="hombre">
+                    <input type="radio" <?php if ($sexo == "hombre") {
+                                            echo 'checked';
+                                        }
+                                        ?> name="sexo" value="hombre">
                     <label for="hombre">Hombre</label></br>
-                    <input type="radio" <?php if ($sexo == "mujer") echo 'checked'; ?> name="sexo" value="mujer">
+                    <input type="radio" <?php if ($sexo == "mujer") {
+                                            echo 'checked';
+                                        }
+                                        ?> name="sexo" value="mujer">
                     <label for="mujer">mujer</label>
 
                 </p>
@@ -344,30 +417,22 @@ if (isset($_POST["btnBorrar"])) {
                             }
                         }
                     }
-
                     ?>
                 </p>
-
+                <p>
+                    <img class="foto_detalle" src="Img/<?php echo $foto; ?>" title="Foto de Perfil" alt="Foto de Perfil">
+                </p>
                 <p>
                     <input type="hidden" name="foto_bd" value="<?php echo $foto ?>">
                     <button type="submit" name="btnConEditar" value="<?php echo $id_usuario ?>">Continuar</button>
                     <button type="submit" name="atras">Atrás</button>
-
                 </p>
             </form>
-
-
-
     <?php
-
-
         }
     }
-
     // muestro la consulta generaal de la tabla INICIO
-    require("vistas/vista_tabla.php");
-
-
+    require "vistas/vista_tabla.php";
     ?>
 </body>
 
