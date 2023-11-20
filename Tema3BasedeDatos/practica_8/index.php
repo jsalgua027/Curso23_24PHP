@@ -208,7 +208,7 @@ if (isset($_POST["btnBorrar"])) {
             }
         }
         try {
-            $consulta = "select * from usuarios where id_usuario='" . $_POST["btnEditar"] . "'";
+            $consulta = "select * from usuarios where id_usuario='" .   $id_usuario  . "'";
             $resultado = mysqli_query($conexion, $consulta);
         } catch (Exception $e) {
             mysqli_close($conexion);
