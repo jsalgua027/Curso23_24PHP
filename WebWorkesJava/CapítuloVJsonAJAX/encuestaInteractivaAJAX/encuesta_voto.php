@@ -44,25 +44,25 @@
  <tr>
    <td>Real Madrid:</td>
    <td>
-   <img src="barrita.jpg" width='<?php echo($tantoMadrid); ?>' height='20'> <?php echo($tantoMadrid); ?>%
+   <img src="barrita.gif" width='<?php echo($tantoMadrid); ?>' height='20'> <?php echo($tantoMadrid); ?>%
    </td>
  </tr>
  <tr>
    <td>Barcelona:</td>
    <td>
-   <img src="barrita.jpg" width='<?php echo($tantoBarcelona); ?>' height='20'> <?php echo($tantoBarcelona); ?>%
+   <img src="barrita.gif" width='<?php echo($tantoBarcelona); ?>' height='20'> <?php echo($tantoBarcelona); ?>%
    </td>
  </tr>
  <tr>
    <td>Atlético de Madrid:</td>
    <td>
-   <img src="barrita.jpg" width='<?php echo($tantoAtletico); ?>' height='20'> <?php echo($tantoAtletico); ?>%
+   <img src="barrita.gif" width='<?php echo($tantoAtletico); ?>' height='20'> <?php echo($tantoAtletico); ?>%
    </td>
  </tr>
  <tr>
    <td>Sevilla:</td>
    <td>
-   <img src="barrita.jpg" width='<?php echo($tantoSevilla); ?>' height='20'> <?php echo($tantoSevilla); ?>%
+   <img src="barrita.gif" width='<?php echo($tantoSevilla); ?>' height='20'> <?php echo($tantoSevilla); ?>%
    </td>
  </tr>
 </table>
