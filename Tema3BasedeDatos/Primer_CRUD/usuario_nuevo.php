@@ -1,6 +1,6 @@
 <?php
 require "src/ctes_funciones.php";
-
+session_start();
 
 if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"]) )
 {
@@ -65,6 +65,7 @@ if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"]) )
             mysqli_close($conexion);
 
             header("Location:index.php");
+            $_SESSION["mensaje"]="el usuario ha sido creado con exito";
             exit;
             
         }

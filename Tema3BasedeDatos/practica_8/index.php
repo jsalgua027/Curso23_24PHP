@@ -1,6 +1,7 @@
 <?php
 
 require "src/funciones.php";
+session_start();
 
 if (isset($_POST["btnContBorrarFoto"])) {
 
@@ -113,6 +114,7 @@ if (isset($_POST["btnConEditar"])) {
         }
 
         mysqli_close($conexion);
+        $_SESSION="Usuario editado con exito";
         header("Location:index.php");
         exit;
     }
@@ -289,6 +291,7 @@ if (isset($_POST["btnBorrar"])) {
             text-align: center;
 
         }
+        .mensaje{color:blue;font-size: 1rem;}
     </style>
 </head>
 
@@ -305,6 +308,10 @@ if (isset($_POST["btnBorrar"])) {
     //gestión de EDITAR
     if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"]) || isset($_POST["btnBorrarFoto"]) || isset($_POSt["btnNoBorrarFoto"]) || isset($_POST["id_usuario"])) {
       require("vistas/vista_editar.php");
+    }
+    if(isset($_SESSION["mensaje"])){
+        echo"<p class='mensaje'>".$_SESSION["mensaje"]."</p>";
+        session_destroy();
     }
     // muestro la consulta generaal de la tabla INICIO
     require "vistas/vista_tabla.php";
