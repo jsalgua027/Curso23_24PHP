@@ -8,3 +8,4 @@ try {
     mysqli_close($conexion);
     die(error_page("Práctica 9", "<h1>Práctica 9</h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() . "</p>"));
 }
+
