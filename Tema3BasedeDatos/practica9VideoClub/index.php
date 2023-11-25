@@ -33,9 +33,11 @@ session_start();
         img {
             width: 70px;
         }
+
         img#foto-caratula {
             width: 250px;
         }
+
         .enlace {
             border: none;
             background: none;
@@ -43,21 +45,26 @@ session_start();
             color: blue;
             text-decoration: underline
         }
+
         .error {
             color: red
         }
-        input.sinopsis{
+
+        input.sinopsis {
             width: 50px;
             height: 50px;
         }
-        div{display: flex;
+
+        div {
+            display: flex;
             flex-direction: row;
-            text-align: center;
         }
-        p{
+
+        p {
             margin: 10px;
         }
-        button#btnAtras{
+
+        button#btnAtras {
 
             width: 200px;
 
@@ -70,6 +77,9 @@ session_start();
     require "vistas/vistas_tabla.php";
     if (isset($_POST["btnDetalle"])) {
         require "vistas/vistas_detalle.php";
+    }
+    if (isset($_POST["btnEditar"])) {
+        require "vistas/vista_editar.php";
     }
     ?>
 </body>
