@@ -1,4 +1,9 @@
 <?php
+define("SERVIDOR_BD","localhost");
+define("USUARIO_BD","jose");
+define("CLAVE_BD","josefa");
+define("NOMBRE_BD","bd_videoclub");
+
 function error_page($title, $body)
 {
     $page = '<!DOCTYPE html>
@@ -12,7 +17,5 @@ function error_page($title, $body)
     </html>';
     return $page;
 }
-
-
 
 ?>
