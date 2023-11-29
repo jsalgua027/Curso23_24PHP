@@ -1,6 +1,40 @@
 <?php
 session_start();
 
+if (isset($_POST["btnBorrar"])) {
+    try {
+        $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_videoclub");
+        mysqli_set_charset($conexion, "utf8");
+    } catch (Exception $e) {
+        mysqli_close($conexion);
+        die("Práctica 9  <h1>Práctica 9</h1><p>No he podido conectarse a la base de batos: " . $e->getMessage() .  "</p></body></html>");
+    }
+    //}
+    try {
+        $consulta = " delete  from peliculas where idPelicula=' " . $_POST["btnBorrar"] . "'";
+        $resultado = mysqli_query($conexion, $consulta);
+    } catch (Exception $e) {
+        die(error_page("Error", "<p>Ha habido un error: " . $e->getMessage() . "</p>"));
+    }
+
+    //si la caratula es distinta de  de no imagen la borras
+    if ($_POST["caratula_bd"] != "no_imagen.jpg") {
+        unlink("Img/" . $_POST["caratula_bd"]);
+    }
+
+    mysqli_close($conexion);
+    header("Location:index.php");
+    exit();
+}
+//vamos a editar
+//controlo errores
+if(isset($_POST["btnConEditar"])){
+
+
+
+}
+
+
 ?>
 
 
