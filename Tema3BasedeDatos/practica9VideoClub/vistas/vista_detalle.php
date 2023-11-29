@@ -20,6 +20,7 @@ echo "<h1>Información Pelicula</h1>";
 if (mysqli_num_rows($resultado) > 0) {
     $datos_pelicula = mysqli_fetch_assoc($resultado);
     mysqli_free_result($resultado);
+    echo"<form action='index.php' method='post'>";
     echo"<div>";
     echo "<p>";
     echo "<strong>Título de la pelicula</strong><br>";
@@ -37,6 +38,7 @@ if (mysqli_num_rows($resultado) > 0) {
     echo "<img src='Img/" . $datos_pelicula["caratula"] . "' name='foto' title='caratula' id='foto-caratula'>";
     echo "</p>";
     echo"</div>";
+    echo"</form>";
 } else {
     echo "<p>La Película  seleccionada ya no se encuentra registrado en la BD</p>";
 }
