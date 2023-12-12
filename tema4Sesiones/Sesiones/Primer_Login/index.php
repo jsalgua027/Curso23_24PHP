@@ -2,7 +2,7 @@
 session_name("Primer_login_23_24");
 session_start();
 require "src/ctes_func.php";
-
+//Botón salir que debe estar en cada
 if(isset($_POST["btnSalir"]))
 {
     session_destroy();

@@ -35,7 +35,7 @@
 
     // Ahora control de inactividad
 
-    if(time()-$_SESSION["ultima_accion"]>MINUTOS*60)
+    if(time()-$_SESSION["ultima_accion"]>MINUTOS_INACT*60)
     {
         mysqli_close($conexion);
         session_unset();

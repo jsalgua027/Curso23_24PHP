@@ -1,5 +1,5 @@
 <?php
-define("MINUTOS",5);
+define("MINUTOS_INACT",5);
 
 define("SERVIDOR_BD","localhost");
 define("USUARIO_BD","jose");
@@ -20,4 +20,64 @@ function error_page($title,$body)
     </html>';
     return $page;
 }
+
+
+function repetido($conexion,$tabla,$columna,$valor)
+{
+ //REALIZO LA CONSULTA
+    try{
+        $consulta="select * from ".$tabla." where ".$columna."='".$valor."'";
+        $resultado=mysqli_query($conexion, $consulta);
+        $respuesta=mysqli_num_rows($resultado)>0;
+        mysqli_free_result($resultado);
+    }
+    catch(Exception $e)
+    {
+        mysqli_close($conexion);
+        $respuesta=error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No se ha podido hacer la consulta: ".$e->getMessage()."</p>");
+    }
+    return $respuesta;
+}
+
+function repetido_editando($conexion,$tabla,$columna,$valor,$columna_clave,$valor_clave)
+{
+ //REALIZO LA CONSULTA
+    try{
+        $consulta="select * from ".$tabla." where ".$columna."='".$valor."' AND ".$columna_clave."<>'".$valor_clave."'";
+        $resultado=mysqli_query($conexion, $consulta);
+        $respuesta=mysqli_num_rows($resultado)>0;
+        mysqli_free_result($resultado);
+    }
+    catch(Exception $e)
+    {
+        mysqli_close($conexion);
+        $respuesta=error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No se ha podido hacer la consulta: ".$e->getMessage()."</p>");
+    }
+    return $respuesta;
+}
+// esta funcion es la que puede recibir 4 o 6 parametros; es refactorizar las dos funciones en una.............
+function repetido_variable($conexion,$tabla,$columna,$valor,$columna_clave=null,$valor_clave=null)
+{
+ //REALIZO LA CONSULTA
+    try{
+        if(isset($columna_clave)){
+            $consulta="select * from ".$tabla." where ".$columna."='".$valor."' AND ".$columna_clave."<>'".$valor_clave."'";
+        }else{
+            $consulta="select * from ".$tabla." where ".$columna."='".$valor."'";
+        }
+       
+        $resultado=mysqli_query($conexion, $consulta);
+        $respuesta=mysqli_num_rows($resultado)>0;
+        mysqli_free_result($resultado);
+    }
+    catch(Exception $e)
+    {
+        mysqli_close($conexion);
+        $respuesta=error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No se ha podido hacer la consulta: ".$e->getMessage()."</p>");
+    }
+    return $respuesta;
+}
+
+
+
 ?>
