@@ -76,14 +76,6 @@
         
     }
 
-
-
-
-
-
-
-
-
 if (isset($_POST["btnContBorrar"])) {
 
 
@@ -208,6 +200,10 @@ if (isset($_POST["btnContBorrar"])) {
                 require "vistas/vista_detalle.php";
             } elseif (isset($_POST["btnBorrar"])) {
                 require "vistas/vista_conf_borrar.php";
+            }
+            elseif(isset($_POST["btnEditar"]) || isset($_POST["btnContEditar"]) )
+            {
+               require "vistas/vista_editar.php";
             }
             ?>
     </div>

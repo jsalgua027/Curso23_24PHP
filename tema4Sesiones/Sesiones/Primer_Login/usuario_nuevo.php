@@ -120,7 +120,7 @@ if (isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"])) {
         <input type="radio" name="tipo" value="admin" id="admin">
         <label for="administrador">Administrador</label>
         <input type="radio" name="tipo" value="normal" id="normal">
-        <label for="normal">Normlar</label>
+        <label for="normal">Normal</label>
         <p>
             <button type="submit" name="btnContInsertar">Continuar</button>
             <button type="submit">Volver</button>
