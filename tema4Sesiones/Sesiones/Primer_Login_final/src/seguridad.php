@@ -30,6 +30,8 @@
         header("Location:index.php");
         exit;
     }
+    
+    
     $datos_usuario_logueado=mysqli_fetch_assoc($resultado);
     mysqli_free_result($resultado);
 

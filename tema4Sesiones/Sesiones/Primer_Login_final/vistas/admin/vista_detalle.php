@@ -1,5 +1,5 @@
 <?php
-echo "<h3>Detalles del usuario con id: ".$_POST["btnDetalle"]."</h3>";
+echo "<div class='centrado'><h3>Detalles del usuario con id: ".$_POST["btnDetalle"]."</h3>";
 try{
     $consulta="select * from usuarios where id_usuario='".$_POST["btnDetalle"]."'";
     $resultado=mysqli_query($conexion, $consulta);
@@ -7,6 +7,7 @@ try{
 catch(Exception $e)
 {
     mysqli_close($conexion);
+    session_destroy();
     die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
 }
 
@@ -27,6 +28,5 @@ else
 
 echo "<form action='index.php' method='post'>";
 echo "<p><button type='submit'>Volver</button></p>";
-echo "</form>";
-
-?>
+echo "</form></div>";
+    ?>
