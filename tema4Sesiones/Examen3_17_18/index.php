@@ -7,7 +7,7 @@ session_start();
 if(isset($_SESSION["usuario"]))
 {
             //estoy logeado
-            
+          require("src/seguridad.php");  
         // segurida control de logeo y de tiempo
 
        //vista oportuna
@@ -18,7 +18,11 @@ if(isset($_SESSION["usuario"]))
 else{
             //no estoy logeado y no he pulsado el boton logeado
             //vista inicio o home
-
+    require("vistas/vista_home.php");
+    if(isset($_POST["btnRegistrarse"])){
+        header("Location:vistas/registro_usuario.php");
+        exit;
+    }
 
 
 }
