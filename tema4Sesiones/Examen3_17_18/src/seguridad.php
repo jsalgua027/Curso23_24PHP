@@ -7,7 +7,7 @@
     catch(Exception $e)
     {
         session_destroy();
-        die(error_page("Primer Login","<h1>Primer Login</h1><p>No he podido conectarse a la base de batos: ".$e->getMessage()."</p>"));
+        die(error_page("Login VideoClub","<h1>Login VideoClub</h1><p>No he podido conectarse a la base de batos: ".$e->getMessage()."</p>"));
     }
 
     try{
@@ -18,14 +18,14 @@
     {
         session_destroy();
         mysqli_close($conexion);
-        die(error_page("Primer Login","<h1>Primer Login</h1><p>No se ha podido realizar la consulta: ".$e->getMessage()."</p>"));
+        die(error_page("Login VideoClub","<h1>Login VideoClub</h1><p>No se ha podido realizar la consulta: ".$e->getMessage()."</p>"));
     }
 
     if(mysqli_num_rows($resultado)<=0)
     {
         mysqli_free_result($resultado);
         mysqli_close($conexion);
-        session_unset();
+        session_unset();// destruyo todas la variables de la sesion
         $_SESSION["seguridad"]="Usted ya no se encuentra registrado en la BD";
         header("Location:index.php");
         exit;
@@ -45,5 +45,6 @@
         header("Location:index.php");
         exit;
     }
+    // si no me salgo del tiempo ; actualizo el tiempo 
     $_SESSION["ultima_accion"]=time();
     ?>

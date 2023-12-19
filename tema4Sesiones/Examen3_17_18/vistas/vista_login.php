@@ -29,9 +29,10 @@ if(isset($_POST["btnLogin"]))
 
          if(mysqli_num_rows($resultado)>0)
          {
+            //cuando te has logeado te creas las tres variables de session
              $_SESSION["usuario"]=$_POST["usuario"];
              $_SESSION["clave"]=md5($_POST["clave"]);
-             $_SESSION["ultima_accion"]=time();
+             $_SESSION["ultima_accion"]=time();//creo la variable del tiempo de la sesion
              mysqli_free_result($resultado);
              mysqli_close($conexion);
              header("Location:index.php");
@@ -90,10 +91,11 @@ if(isset($_POST["btnLogin"]))
         </p>
         <p>
             <button type="submit" name="btnLogin">Entrar</button>
-            <button type="submit" name="btnRegistrarse">Registrarse</button>
+            <button type="submit" name="btnRegistro" formaction="registro_usuario.php">Registrarse</button>
         </p>
     </form>
     <?php
+    // si me banean o por tiempo lanzo este mensaje(ya estando logeado)
     if(isset($_SESSION["seguridad"]))
     {
         echo "<p class='mensaje'>".$_SESSION["seguridad"]."</p>";
