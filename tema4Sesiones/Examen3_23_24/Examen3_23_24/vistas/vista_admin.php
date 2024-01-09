@@ -47,7 +47,7 @@ if(isset($_POST["btnAgregar"]))
                 }
                 catch(Exception $e)
                 {
-                    unlink($nombre_nuevo);
+                    unlink("../img/".$nombre_nuevo);
                     session_destroy();
                     mysqli_close($conexion);
                     die(error_page("Examen3 Curso 23-24","<h1>Librería</h1><p>Error en la consulta: ".$e->getMessage()."</p>"));
@@ -138,7 +138,7 @@ if(isset($_POST["btnEditar"]))
         echo "</table>";
         mysqli_free_result($resultado);
         ?>
-        <h3>Agregar un libro</h3>
+        <h3>Agregar un libro nuevo</h3>
         <form action="gest_libros.php" method="post" enctype="multipart/form-data">
             <p>
                 <label for="referencia">Referencia:</label>
