@@ -10,12 +10,10 @@
     <?php
     require "class_Menu2.php";
 
-
-
-    ?>
     
 
 
-
+    ?>
+   
 </body>
 </html>
