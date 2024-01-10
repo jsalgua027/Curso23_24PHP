@@ -10,7 +10,13 @@
     <?php
     require "class_Menu2.php";
 
-    
+    $n=New Menu2();
+    $n->cargar('http://www.as.com','DiarioAs');
+    $n->cargar('http://www.Marca.com','Marca');
+    $n->cargar('http://www.hsn.com','HSN');
+    $n->vertical();
+    $n->horizontal();
+
 
 
     ?>

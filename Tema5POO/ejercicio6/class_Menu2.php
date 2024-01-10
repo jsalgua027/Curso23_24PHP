@@ -26,8 +26,9 @@ class Menu2
         $imprimir = "";
 
         foreach ($this->enlaces as $nombre => $url) {
-            $imprimir .= "<a href='" . $url . "'>" . $nombre . "</a></br>";
+            $imprimir .= "<a href='" . $url . "'>" . $nombre . "</a>   ";
         }
         echo "<p>" . substr($imprimir, 0, -2) . "</p>";
+      
     }
 }
