@@ -8,15 +8,14 @@
 <body>
     <h2>Ejercicio 6</h2>
     <?php
-    require "class_Menu2.php";
+    require "class_Menu.php";
 
-    $n=New Menu2();
+    $n=New Menu();
     $n->cargar('http://www.as.com','DiarioAs');
     $n->cargar('http://www.Marca.com','Marca');
     $n->cargar('http://www.hsn.com','HSN');
     $n->vertical();
     $n->horizontal();
-
 
 
     ?>

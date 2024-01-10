@@ -2,49 +2,33 @@
 
 class Menu
 {
+    private $enlaces = array();
 
-    private $url;
-    private $nombre;
+    public function cargar($url, $nombre)
+    {
 
-    public function __construct($nueva_url,$nuevo_nombre)
-    {
-        $this->url=$nueva_url;
-        $this->nombre=$nuevo_nombre;
-        
-    }
-    /**
-     * Get the value of url
-     */
-    public function getUrl()
-    {
-        return $this->url;
+        $this->enlaces[$nombre] = $url;
     }
 
-    /**
-     * Set the value of url
-     */
-    public function setUrl($nueva_url)
+    public function vertical()
     {
-        $this->url = $nueva_url;
 
-        return $this;
+        echo "<p>";
+        foreach ($this->enlaces as $nombre => $url) {
+            echo "<a href='" . $url . "'>" . $nombre . "</a></br>";
+        }
+        echo "</p>";
     }
 
-    /**
-     * Get the value of nombre
-     */
-    public function getNombre()
+    public function horizontal()
     {
-        return $this->nombre;
-    }
 
-    /**
-     * Set the value of nombre
-     */
-    public function setNombre($nuevo_nombre)
-    {
-        $this->nombre = $nuevo_nombre;
+        $imprimir = "";
 
-        return $this;
+        foreach ($this->enlaces as $nombre => $url) {
+            $imprimir .= "<a href='" . $url . "'>" . $nombre . "</a>   ";
+        }
+        echo "<p>" . substr($imprimir, 0, -2) . "</p>";
+      
     }
 }
