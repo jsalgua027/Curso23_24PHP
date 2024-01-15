@@ -187,12 +187,6 @@
     //libero sentencia, cierro conexión
     $sentencia = null;
     $conexion = null;
-
-
-
-
-
-
     ?>
 
 
