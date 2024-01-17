@@ -8,7 +8,7 @@ if(isset($_POST["btnAgregar"]))
         if(is_string($error_referencia))
         {
             session_destroy();
-            mysqli_close($conexion);
+            $conexion=null;
             die(error_page("Examen3 Curso 23-24","<h1>Librería</h1><p>Error en la consulta: ".$error_referencia."</p>"));
         }
     }
@@ -24,13 +24,16 @@ if(isset($_POST["btnAgregar"]))
     {
         
         try{
-            $consulta="insert into libros(referencia, titulo, autor,descripcion,precio) values('".$_POST["referencia"]."','".$_POST["titulo"]."','".$_POST["autor"]."','".$_POST["descripcion"]."','".$_POST["precio"]."')";
-            mysqli_query($conexion,$consulta);
+            //$consulta="insert into libros(referencia, titulo, autor,descripcion,precio) values('".$_POST["referencia"]."','".$_POST["titulo"]."','".$_POST["autor"]."','".$_POST["descripcion"]."','".$_POST["precio"]."')";
+           
+            $consulta="insert into libros(referencia, titulo, autor,descripcion,precio) values(?,?,?,?,?)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute([$_POST["referencia"],$_POST["titulo"],$_POST["autor"],$_POST["descripcion"],$_POST["precio"]]);
         }
-        catch(Exception $e)
+        catch(PDOException $e)
         {
             session_destroy();
-            mysqli_close($conexion);
+            $conexion=null;
             die(error_page("Examen3 Curso 23-24","<h1>Librería</h1><p>Error en la consulta: ".$e->getMessage()."</p>"));
         }
 
@@ -42,15 +45,16 @@ if(isset($_POST["btnAgregar"]))
             @$var=move_uploaded_file($_FILES["portada"]["tmp_name"],"../img/".$nombre_nuevo);
             if($var)
             {
-                try{
-                    $consulta="update libros set portada='".$nombre_nuevo."' where referencia='".$_POST["referencia"]."'";
-                    mysqli_query($conexion,$consulta);
+                try{ // $consulta="update libros set portada='".$nombre_nuevo."' where referencia='".$_POST["referencia"]."'";
+                    $consulta="update libros set portada=? where referencia=?";
+                    $sentencia = $conexion->prepare($consulta);
+                    $sentencia->execute([$nombre_nuevo,$_POST["referencia"]]);
                 }
-                catch(Exception $e)
+                catch(PDOException $e)
                 {
                     unlink("../img/".$nombre_nuevo);
                     session_destroy();
-                    mysqli_close($conexion);
+                    $conexion=null;
                     die(error_page("Examen3 Curso 23-24","<h1>Librería</h1><p>Error en la consulta: ".$e->getMessage()."</p>"));
                 }
             }
@@ -58,7 +62,7 @@ if(isset($_POST["btnAgregar"]))
                 $_SESSION["accion"]="Libro agregado con éxito pero con la imagen por defecto por no poder mover la imagen subida a la carpeta destino";
         }
 
-        mysqli_close($conexion);
+        $conexion=null;
         header("Location:gest_libros.php");
         exit;
     }
@@ -68,7 +72,7 @@ if(isset($_POST["btnAgregar"]))
 if(isset($_POST["btnBorrar"]))
 {
     $_SESSION["accion"]="EL libro con referencia ".$_POST["btnBorrar"]." se ha borrado con éxito";
-    mysqli_close($conexion);
+    $conexion=null;
     header("Location:gest_libros.php");
     exit;
 }
@@ -76,7 +80,7 @@ if(isset($_POST["btnBorrar"]))
 if(isset($_POST["btnEditar"]))
 {
     $_SESSION["accion"]="EL libro con referencia ".$_POST["btnEditar"]." se ha editado con éxito";
-    mysqli_close($conexion);
+    $conexion=null;
     header("Location:gest_libros.php");
     exit;
 }
@@ -117,15 +121,18 @@ if(isset($_POST["btnEditar"]))
 
         try{
         
-            $resultado=mysqli_query($conexion,"select * from libros");
+            
+            $consulta="select * from libros";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute();
         }
-        catch(Exception $e)
+        catch(PDOException $e)
         {
             session_destroy();
-            mysqli_close($conexion);
+          $conexion=null;
             die("<p>No he podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
         }
-        
+        //************************************************************POR AQUIIIIIIIIIIIII*-********************************************* */
         echo "<table>";
         echo "<tr><th>Ref</th><th>Título</th><th>Acción</th></tr>";
         while($tupla=mysqli_fetch_assoc($resultado))

@@ -4,22 +4,30 @@ echo "<h3>Listado de los libros</h3>";
 
 try{
 
-    $resultado=mysqli_query($conexion,"select * from libros");
+   
+    $consulta="select * from libros";
+    $sentencia=$conexion->prepare($consulta);
+    $sentencia->execute();
 }
-catch(Exception $e)
+catch(PDOException $e)
 {
+    $sentencia=null;
+    $conexion=null;
     session_destroy();
-    mysqli_close($conexion);
+   
     die("<p>No he podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
 }
 
-while($tupla=mysqli_fetch_assoc($resultado))
+//resultado
+$resultado=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+$sentencia=null;
+
+foreach($resultado as $tupla)
 {
     echo "<p class='libros'>";
     echo "<img src='img/".$tupla["portada"]."' alt='imagen libro' title='imagen libro'><br>";
     echo $tupla["titulo"]." - ".$tupla["precio"]."€";
-    echo "</p>";
+    echo "</p>";  
 }
 
-mysqli_free_result($resultado);
 ?>
