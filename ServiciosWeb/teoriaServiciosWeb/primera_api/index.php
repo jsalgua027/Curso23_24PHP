@@ -19,7 +19,7 @@ $app->get('/saludo', function () {
     echo json_encode(array("mensaje" => "hola")); //--->OTRA FORMA DE HACER EL ARRAY
 });
 
-// METODO GET QUE RECIBE UN PARAMETRO
+// METODO GET QUE RECIBE UN PARAMETRO recoger datos
 $app->get('/saludo/{nombre}', function ($request) {
 
     $valor_recibido = $request->getAttribute('nombre');
@@ -27,7 +27,7 @@ $app->get('/saludo/{nombre}', function ($request) {
     echo json_encode($respuesta);
 });
 
-// $app->post();
+// $app->post(); parar insertar datos
 
 $app->post('/saludo', function ($request) { // metodo post que manda datos
 
@@ -36,14 +36,14 @@ $app->post('/saludo', function ($request) { // metodo post que manda datos
     echo json_encode($respuesta);
 });
 
-// $app->delete();
+// $app->delete(); para borrar datos
 $app->delete('/borrar_saludo/{id}', function ($request) { // metodo post que manda datos
 
     $id_recibida = $request->getAttribute('id'); // los datos van por abajo no por la url
     $respuesta["mensaje"] = "Se ha borrado el saludo con id:  " . $id_recibida;
     echo json_encode($respuesta);
 });
-// $app->put();
+// $app->put(); para actualizar datos
 $app->put('/actualiar_saludo/{id}', function ($request) { // metodo post que manda datos
 
     $id_recibida = $request->getAttribute('id'); // los datos van por abajo no por la url
