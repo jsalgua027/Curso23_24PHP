@@ -22,7 +22,7 @@ $app->get('/saludo', function () {
 // METODO GET QUE RECIBE UN PARAMETRO recoger datos
 $app->get('/saludo/{nombre}', function ($request) {
 
-    $valor_recibido = $request->getAttribute('nombre');
+    $valor_recibido = $request->getAttribute('nombre'); // los datos van por arriba
     $respuesta["mensaje"] = "hola " . $valor_recibido;
     echo json_encode($respuesta);
 });
