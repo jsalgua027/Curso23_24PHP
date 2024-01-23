@@ -27,15 +27,15 @@
         return $respuesta;
     }
 
-    $datos["cod"] = "YYYY";
+    /* $datos["cod"] = "YYYY";
     $datos["nombre"] = "producto a borrar";
     $datos["nombre_corto"] = "productoInse";
     $datos["descripcion"] = "descirpcion a borrar";
-    $datos["PVP"] = 29.3;
+    $datos["PVP"] = 50;
     $datos["familia"] = "MP3";
 
-    $url = DIR_SERV . "/producto/insertar";
-    $respuesta = consumir_servicios_REST($url, "POST", $datos);
+    $url = DIR_SERV . "/producto/actualizar/".urlencode("YYYY");
+    $respuesta = consumir_servicios_REST($url, "PUT", $datos);
     $obj = json_decode($respuesta);
     if (!$obj) {
         die("<p>Error cconsumiendo el servicio: " . $url . "</p>" . $respuesta);
@@ -43,10 +43,55 @@
     if (isset($obj->mensaje_error)) {
         die("<p>" . $obj->mensaje_error . "</p></body></html>");
     }
-    echo "<p>" . $obj->mensaje_error . "</p>";
+   echo "<p>" . $obj->mensaje . "</p>";
 
-    ?>
+    
+ */
+/* $url = DIR_SERV . "/producto/borrar/".urlencode("YYYY");
+    $respuesta = consumir_servicios_REST($url, "DELETE");
+    $obj = json_decode($respuesta);
+    if (!$obj) {
+        die("<p>Error consumiendo el servicio: " . $url . "</p>" . $respuesta);
+    }
+    if (isset($obj->mensaje_error)) {
+        die("<p>" . $obj->mensaje_error . "</p></body></html>");
+    }
+   echo "<p>" . $obj->mensaje. "</p>";
+*/
 
+    $url = DIR_SERV . "/productos";
+    $respuesta = consumir_servicios_REST($url,"GET");
+    $obj = json_decode($respuesta);
+    if (!$obj) {
+        die("<p>Error consumiendo el servicio: " . $url . "</p>" . $respuesta);
+    }
+    if (isset($obj->mensaje_error)) {
+        die("<p>" . $obj->mensaje_error . "</p></body></html>");
+    }
+   
+
+
+    echo"<table>";
+    echo "<tr><th>Cod</th><th>Nombre corto</th></tr>";
+     for ($i=0; $i<count($obj->productos) ; $i++) { 
+        echo"<tr>";
+        echo"<td>".$obj->productos[$i]->cod."</td>";
+        echo"<td>".$obj->productos[$i]->nombre_corto."</td>";
+        echo"</tr>";
+
+     }
+
+  /*   foreach($obj ->productos as $tupla)
+    {
+        echo"<tr>";
+        echo"<td>".$tupla->cod."</td>";
+        echo"<td>".$tupla->nombre_corto."</td>";
+        echo"</tr>";
+
+    } */
+    echo"</table>";
+
+   ?> 
 </body>
 
 </html>

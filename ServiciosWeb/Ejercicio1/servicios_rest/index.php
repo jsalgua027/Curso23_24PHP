@@ -17,12 +17,12 @@ $app = new \Slim\App;
 
 $app->get('/productos',function(){
    
-    echo json_encode(array(obtener_productos()));
+    echo json_encode(obtener_productos());
 });
 
 $app->get('/productos/{cod}',function($request){
    
-    echo json_encode(array(obtener_producto($request->getAttribute('cod'))));
+    echo json_encode(obtener_producto($request->getAttribute('cod')));
 });
 
 $app->post('/producto/insertar',function($request){
@@ -37,8 +37,44 @@ $app->post('/producto/insertar',function($request){
     $datos[]=$request->getParam("PVP");
     $datos[]=$request->getParam("familia");
     echo json_encode(insertar_producto($datos));
-    $respuesta["mensaje"]="El producto con el nombre ".$request." se ha insertado correctamente";
+   
+});
+// update actualizar
+  $app->put('/producto/actualizar/{cod}',function($request){
 
+   
+    $datos[]=$request->getParam("nombre");//datos por abajo
+    $datos[]=$request->getParam("nombre_corto");
+    $datos[]=$request->getParam("descripcion");
+    $datos[]=$request->getParam("PVP");
+    $datos[]=$request->getParam("familia");
+
+    $datos[]=$request->getAttribute("cod");// datos por arriba
+
+    echo json_encode(actualizar_producto($datos));
+  });
+  // borrar con codigo
+  $app->delete('/producto/borrar/{cod}',function($request){
+
+    echo json_encode(borrar_producto($request->getAttribute("cod")));
+  });
+
+// obtener todas las familias
+  $app->get('/familias',function(){
+   
+    echo json_encode(obtener_familias());
+});
+
+//repetidos cuando vas a insertar
+$app->get('/repetidos/{tabla}/{columna}/{valor}',function($request){
+   
+    echo json_encode(repetido_insertar($request->getAttribute('tabla'),$request->getAttribute('columna'),$request->getAttribute('valor')));
+});
+
+//repetidos cuando vas a editar
+$app->get('/repetidos/{tabla}/{columna}/{valor}/{columna_id},{valor_id}',function($request){
+   
+    echo json_encode(repetido_editar($request->getAttribute('tabla'),$request->getAttribute('columna'),$request->getAttribute('valor'),$request->getAttribute('columna_id'),$request->getAttribute('valor_id')));
 });
 
 $app->run();

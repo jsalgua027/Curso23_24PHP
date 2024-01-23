@@ -96,6 +96,154 @@ function insertar_producto($datos)
 
 }
 
+function actualizar_producto($datos)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $conexion = null;
+        return array("mensaje_error" => "No he podido conectarse a la base de batos: " . $e->getMessage());
+    }
+
+    try {
+        $consulta = "update producto set nombre=?, nombre_corto=?, descripcion=?, PVP=?, familia=? where cod=?";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute($datos);
+    } catch (PDOException $e) {
+        $sentencia = null;
+        $conexion = null;
+        // session_destroy();
+        return array("mensaje_error" => "No he podido conectarse a la base de batos: " . $e->getMessage());
+    }
+    
+    
+        $respuesta["mensaje"]="El producto se ha modificado correctamente";
+    
+
+      $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+
+}
+
+
+function borrar_producto($codigo)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $conexion = null;
+        return array("mensaje_error" => "No he podido conectarse a la base de batos: " . $e->getMessage());
+    }
+
+    try {
+        $consulta = "delete from producto where cod=?";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$codigo]);
+    } catch (PDOException $e) {
+        $sentencia = null;
+        $conexion = null;
+        // session_destroy();
+        return array("mensaje_error" => "No he podido conectarse a la base de batos: " . $e->getMessage());
+    }
+    
+    
+        $respuesta["mensaje"]="El producto se ha borrado correctamente";
+    
+
+      $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+
+}
+
+
+function obtener_familias()
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+
+        return array("mensaje_error"=>"<p>No he podido conectarse a la base de batos: " . $e->getMessage() );
+    }
+    try{
+        $consulta="select * from familia";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute();// execute solo admite arrays
+
+         
+    } catch (PDOException $e) {
+        //cierro la conexion y la sentencia; como son objetos hay que cerrarlo 
+       $sentencia=null;
+       $conexion=null;
+       return array("mensaje_error"=>"<p>No he podido conectarse a la base de batos: " . $e->getMessage() );
+    }
+
+    $respuesta["familias"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $sentencia=null;
+    $conexion=null;
+    return($respuesta);
+
+
+}
+
+function repetido_insertar($tabla,$columna,$valor)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+
+        return array("mensaje_error"=>"<p>No he podido conectarse a la base de batos: " . $e->getMessage() );
+    }
+    try{
+        $consulta="select * from ".$tabla." where=".$columna."=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$valor]);// execute solo admite arrays
+
+         
+    } catch (PDOException $e) {
+        //cierro la conexion y la sentencia; como son objetos hay que cerrarlo 
+       $sentencia=null;
+       $conexion=null;
+       return array("mensaje_error"=>"<p>No he podido conectarse a la base de batos: " . $e->getMessage() );
+    }
+
+    $respuesta["repetido"]=($sentencia->rowCount())>0;
+    $sentencia=null;
+    $conexion=null;
+    return($respuesta);
+
+
+}
+      
+ function repetido_editar($tabla,$columna,$valor,$columna_id,$valor_id)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+
+        return array("mensaje_error"=>"<p>No he podido conectarse a la base de batos: " . $e->getMessage() );
+    }
+    try{
+        $consulta="select * from ".$tabla." where=".$columna."=? AND ".$columna_id."<>";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$valor,$valor_id]);// execute solo admite arrays
+
+         
+    } catch (PDOException $e) {
+        //cierro la conexion y la sentencia; como son objetos hay que cerrarlo 
+       $sentencia=null;
+       $conexion=null;
+       return array("mensaje_error"=>"<p>No he podido conectarse a la base de batos: " . $e->getMessage() );
+    }
+
+    $respuesta["repetido"]=($sentencia->rowCount())>0;
+    $sentencia=null;
+    $conexion=null;
+    return($respuesta);
+
+
+}
 
     
 ?>
