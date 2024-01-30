@@ -3,7 +3,7 @@ session_name('App_login_23_24');
 session_start();
 define("MINUTOS", 5);
 // fundamental para usar los sevicios
-define("DIR_SERV", "http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/ServiciosWeb/Ejercicio3/servicios_rest");
+define("DIR_SERV", "http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/ServiciosWeb/Ejercicio3/login_restful");
 
 
 
