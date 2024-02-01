@@ -1,5 +1,5 @@
 <?php
-session_name('App_login_23_24');
+session_name('App_login_Key23_24');
 session_start();
 define("MINUTOS", 5);
 // fundamental para usar los sevicios
