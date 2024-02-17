@@ -1,5 +1,6 @@
 
 <?php
+header('Content-Type: application/json');
 $myJSON = '[
 {"nombre":"Gala Placidia","marido":"Ataúlfo"},
 {"nombre":"Flavia Valiana","marido":"Teodorico"},

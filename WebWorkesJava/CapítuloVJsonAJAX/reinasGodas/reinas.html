@@ -31,14 +31,31 @@
       <li>Witerico</li>
       <li>Gundemaro</li>
     </ul>
+    <h2>Lista del JSON</h2>
+    <ul id="reinas"></ul>
 <script>
-    
-    function recogerLista(str) {
-      if(str.length==0){
-        
-      }
-      
+ var xhttp = new XMLHttpRequest();
+
+xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+        let reinasJson = this.responseText;
+        let ulHtml = document.getElementById("reinas");
+     //   let reinas = JSON.parse(reinasJson);
+      console.log(reinasJson)
+        // Recorre el array de reinas y agrega elementos a la lista
+     /*
+     reinas.forEach(function (reina) {
+            let li = document.createElement("li");
+            li.textContent = reina.nombre + " - Marido: " + reina.marido;
+            ulHtml.appendChild(li);
+        });
+     */   
     }
+};
+
+xhttp.open("GET", "reinas.php", true);
+xhttp.send();
+    
 
 </script>
 
