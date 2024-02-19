@@ -1,6 +1,5 @@
 <?php
-ob_clean();
-header('Content-Type: application/json');
+
 $myJSON = '[
     {"nombre":"Gala Placidia","marido":"Ataúlfo"},
     {"nombre":"Flavia Valiana","marido":"Teodorico"},
@@ -21,6 +20,6 @@ $myJSON = '[
     {"nombre":"Egilona","marido":"Don Rodrigo"}
     ]';
     echo $myJSON;
-    var_dump(headers_list());
+    
 ?>
 
