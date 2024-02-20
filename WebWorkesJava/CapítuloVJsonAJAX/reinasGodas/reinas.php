@@ -1,4 +1,12 @@
 <?php
+// Permitir cualquier origen (debes restringir esto según tus necesidades de seguridad)
+header("Access-Control-Allow-Origin: *");
+
+// Permitir ciertos métodos HTTP
+header("Access-Control-Allow-Methods: POST");
+
+// Permitir ciertos encabezados en las solicitudes
+header("Access-Control-Allow-Headers: Content-Type");
 
 $myJSON = '[
     {"nombre":"Gala Placidia","marido":"Ataúlfo"},

@@ -32,31 +32,71 @@
     <li>Gundemaro</li>
   </ul>
   <h2>Lista del JSON</h2>
-  <ul id="reinas"></ul>
+  <ul id="solucion"></ul>
 <script>
+  let arrayPhp=[];
+// recojo el Json del archivo de php  
 var xhttp = new XMLHttpRequest();
 
 xhttp.onreadystatechange = function () {
   if (this.readyState == 4 && this.status == 200) {
       let reinasJson = this.responseText;
       let ulHtml = document.getElementById("reinas");
-  //   let reinas = JSON.parse(reinasJson);
-    console.log(reinasJson)
-
+    let reinas = JSON.parse(reinasJson);
+  
+  reinas.map((x)=>{
+    arrayPhp.push(x)
+   })
+   console.log(arrayPhp)
   }
+  
 };
 
-xhttp.open("GET", "reinas.php", true);
+
+xhttp.open("GET", "http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/WebWorkesJava/Cap%c3%adtuloVJsonAJAX/reinasGodas/reinas.php", true);
 xhttp.send();
   
-      // Recorre el array de reinas y agrega elementos a la lista
-   /*
-   reinas.forEach(function (reina) {
-          let li = document.createElement("li");
-          li.textContent = reina.nombre + " - Marido: " + reina.marido;
-          ulHtml.appendChild(li);
-      });
-   */   
+// recojo los datos del DOM
+
+function recogerList(listaHtml, arrayDestino) {
+  if(listaHtml.nodeName== "LI"){
+    arrayDestino.push(listaHtml.innerHTML)
+  }else{
+    for (let i = 0; i < listaHtml.children.length; i++) {
+      recogerList(listaHtml.children[i],arrayDestino)
+     
+    }
+  }
+
+}
+const arrayDom=[];
+
+recogerList(document.getElementById("ulgodos"),arrayDom);
+
+
+// filtrado de listas
+
+ function filtradoReyes(arr) {
+
+  let arrayFiltrada=arr.filter(r=>(!r.endsWith("o")))
+  
+  return arrayFiltrada
+ }
+
+ function filtradoReinas(arr) {
+
+  let arrayFiltrada=arr.filter((x)=>{
+    x.nombre=='pepe';
+  })
+//let arrayFiltrada=arr.filter(r=>( r.length<10))
+
+return arrayFiltrada
+}
+
+
+
+
+   
 </script>
 </body>
 </html>
