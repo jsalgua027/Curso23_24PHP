@@ -36,6 +36,7 @@ $app->post('/saludo', function ($request) { // metodo post que manda datos
     echo json_encode($respuesta);
 });
 
+
 // $app->delete(); para borrar datos
 $app->delete('/borrar_saludo/{id}', function ($request) { // metodo post que manda datos
 
