@@ -34,28 +34,30 @@
   <h2>Lista del JSON</h2>
   <ul id="solucion"></ul>
 <script>
-  let arrayPhp=[];
+
 // recojo el Json del archivo de php  
 var xhttp = new XMLHttpRequest();
 
-xhttp.onreadystatechange = function () {
+
+
+
+ xhttp.onreadystatechange = function () {
   if (this.readyState == 4 && this.status == 200) {
       let reinasJson = this.responseText;
       let ulHtml = document.getElementById("reinas");
-    let reinas = JSON.parse(reinasJson);
-  
-  reinas.map((x)=>{
-    arrayPhp.push(x)
-   })
-   console.log(arrayPhp)
+      let reinas = JSON.parse(reinasJson);
+ 
+     let reinasFiltradas= filtradoReinas(reinas)
+    
+
   }
-  
+
 };
-
-
 xhttp.open("GET", "http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/WebWorkesJava/Cap%c3%adtuloVJsonAJAX/reinasGodas/reinas.php", true);
 xhttp.send();
-  
+
+
+
 // recojo los datos del DOM
 
 function recogerList(listaHtml, arrayDestino) {
@@ -84,15 +86,15 @@ recogerList(document.getElementById("ulgodos"),arrayDom);
  }
 
  function filtradoReinas(arr) {
-
-  let arrayFiltrada=arr.filter((x)=>{
-    x.nombre=='pepe';
-  })
-//let arrayFiltrada=arr.filter(r=>( r.length<10))
-
-return arrayFiltrada
+  let arrayFiltrada = arr.filter((x) => x.marido.length < 10);
+   arrayFiltrada .forEach((reina) => {
+      console.log(reina);
+    });
+  return arrayFiltrada;
 }
 
+
+console.log (filtradoReyes(arrayDom)+"         *****FILTRADO DE REYES*******")
 
 
 
