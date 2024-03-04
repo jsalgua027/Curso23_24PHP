@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../../../../home/nacho/Documentos/pruebaRepositoio/PHPMailer"
+		},
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../../../../../home/nacho/Documentos/EntornoCliente"
+		},
+		{
+			"path": "../../../../../../../../home/nacho/Escritorio/ExamenPlantilla"
+		},
+		{
+			"path": "../../../../../../../../home/nacho/Documentos/PracticaGit"
+		},
+		{
+			"path": "../../../../../../../../home/nacho/Documentos/pruebaRepositoio"
+		},
+		{
+			"name": "Dise-oWeb23_24",
+			"path": "../../../../../../../../home/nacho/Documentos/Dise-oWeb23_24"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Curso23_24PHP"
+	}
+}
