@@ -62,9 +62,10 @@ if (isset($_POST["guardar"]) && !$error_form) {
 
         echo "<h3>Foto</h3>";
         echo "<p><strong>Nombre: </strong>" . $_FILES["foto"]["name"] . "</p>";
-        echo "<p><strong>Tipoe: </strong>" . $_FILES["foto"]["type"] . "</p>";
+        echo "<p><strong>Tipo: </strong>" . $_FILES["foto"]["type"] . "</p>";
         echo "<p><strong>Tamanio: </strong>" . $_FILES["foto"]["size"] . "</p>";
         echo "<p><strong>Error: </strong>" . $_FILES["foto"]["error"] . "</p>";
+        echo "<p><strong>El tmp_name: </strong>" . $_FILES["foto"]["tmp_name"] . "</p>";
         echo "<p>La imagen subida con exito</p>";
         echo "<p><img class='tan_img' src='images/" . $nombre_nuevo . "' alt='Foto' title='Foto'/></p>";
     } else {
