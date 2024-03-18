@@ -1,13 +1,37 @@
 <?php
+/*gestión del DNI*/
+// funcion que te dice la letra del dni en mayuscula
+function LetraNIF($dni)
+{
+    return substr("TRWAGMYFPDXBNJZSQVHLCKEO", $dni % 23, 1);
+}
+//  dni bien escrito: cuando sea de nueve caracteres de numeros y el otro una letra
+function dni_bien_escrito($texto)
+{
+    // devolvemos si tienen nueve caracteres,si los nueve primeros son números y la ultima letra este entre la A y la Z
+    return strlen($texto) == 9 && is_numeric(substr($texto, 0, 8)) && substr($texto, -1) >= "A" && substr($texto, -1) <= "Z";
+}
+
+function dni_valido($texto)
+{
+    $numero = substr($texto, 0, 8);
+    $letra = substr($texto, -1);
+    $valido = LetraNIF($numero) == $letra;
+    return $valido;
+    // otra forma de hacelor  return LetraNIF(substr($texto, 0, 8)) == substr($texto, -1);
+}
+
+
+
 if(isset($_POST["guardar"]))
 {
    $error_usuario=$_POST["usuario"]=="";
    $error_nombre=$_POST["nombre"]=="";
    $error_clave=$_POST["clave"]=="";
-   $error_dni=$_POST["dni"]=="";
+   $error_dni= $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
    $error_sexo=!isset($_POST["sexo"]);
    $error_boletin=!isset($_POST["boletin"]);
-   $error_archivo=$_FILES["foto"]["name"]=="" || $_FILES["foto"]["error"]||!getimagesize($_FILES["foto"]["tmp_name"])||$_FILES["foto"]["size"]>500*1024 ||!isset(explode(".",$_FILES["foto"]["name"]));
+   $error_archivo=$_FILES["foto"]["name"]=="" || $_FILES["foto"]["error"]||!getimagesize($_FILES["foto"]["tmp_name"])||$_FILES["foto"]["size"]>500*1024;/* ||!isset(explode(".",$_FILES["foto"]["name"]))*/ 
 
     $error_form=$error_usuario||$error_nombre||$error_clave||$error_dni||$error_sexo||$error_boletin || $error_archivo;
 
@@ -18,28 +42,27 @@ if(isset($_POST["guardar"]))
 if(isset($_POST["guardar"])&& !$error_form){
 
     $nombre_nuevo = md5(uniqid(uniqid(), true));
-    @$var = move_uploaded_file($_FILES["archivo"]["tmp_name"], "images/" . $nombre_nuevo);
+    @$var = move_uploaded_file($_FILES["foto"]["tmp_name"], "images/" . $nombre_nuevo);
 
-/* if ($var) {
-          
-            echo "<h3>Foto</h3>";
-            echo "<p><strong>Nombre: </strong>" . $_FILES["archivo"]["name"] . "</p>";
-            echo "<p><strong>Tipoe: </strong>" . $_FILES["archivo"]["type"] . "</p>";
-            echo "<p><strong>Tamanio: </strong>" . $_FILES["archivo"]["size"] . "</p>";
-            echo "<p><strong>Error: </strong>" . $_FILES["archivo"]["error"] . "</p>";
-            echo "<p><strong>Archivo en el temporal del servidor : </strong>" . $_FILES["archivo"]["tmp_name"] . "</p>";
-            echo "<p>La imagen subida con exito</p>";
-            echo "<p><img class='tan_img' src='images/" . $nombre_nuevo . "' alt='Foto' title='Foto'/></p>";
-        } else {
-
-            echo "<span> NO se ha podido mover la imgen a la carpeta destino en el servidor</span>";
-        }*/
 
         echo"<h1>DATOS ENVIADOS</h1>";
         echo"<p>El usuario:". $_POST["usuario"]."</p>";
         echo"<p>Con nombre:". $_POST["nombre"]."</p>";
         echo"<p>Dni:". $_POST["dni"]."</p>";
-
+        echo"<p>--------------</p>";
+        
+        if ($var) {
+          
+            echo "<h3>Foto</h3>";
+            echo "<p><strong>Nombre: </strong>" . $_FILES["foto"]["name"] . "</p>";
+            echo "<p><strong>Tipoe: </strong>" . $_FILES["foto"]["type"] . "</p>";
+            echo "<p><strong>Tamanio: </strong>" . $_FILES["foto"]["size"] . "</p>";
+            echo "<p><strong>Error: </strong>" . $_FILES["foto"]["error"] . "</p>";
+            echo "<p>La imagen subida con exito</p>";
+            echo "<p><img class='tan_img' src='images/" . $nombre_nuevo . "' alt='Foto' title='Foto'/></p>";
+        }else{
+            echo "<span> No se ha podido mover la imgen a la carpeta destino en el servidor</span>";
+        }
 
 
 
@@ -62,7 +85,10 @@ if(isset($_POST["guardar"])&& !$error_form){
         .error{
             color:red
         }
-
+        img{
+            height: 300px;
+            width: 300px;
+        }
     </style>
 
 </head>
@@ -104,9 +130,14 @@ if(isset($_POST["guardar"])&& !$error_form){
             <label for="dni">DNI:</label></br>
             <input type="text" name="dni" id="dni" value="<?php if(isset($_POST["clave"])) echo$_POST["dni"]?>">
             <?php
-                if(isset($_POST["guardar"])&& $error_dni){
-                    echo"<span class='error'>*Campo Obligatorio*</span>";
-                }
+                   if ($_POST["dni"] == "")
+                   echo "<span class='error'>Campo vacio </span>";
+               elseif (!dni_bien_escrito((strtoupper($_POST["dni"])))) {
+                   echo "<span class='error'>El dni no esta bien escrito </span>";
+               } else {
+
+                   echo "<span class='error'>El dni no es valido </span>";
+               }
             ?>
 
 
