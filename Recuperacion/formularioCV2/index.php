@@ -36,7 +36,8 @@ if (isset($_POST["guardar"])) {
 }
 if (isset($_POST["guardar"]) && !$error_form) {
 
-    $nombre_nuevo = md5(uniqid(uniqid(), true));
+   // $nombre_nuevo = md5(uniqid(uniqid(), true));
+   $nombre_nuevo= $_FILES["foto"]["name"];
     @$var = move_uploaded_file($_FILES["foto"]["tmp_name"], "images/" . $nombre_nuevo);
 ?>
     <!DOCTYPE html>
