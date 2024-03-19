@@ -30,8 +30,8 @@ if (isset($_POST["guardar"])) {
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
     $error_sexo = !isset($_POST["sexo"]);
     $error_boletin = !isset($_POST["boletin"]);
-    $error_archivo = $_FILES["foto"]["name"] == "" || $_FILES["foto"]["error"] || !getimagesize($_FILES["foto"]["tmp_name"]) || $_FILES["foto"]["size"] > 500 * 1024;/* ||!isset(explode(".",$_FILES["foto"]["name"]))*/
-
+   // $error_archivo = $_FILES["foto"]["name"] !="" && ($_FILES["foto"]["error"] ||explode(".",$_FILES["foto"]["name"])|| !getimagesize($_FILES["foto"]["tmp_name"]) || $_FILES["foto"]["size"] > 500 * 1024);/* foto  NO obligatoria */
+   $error_archivo = $_FILES["foto"]["name"] =="" || $_FILES["foto"]["error"] ||explode(".",$_FILES["foto"]["name"])|| !getimagesize($_FILES["foto"]["tmp_name"]) || $_FILES["foto"]["size"] > 500 * 1024;/* foto obligatoria */
     $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_boletin || $error_archivo;
 }
 if (isset($_POST["guardar"]) && !$error_form) {
@@ -80,7 +80,7 @@ if (isset($_POST["guardar"]) && !$error_form) {
     </html>
 
     <?php
-    if (!isset($_POST["guardar"])) {
+    if (!isset($_POST["guardar"])|| (isset($_POST["guardar"]) && $error_form) ) {
     ?>
 
         <!DOCTYPE html>
@@ -111,7 +111,7 @@ if (isset($_POST["guardar"]) && !$error_form) {
                     <input type="text" name=usuario id="usuario" value="<?php if (isset($_POST["usuario"])) echo $_POST["usuario"] ?>">
                     <?php
                     if (isset($_POST["guardar"]) && $error_usuario) {
-                        echo "<span class='error'>*Campo Obligatirio*</span>";
+                        echo "<span class='error'>*Campo Obligatorio*</span>";
                     }
 
 
@@ -177,9 +177,9 @@ if (isset($_POST["guardar"]) && !$error_form) {
                                 echo "<span class='error'> No se ha podido subir el archivo al servidor</span>";
                             } elseif (!getimagesize($_FILES["foto"]["tmp_name"])) {
 
-                                echo "<span class='error'>El archivo seleccionado no es una fotografia</span>";
+                                echo "<span class='error'>El archivo subido debe de ser una imagen </span>";
                             } else {
-                                echo "<span class='error'> El archivo seleccionado supera los 500 MAX</span>";
+                                echo "<span class='error'> El archivo seleccionado supera los 500 KB MAX</span>";
                             }
                         }
                     }
@@ -200,7 +200,7 @@ if (isset($_POST["guardar"]) && !$error_form) {
                 <p>
 
                     <button type="submit" name="guardar"> Guardar cambios</button>
-                    <button type="reset" name="borrar"> Borrar los datos</button>
+                    <button type="submit" name="borrar"> Borrar los datos</button>
 
                 </p>
             </form>
@@ -209,6 +209,14 @@ if (isset($_POST["guardar"]) && !$error_form) {
         </html>
 
     <?php
+    
+    }
+
+    if(isset($_POST["borrar"])){
+
+        header("Location: index.php");
+        exit; // Asegura que el script 
+
     }
 
     ?>
