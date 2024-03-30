@@ -42,7 +42,7 @@
         </p>
         <p>
             <label for="comentarios">Comentarios:</label>
-            <textarea id="comentarios" name="comentarios"  <?php if(isset($_POST["nombre"])) echo $_POST["comentarios"] ?>></textarea>
+            <textarea id="comentarios" name="comentarios" ><?php if(isset($_POST["comentarios"])) echo $_POST["comentarios"]?></textarea>
             <?php
                 if(isset($_POST["btnEnviar"])&& $error_comentarios){
                     echo "<span class='error'>*Campo obligatorio*</span>";
