@@ -2,14 +2,24 @@
 session_name("practica2_recu");
 session_start();
 //$_SESSION["usuario"];
+require "src/ctes_func.php";
 
 if(isset($_SESSION["usuario"]))
 {
-require("./vistas/usuario_logeado.php");
+    if($datos_usuario_logeado["tipo"]=="normal") // si el usuario es normal
+    {
+        require "vistas/vista_normal.php";
+    }
+   else{ // si el usuario es admin
+    require "vistas/vista_admin.php";
+
+   }
 
 }
 else{
-    require("./vistas/vista_login.php");
+   //cargo inicialmemnte el login si no existe la sesión
+    require "vistas/vista_login.php";
+  
 
 }
 
@@ -18,7 +28,7 @@ else{
 
 
 // ciero la sesión
-session_destroy();
+//session_destroy();
 
 
 

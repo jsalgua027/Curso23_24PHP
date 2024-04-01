@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logeado</title>
+    <title>Document</title>
 </head>
 <body>
-    <?php
-    
-    
-    
-    
-    ?>
+    <h1>USUARIO ADMIN</h1>
 </body>
 </html>
