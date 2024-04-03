@@ -1,5 +1,59 @@
+<?php
 
-    <h1>Práctica Rec 2</h1>
+// funcion que te dice la letra del dni en mayuscula
+function LetraNIF($dni)
+{
+    return substr("TRWAGMYFPDXBNJZSQVHLCKEO", $dni % 23, 1);
+}
+//  dni bien escrito: cuando sea de nueve caracteres de numeros y el otro una letra
+function dni_bien_escrito($texto)
+{
+    // devolvemos si tienen nueve caracteres,si los nueve primeros son números y la ultima letra este entre la A y la Z
+    return strlen($texto) == 9 && is_numeric(substr($texto, 0, 8)) && substr($texto, -1) >= "A" && substr($texto, -1) <= "Z";
+}
+
+function dni_valido($texto)
+{
+    $numero = substr($texto, 0, 8);
+    $letra = substr($texto, -1);
+    $valido = LetraNIF($numero) == $letra;
+    return $valido;
+    // otra forma de hacelor  return LetraNIF(substr($texto, 0, 8)) == substr($texto, -1);
+}
+
+//control de errores del registro de ususario normal
+if (isset($_POST["btnGuardarRegistro"])) {
+    $error_usuario = $_POST["usuario"] == "";
+    $error_nombre = $_POST["nombre"] == "";
+    $error_clave = $_POST["clave"] == "";
+    $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
+    $error_sexo = !isset($_POST["sexo"]);
+    $error_boletin = !isset($_POST["boletin"]);
+    $error_archivo = $_FILES["foto"]["name"] == "" || $_FILES["foto"]["error"] || explode(".", $_FILES["foto"]["name"]) || !getimagesize($_FILES["foto"]["tmp_name"]) || $_FILES["foto"]["size"] > 500 * 1024;/* foto obligatoria */
+    $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_boletin || $error_archivo;
+
+    if (isset($_POST["btnGuardarRegistro"]) && !$error_form) {
+        // aqui tengo que hacer la conexion y subir la foto
+    }
+}
+
+?>
+   
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .error{
+            color:red
+        }
+    </style>
+   </head>
+   <body>
+    
+   <h1>Práctica Rec 2</h1>
     <form action="index.php" method="post" enctype="multipart/form-data">
         <p>
             <label for="usuario">Usuario:</label>
@@ -91,6 +145,9 @@
         </p>
     </form>
 
+   </body>
+   </html>
+   
     <?php
         // esto no es lo que pide
     if(isset($_POST["btnBorrar"])){
