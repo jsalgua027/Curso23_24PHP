@@ -54,3 +54,4 @@ function repetido($conexion, $tabla, $columna, $valor, $columna_clave = null, $v
 
     return $respuesta;
 }
+}

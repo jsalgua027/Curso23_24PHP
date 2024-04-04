@@ -6,7 +6,7 @@ require("src/ctes_func.php");//llamo a las costantes creadas y al metedo repetid
 
 if(isset($_POST["btnSalir"])){// si le damos al boton de salir de vista examen destruyo la sesiion y bolvemos al index
   session_destroy();
-  header("Location:idex.php");
+  header("Location:index.php");
   exit;
 }
 
