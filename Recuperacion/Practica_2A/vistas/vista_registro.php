@@ -29,7 +29,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
     $error_sexo = !isset($_POST["sexo"]);
     $error_boletin = !isset($_POST["boletin"]);
-    $error_archivo = $_FILES["foto"]["name"] == "" || $_FILES["foto"]["error"] || explode(".", $_FILES["foto"]["name"]) || !getimagesize($_FILES["foto"]["tmp_name"]) || $_FILES["foto"]["size"] > 500 * 1024;/* foto obligatoria */
+    $error_archivo = $_FILES["archivo"]["name"] == "" || $_FILES["archivo"]["error"] || explode(".", $_FILES["archivo"]["name"]) || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024;/* foto obligatoria */
     $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_boletin || $error_archivo;
 
     if (isset($_POST["btnNuevoRegistro"]) && !$error_form) {

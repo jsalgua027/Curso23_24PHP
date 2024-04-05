@@ -25,7 +25,7 @@ if(isset($_SESSION["usuario"]))
    }
 
 }
-elseif(isset($_POST["btnRegistro"]))
+elseif(isset($_POST["btnRegistro"]) ||isset($_POST["btnNuevoRegistro"]))
 {
  require "vistas/vista_registro.php";
 }
