@@ -29,8 +29,31 @@ function error_page($title,$body)
     </html>';
     return $page;
 }
+// funcion que te dice la letra del dni en mayuscula
+function LetraNIF($dni)
+{
+    return substr("TRWAGMYFPDXBNJZSQVHLCKEO", $dni % 23, 1);
+}
+//  dni bien escrito: cuando sea de nueve caracteres de numeros y el otro una letra
+function dni_bien_escrito($texto)
+{
+    // devolvemos si tienen nueve caracteres,si los nueve primeros son números y la ultima letra este entre la A y la Z
+    return strlen($texto) == 9 && is_numeric(substr($texto, 0, 8)) && substr($texto, -1) >= "A" && substr($texto, -1) <= "Z";
+}
+
+function dni_valido($texto)
+{
+    $numero = substr($texto, 0, 8);
+    $letra = substr($texto, -1);
+    $valido = LetraNIF($numero) == $letra;
+    return $valido;
+    // otra forma de hacelor  return LetraNIF(substr($texto, 0, 8)) == substr($texto, -1);
+}
+
+
+
 // esta función repetido es con mysql
-/*
+
 function repetido($conexion, $tabla, $columna, $valor, $columna_clave = null, $valor_clave = null)
 {
 
@@ -56,10 +79,10 @@ function repetido($conexion, $tabla, $columna, $valor, $columna_clave = null, $v
 
     return $respuesta;
 }
-}
 
 
-*/
+
+
 
 
 

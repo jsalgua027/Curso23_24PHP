@@ -1,39 +1,65 @@
 <?php
 
 
-// funcion que te dice la letra del dni en mayuscula
-function LetraNIF($dni)
-{
-    return substr("TRWAGMYFPDXBNJZSQVHLCKEO", $dni % 23, 1);
-}
-//  dni bien escrito: cuando sea de nueve caracteres de numeros y el otro una letra
-function dni_bien_escrito($texto)
-{
-    // devolvemos si tienen nueve caracteres,si los nueve primeros son números y la ultima letra este entre la A y la Z
-    return strlen($texto) == 9 && is_numeric(substr($texto, 0, 8)) && substr($texto, -1) >= "A" && substr($texto, -1) <= "Z";
-}
 
-function dni_valido($texto)
-{
-    $numero = substr($texto, 0, 8);
-    $letra = substr($texto, -1);
-    $valido = LetraNIF($numero) == $letra;
-    return $valido;
-    // otra forma de hacelor  return LetraNIF(substr($texto, 0, 8)) == substr($texto, -1);
-}
 //control de errores del registro de ususario normal
 if (isset($_POST["btnNuevoRegistro"])) {
     $error_usuario = $_POST["usuario"] == "";
+    if(!$error_usuario)
+    {
+        $error_usuario=repetido($conexion,"usuarios","usuario",$_POST["usuario"]);
+
+        if(is_string($error_usuario))
+        {
+            $conexion=null;
+            die(error_page("Práctica 2º Rec","<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: ".$error_usuario."</p>"));
+        }
+            
+
+
+    }
     $error_nombre = $_POST["nombre"] == "";
     $error_clave = $_POST["clave"] == "";
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
+    if(!$error_dni)
+    {
+        $error_dni=repetido($conexion,"usuarios","dni",$_POST["dni"]);
+
+        if(is_string($error_dni))
+        {
+            $conexion=null;
+            die(error_page("Práctica 2º Rec","<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: ".$error_dni."</p>"));
+        }
+            
+
+    }
     $error_sexo = !isset($_POST["sexo"]);
     $error_boletin = !isset($_POST["boletin"]);
-    $error_archivo = $_FILES["archivo"]["name"] == "" || $_FILES["archivo"]["error"] || explode(".", $_FILES["archivo"]["name"]) || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024;/* foto obligatoria */
+    $error_archivo = $_FILES["archivo"]["name"] != "" && ($_FILES["archivo"]["error"] || explode(".", $_FILES["archivo"]["name"]) || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024);/* foto obligatoria */
     $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_boletin || $error_archivo;
 
-    if (isset($_POST["btnNuevoRegistro"]) && !$error_form) {
-        // aqui tengo que hacer la conexion, comprobar que no hay repetidos y subir la foto (hacer el insert)
+    if ( !$error_form) {
+       // hago la insercion de dato
+        try {
+            $consulta="insert into usuarios (usuario,nombre,clave,dni,sexo,subscripcion) values(?,?,?,?,?,?)";
+            $clave_encriptada=md5($_POST["clave"]);
+            $sentencia=$conexion->prepare($consulta);
+            $sentencia->execute([$_POST["usuario"],$_POST["nombre"],$clave_encriptada,$_POST["dni"],$_POST["sexo"],$_POST["subscripcion"]]);
+            echo "<p>Se hace PASA</p>";
+        } catch (PDOException $e) {
+               $sentencia=null;
+                $conexion=null;
+                die(error_page("Práctica 2º REC","<h1>Práctica 2º REC</h1><p>No se ha podido hacer la insercción: ".$e->getMessage()."</p>"));
+             
+        }
+        $_SESSION["mensaje"]="El usuario ha sido creado con éxito";
+        $sentencia=null;
+        $conexion=null;
+   
+        header("Location:index.php");
+        exit;
+
+
     }
 }
 
@@ -60,7 +86,12 @@ if (isset($_POST["btnNuevoRegistro"])) {
             <input type="text" id="usuario" name="usuario" value="<?php if(isset($_POST["usuario"])) echo $_POST["usuario"] ?>">
             <?php
                 if(isset($_POST["btnNuevoRegistro"])&& $error_usuario){
-                    echo "<span class='error'>*Campo obligatorio*</span>";
+                    if($_POST["usuario"]==""){
+                        echo "<span class='error'>*Campo obligatorio*</span>";
+                    }else{
+                        echo "<span class='error'>*El usuario esta repetido*</span>";
+                    }
+                    
                 }
             ?>
         </p>
@@ -91,9 +122,12 @@ if (isset($_POST["btnNuevoRegistro"])) {
                             echo "<span class='error'>Campo vacio </span>";
                         elseif (!dni_bien_escrito((strtoupper($_POST["dni"])))) {
                             echo "<span class='error'>El dni no esta bien escrito </span>";
-                        } else {
+                        } elseif( !dni_valido(strtoupper($_POST["dni"]))) {
 
                             echo "<span class='error'>El dni no es valido </span>";
+                        }
+                        else{
+                            echo "<span class='error'>El dni esta repetido </span>";
                         }
                     }
 
@@ -118,10 +152,8 @@ if (isset($_POST["btnNuevoRegistro"])) {
             <?php
                     if (isset($_POST["btnNuevoRegistro"]) && $error_archivo) {
                         
-                            if ($_FILES["archivo"]["name"] == "") {
-                                echo " <span class='error'> debes de seleccionar un archivo</span>";
-                            }
-                            else if ($_FILES["archivo"]["error"]) {
+                          
+                             if ($_FILES["archivo"]["error"]) {
                                 echo " <span class='error'> No se ha podido subir el archivo al servidor</span>";
                             } elseif (!getimagesize($_FILES["archivo"]["tmp_name"])) {
 
@@ -136,7 +168,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
                     ?>
         </p>
         <p>
-            <input type="checkbox" id="boletin" name="boletin"  >
+            <input type="checkbox" id="subscripcion" name="subscripcion"  >
             Subcribirme al boletín de novedades
         </p>
         <p>
