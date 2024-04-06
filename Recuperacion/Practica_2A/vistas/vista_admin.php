@@ -1,4 +1,23 @@
 <?php
+// aqui hago el borrado si 
+if(isset($_POST["btnBorrarUser"]))
+{
+    try {
+        $consulta = "delete  from usuarios where nombre=?";
+        $usuario=$tupla["nombre"];
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute($usuario);
+    } catch (PDOException $e) { // si falla la conexion
+        $sentencia = null;
+        $conexion = null;
+        die("<p>No hacer el borrado por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
+    }
+}
+
+
+
+
+
 //aqui hago la consulta a la base de datos para mostralos si al usuario es admin
 
     try {
@@ -15,6 +34,9 @@
     } else {
         echo "<p>no hay Usuarios en la tabla solitada</p>";
     }
+
+    
+
 
 ?>
 
@@ -57,7 +79,7 @@
             echo"<td>" . $tupla["id_usuario"] . "</td>";
             echo"<td><img src='images/".$tupla["foto"]."'name='foto'title='fotoUser'></td>";
             echo"<td>" . $tupla["nombre"] . "</td>";
-            echo"<td><button class='enlace' type='submit' name='btnBorrar'>Borrar</button>-<button class='enlace' type='submit' name='btnEditar'>Editar</button></td>";
+            echo"<td><button class='enlace' type='submit' value='".$tupla["nombre"]."' name='btnBorrarUser'>Borrar</button>-<button class='enlace' type='submit' name='btnEditar'>Editar</button></td>";
             echo "</tr>";
         }
         echo "</table>";

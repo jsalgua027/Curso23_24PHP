@@ -36,16 +36,18 @@ if (isset($_POST["btnNuevoRegistro"])) {
     $error_sexo = !isset($_POST["sexo"]);
     $error_boletin = !isset($_POST["boletin"]);
     $error_archivo = $_FILES["archivo"]["name"] != "" && ($_FILES["archivo"]["error"] || explode(".", $_FILES["archivo"]["name"]) || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024);/* foto obligatoria */
-    $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_boletin || $error_archivo;
-
-    if ( !$error_form) {
+    $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_boletin || $error_archivo ;
+        echo"<p>El error de formulario cunado no tengo errores me da: ".$error_form."</p>";
+   // if ($error_form) {
        // hago la insercion de dato
+       echo("<p>Entra en el if del insert</p>");
+    
         try {
             $consulta="insert into usuarios (usuario,nombre,clave,dni,sexo,subscripcion) values(?,?,?,?,?,?)";
             $clave_encriptada=md5($_POST["clave"]);
             $sentencia=$conexion->prepare($consulta);
             $sentencia->execute([$_POST["usuario"],$_POST["nombre"],$clave_encriptada,$_POST["dni"],$_POST["sexo"],$_POST["subscripcion"]]);
-            echo "<p>Se hace PASA</p>";
+          
         } catch (PDOException $e) {
                $sentencia=null;
                 $conexion=null;
@@ -60,7 +62,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
         exit;
 
 
-    }
+  //  }
 }
 
 ?>
@@ -147,10 +149,12 @@ if (isset($_POST["btnNuevoRegistro"])) {
             ?>
         </p>
         <p>
+        
             Incluir mi foto (Max 500KB)
             <input type="file" id="archivo" name="archivo">
+            
             <?php
-                    if (isset($_POST["btnNuevoRegistro"]) && $error_archivo) {
+             if (isset($_POST["btnNuevoRegistro"]) && $error_archivo) {
                         
                           
                              if ($_FILES["archivo"]["error"]) {
@@ -164,6 +168,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
                                 echo " <span class='error'> El archivo seleccionado supera los 500 KB MAX</span>";
                             }
                         }
+                   
                     
                     ?>
         </p>
@@ -173,7 +178,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
         </p>
         <p>
             <button type="submit" name="btnNuevoRegistro" value="guardar">Guardar Cambios</button>
-            <button type="submit"  name="btnBorrar" value="borrar">Borrar los datos introducidos</button>
+            <button type="submit"  name="btnBorrarDatos" value="borrar">Borrar los datos introducidos</button>
         </p>
     </form>
 
