@@ -73,7 +73,7 @@ if(isset($_POST["btnBorrarUser"]))
      <h2>Lista de Usuarios</h2>
      <?php
       echo "<table id='tb_principal' class='txt_centrado centrado'>";
-     echo "<tr><th>#</th><th>Foto</th><th>Nombre</th><th><button class='enlace' type='submit' name='btnNuevoUser'>Usuario+</button></th></tr>";
+     echo "<tr><th>#</th><th>Foto</th><th>Nombre</th><th><form action='index.php' method='post'<button class='enlace' type='submit' name='btnNuevoUser'>Usuario+</button></form></th></tr>";
         foreach ($todos_usuarios as $tupla) {
             echo "<tr>";
             echo"<td>" . $tupla["id_usuario"] . "</td>";

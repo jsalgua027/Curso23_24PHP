@@ -28,6 +28,9 @@ if(isset($_SESSION["usuario"]))
 elseif(isset($_POST["btnRegistro"]) ||isset($_POST["btnNuevoRegistro"]))
 {
  require "vistas/vista_registro.php";
+}elseif(isset($_POST["btnNuevoUser"])) // si le damos a nuevo usuario desde admin
+{
+    require "vistas/vista_nuevo_user.php";
 }
 else
 {
