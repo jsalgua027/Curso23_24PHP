@@ -1,19 +1,4 @@
 <?php
-// aqui hago el borrado si 
-if(isset($_POST["btnBorrarUser"]))
-{
-    try {
-        $consulta = "delete  from usuarios where nombre=?";
-        $usuario=$tupla["nombre"];
-        $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute($usuario);
-    } catch (PDOException $e) { // si falla la conexion
-        $sentencia = null;
-        $conexion = null;
-        die("<p>No hacer el borrado por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
-    }
-}
-
 
 
 
@@ -35,7 +20,22 @@ if(isset($_POST["btnBorrarUser"]))
         echo "<p>no hay Usuarios en la tabla solitada</p>";
     }
 
-    
+    // aqui hago el borrado si 
+if(isset($_POST["btnBorrarUser"]))
+{
+    try {
+        $consulta = "DELETE FROM usuarios WHERE usuario=?";
+        $usuario=$_POST["btnBorrarUser"];// el value del boton 
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$usuario]);
+    } catch (PDOException $e) { // si falla la conexion
+        $sentencia = null;
+        $conexion = null;
+        die("<p>No hacer el borrado por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
+    }
+}
+
+
 
 
 ?>
@@ -79,8 +79,9 @@ if(isset($_POST["btnBorrarUser"]))
             echo"<td>" . $tupla["id_usuario"] . "</td>";
             echo"<td><img src='images/".$tupla["foto"]."'name='foto'title='fotoUser'></td>";
             echo"<td>" . $tupla["nombre"] . "</td>";
-            echo"<td><button class='enlace' type='submit' value='".$tupla["nombre"]."' name='btnBorrarUser'>Borrar</button>-<button class='enlace' type='submit' name='btnEditar'>Editar</button></td>";
+            echo "<td><form action='index.php' method='post'><button class='enlace' name='btnBorrarUser' value='".$tupla["usuario"]."'>Borrar</button> - <button class='enlace' name='btnEditar' value='".$tupla["usuario"]."'>Editar</button></form></td>";
             echo "</tr>";
+    
         }
         echo "</table>";
      ?>   
