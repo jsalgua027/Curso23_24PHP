@@ -2,6 +2,13 @@
 
 
 if (isset($_POST["btnBorrarUser"])) {
+    try{
+        $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
+    }
+    catch(PDOException $e){
+        session_destroy();
+        die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:".$e->getMessage()."</p>"));
+    }
     try {
         $consulta = "DELETE FROM usuarios WHERE usuario=?";
         $usuario = $_POST["btnBorrarUser"]; // el value del boton 
@@ -17,6 +24,14 @@ if (isset($_POST["btnBorrarUser"])) {
 
 
 //aqui hago la consulta a la base de datos para mostralos si al usuario es admin
+// genero la conexion
+try{
+    $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
+}
+catch(PDOException $e){
+    session_destroy();
+    die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:".$e->getMessage()."</p>"));
+}
 
 try {
     $consulta = "select * from usuarios";
@@ -33,7 +48,7 @@ if ($sentencia->rowCount() > 0) {
     echo "<p>no hay Usuarios en la tabla solitada</p>";
 }
 
-// aqui hago el borrado si 
+
 
 
 

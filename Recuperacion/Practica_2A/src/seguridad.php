@@ -1,5 +1,12 @@
 <?php
 // control de baneo
+try{
+    $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
+}
+catch(PDOException $e){
+    session_destroy();
+    die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:".$e->getMessage()."</p>"));
+}
 
 try {
     $datos[0]=$_SESSION["usuario"];

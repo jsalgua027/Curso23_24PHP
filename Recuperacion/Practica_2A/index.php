@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\elementType;
+
 session_name("Practica2A_rec");
 session_start();
 require "src/ctes_funciones.php";
@@ -17,9 +20,13 @@ if(isset($_SESSION["usuario"]))
    require "src/seguridad.php";
    if($_SESSION["tipo_usuario"]=="admin")
    {
-    require "vistas/vista_admin.php";
-    
-
+   
+    if(isset($_POST["btnNuevoUser"]))
+    {
+        require "vista/vista_nuevo_user.php";
+    }else{
+        require "vistas/vista_admin.php";
+    }
    }
    else
    {

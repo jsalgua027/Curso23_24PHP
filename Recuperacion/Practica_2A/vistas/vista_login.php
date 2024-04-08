@@ -8,6 +8,13 @@ if (isset($_POST["btnEntrar"])) {
     $error_form = $error_clave || $error_usuario;
 
     if (!$error_form) {
+        try{
+            $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
+        }
+        catch(PDOException $e){
+            session_destroy();
+            die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:".$e->getMessage()."</p>"));
+        }
 
         try {
             $consulta = "select * from usuarios where usuario=? and clave=?";
@@ -26,8 +33,6 @@ if (isset($_POST["btnEntrar"])) {
             $_SESSION["usuario"] = $_POST["usuario"]; //genero la variable de sesion
             $_SESSION["clave"] = md5($_POST["clave"]);
             $_SESSION["ultima_accion"] = time();;// guardo la ultima hora de la sesión para la seguridad
-
-
             header("Location:index.php"); // salto a la pagina de index
             exit;
           
