@@ -17,5 +17,14 @@
                 <button class='enlace' type="submit" name="btnSalir">Salir</button>
             </form>
         </div>
+        <?php
+        if(isset($_SESSION["mensaje_registro"])) // aqui lazon los mensajes delk registro
+        {
+            echo"<p class='mensaje'>".$_SESSION["mensaje_registro"]."</p>";
+            unset($_SESSION["mensaje_registro"]);
+
+        }
+        
+        ?>
 </body>
 </html>

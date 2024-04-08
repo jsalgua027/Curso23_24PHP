@@ -1,5 +1,9 @@
 <?php
+ if(isset($_POST["btnBorrarDatos"]))
+ {
+ unset($_POST);
 
+ }
 
 
 //control de errores del registro de ususario normal
@@ -17,7 +21,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
     $error_clave = $_POST["clave"] == "";
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
     if (!$error_dni) {
-        $error_dni = repetido($conexion, "usuarios", "dni", $_POST["dni"]);
+        $error_dni = repetido($conexion, "usuarios", "dni",strtoupper($_POST["dni"]));
 
         if (is_string($error_dni)) {
             $conexion = null;
@@ -25,50 +29,70 @@ if (isset($_POST["btnNuevoRegistro"])) {
         }
     }
     $error_sexo = !isset($_POST["sexo"]);
-    $error_boletin = !isset($_POST["boletin"]);
+  
     $array_nombre = explode(".", $_FILES["archivo"]["name"]); // meto el nombre en una variable tipo array
     $error_archivo = $_FILES["archivo"]["name"] != "" && ($_FILES["archivo"]["error"] || $array_nombre || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024);/* foto obligatoria */
-    $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_boletin || $error_archivo;
+    $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_archivo;
 
-    if ($error_form) {
+    if (!$error_form) {
         // hago la insercion de dato
         try {
+            if(isset($_POST["subscripcion"]))// si esta cheked le inidco el valor 
+            {
+                $subs=1;
+            }else{
+                $subs=0;
+            }
             $consulta = "insert into usuarios (usuario,nombre,clave,dni,sexo,subscripcion) values(?,?,?,?,?,?)";
             $clave_encriptada = md5($_POST["clave"]);
             $sentencia = $conexion->prepare($consulta);
-            $sentencia->execute([$_POST["usuario"], $_POST["nombre"], $clave_encriptada, $_POST["dni"], $_POST["sexo"], $_POST["subscripcion"]]);
-        } catch (PDOException $e) {
+            $sentencia->execute([$_POST["usuario"], $_POST["nombre"], $clave_encriptada, strtoupper($_POST["dni"]), $_POST["sexo"], $subs]);
             $sentencia = null;
+        } catch (PDOException $e) {
+           
             $conexion = null;
+            session_destroy();
             die(error_page("Práctica 2º REC", "<h1>Práctica 2º REC</h1><p>No se ha podido hacer la insercción: " . $e->getMessage() . "</p>"));
         }
+        $mensaje="se ha registrado con exito";
+
         if ($_FILES["archivo"]["name"] != "") {
             // me quedo con la extension
-            $ext = end($array_nombre);
-            $nombre_nuevo = $_POST["usuario"] . "." . $ext;
-            $ruta_destino = "../images/" . $nombre_nuevo;
-            @$var = move_uploaded_file($_FILES["archivo"]["tmp_name"], "../images/" . $ruta_destino);
+            $ultimo_id=$conexion->lasInsertId(); // me quedo con la ultima id para ponerla como nombre unico
+            $array_ext=explode(".",$_FILES["archivo"]["name"]);
+
+            $ext =".". end($array_ext); // obtengo la extension
+            $nombre_nuevo = "img_".$ultimo_id.$ext; //concateno el nombre
+         
+            @$var = move_uploaded_file($_FILES["archivo"]["tmp_name"], "images/" . $nombre_nuevo);
             if ($var) {
                 try {
-                    $consulta = "UPDATE usuarios SET foto = ? WHERE usuario = ?";
+                    $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";
                     $sentencia = $conexion->prepare($consulta);
-                    $sentencia->execute([$nombre_nuevo, $_POST["usuario"]]);
+                    $sentencia->execute([$nombre_nuevo, $ultimo_id]);
+                    $sentencia = null;
                 } catch (PDOException $e) {
+                    unlink("images/".$nombre_nuevo);// si falla
                     $sentencia = null;
                     $conexion = null;
                     die(error_page("Práctica 2º REC", "<h1>Práctica 2º REC</h1><p>No se ha podido subir la foto: " . $e->getMessage() . "</p>"));
                 }
             } else {
-                echo "No se pudo mover el archivo al destino.";
+                $mensaje= "Nse ha registrado con exito pero con la imagen por defecto ya que no se ha podido mover la imagen";
             }
         }
 
-        $_SESSION["mensaje"] = "El usuario ha sido creado con éxito";
-        $sentencia = null;
+        $_SESSION["mensaje_registro"] =$mensaje;
+        $_SESSION["usuario"]=$_POST["usuario"];
+        $_SESSION["clave"]=md5($_POST["clave"]);
+      
         $conexion = null;
         $_SESSION["ultima_accion"] = time(); // una vez realizado el registro actualizo el tiempo
         header("Location:index.php");
         exit;
+    }
+    if(isset($conexion)){
+        $conexion=null;
     }
 }
 

@@ -18,19 +18,18 @@ if(isset($_SESSION["usuario"]))
    if($_SESSION["tipo_usuario"]=="admin")
    {
     require "vistas/vista_admin.php";
+    
+
    }
    else
    {
     require "vistas/vista_normal.php";
    }
-
+   $conexion=null;//porque con  seguridad se inicia lo conexion
 }
-elseif(isset($_POST["btnRegistro"]) ||isset($_POST["btnNuevoRegistro"]))
+elseif(isset($_POST["btnRegistro"]) ||isset($_POST["btnNuevoRegistro"]) || isset($_POST["btnBorrarDatos"]))
 {
  require "vistas/vista_registro.php";
-}elseif(isset($_POST["btnNuevoUser"])) // si le damos a nuevo usuario desde admin
-{
-    require "vistas/vista_nuevo_user.php";
 }
 else
 {
@@ -39,6 +38,6 @@ else
 
 }
 
-$conexion=null;
+
 
 ?>
