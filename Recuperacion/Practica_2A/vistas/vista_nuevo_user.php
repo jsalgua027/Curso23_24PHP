@@ -28,7 +28,7 @@ if ($sentencia->rowCount() > 0) {
 
 
 //control de errores del nuevo usuario
-if (isset($_POST["btnNuevoUsuario"])) {
+if (isset($_POST["btnAgregar"])) {
     $error_usuario = $_POST["usuario"] == "";
     if (!$error_usuario) {
         try {
@@ -121,8 +121,7 @@ if (isset($_POST["btnNuevoUsuario"])) {
         $_SESSION["usuario"] = $_POST["usuario"];
         $_SESSION["clave"] = md5($_POST["clave"]);
         $_SESSION["ultima_accion"] = time(); // una vez realizado el registro actualizo el tiempo
-        header("Location:index.php");
-        exit;
+     
     }
     if (isset($conexion)) {
         $conexion = null;
@@ -203,12 +202,12 @@ if (isset($_POST["btnNuevoUsuario"])) {
                 <button class='enlace' type="submit" name="btnSalir">Salir</button>
             </form>
         </div>
-
+        <form action="index.php" method="post" enctype="multipart/form-data">
         <p>
             <label for="usuario">Usuario:</label>
             <input type="text" id="usuario" name="usuario" value="<?php if (isset($_POST["usuario"])) echo $_POST["usuario"] ?>">
             <?php
-            if (isset($_POST["btnNuevoUsuario"]) && $error_usuario) {
+            if (isset($_POST["btnAgregar"]) && $error_usuario) {
                 if ($_POST["usuario"] == "") {
                     echo "<span class='error'>*Campo obligatorio*</span>";
                 } else {
@@ -221,7 +220,7 @@ if (isset($_POST["btnNuevoUsuario"])) {
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" value="<?php if (isset($_POST["nombre"])) echo $_POST["nombre"] ?>">
             <?php
-            if (isset($_POST["btnNuevoUsuario"]) && $error_nombre) {
+            if (isset($_POST["btnAgregar"]) && $error_nombre) {
                 echo "<span class='error'>*Campo obligatorio*</span>";
             }
             ?>
@@ -230,7 +229,7 @@ if (isset($_POST["btnNuevoUsuario"])) {
             <label for="clave">Contraseña:</label>
             <input type="password" id="clave" name="clave">
             <?php
-            if (isset($_POST["btnNuevoUsuario"]) && $error_clave) {
+            if (isset($_POST["btnAgregar"]) && $error_clave) {
                 echo "<span class='error'>*Campo Obligatorio*</span>";
             }
             ?>
@@ -239,7 +238,7 @@ if (isset($_POST["btnNuevoUsuario"])) {
             <label for="dni">DNI:</label>
             <input type="text" name="dni" id="dni" value="<?php if (isset($_POST["dni"])) echo $_POST["dni"] ?>">
             <?php
-            if (isset($_POST["btnNuevoUsuario"]) && $error_dni) {
+            if (isset($_POST["btnAgregar"]) && $error_dni) {
                 if ($_POST["dni"] == "")
                     echo "<span class='error'>Campo vacio </span>";
                 elseif (!dni_bien_escrito((strtoupper($_POST["dni"])))) {
@@ -262,7 +261,7 @@ if (isset($_POST["btnNuevoUsuario"])) {
             <input type="radio" id="mujer" name="sexo" value="mujer" <?php if (isset($_POST["sexo"]) && $_POST["sexo"] == "mujer") echo "checked" ?>>
             <label for="mujer">Mujer:</label>
             <?php
-            if (isset($_POST["btnNuevoUsuario"]) && $error_sexo) {
+            if (isset($_POST["btnAgregar"]) && $error_sexo) {
                 echo "<span class='error'>*Campo obligatorio*</span>";
             }
             ?>
@@ -273,7 +272,7 @@ if (isset($_POST["btnNuevoUsuario"])) {
             <input type="file" id="archivo" name="archivo">
 
             <?php
-            if (isset($_POST["btnNuevoUsuario"]) && $error_archivo) {
+            if (isset($_POST["btnAgregar"]) && $error_archivo) {
 
 
                 if ($_FILES["archivo"]["error"]) {
@@ -296,14 +295,14 @@ if (isset($_POST["btnNuevoUsuario"])) {
             Subcribirme al boletín de novedades
         </p>
         <p>
-            <button type="submit" name="btnNuevoUsuario" value="guardar">Guardar Cambios</button>
+            <button type="submit" name="btnAgregar" value="guardar">Guardar Cambios</button>
             <button type="submit" name="btnBorrarDatos" value="borrar">Borrar los datos introducidos</button>
         </p>
     </form>
     <h2>Lista de Usuarios</h2>
     <?php
     echo "<table id='tb_principal' class='txt_centrado centrado'>";
-    echo "<tr><th>#</th><th>Foto</th><th>Nombre</th><th><form action='index.php' method='post'<button class='enlace' type='submit' name='btnNuevoUser'>Usuario+</button></form></th></tr>";
+    echo "<tr><th>#</th><th>Foto</th><th>Nombre</th><th><form action='index.php' method='post'><button class='enlace' type='submit' name='btnNuevoUser'>Usuario+</button></form></th></tr>";
     foreach ($todos_usuarios as $tupla) {
         echo "<tr>";
         echo "<td>" . $tupla["id_usuario"] . "</td>";

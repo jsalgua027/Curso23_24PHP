@@ -14,6 +14,8 @@ if (isset($_POST["btnBorrarUser"])) {
         $usuario = $_POST["btnBorrarUser"]; // el value del boton 
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$usuario]);
+        //$nombre_foto= $todos_usuarios["archivo"];
+        //unlink("images/" . $nombre_nuevo); // si falla me borra la imagen 
     } catch (PDOException $e) { // si falla la conexion
         $sentencia = null;
         $conexion = null;
@@ -44,6 +46,7 @@ try {
 }
 if ($sentencia->rowCount() > 0) {
     $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+   
 } else {
     echo "<p>no hay Usuarios en la tabla solitada</p>";
 }
@@ -123,16 +126,11 @@ if ($sentencia->rowCount() > 0) {
             <button class='enlace' type="submit" name="btnSalir">Salir</button>
         </form>
     </div>
-    <?php
-
-    if (isset($_POST["btnNuevoUser"]))
-        require "vistas/vista_nuevo_user.php";
-
-    ?>
+   
     <h2>Lista de Usuarios</h2>
     <?php
     echo "<table id='tb_principal' class='txt_centrado centrado'>";
-    echo "<tr><th>#</th><th>Foto</th><th>Nombre</th><th><form action='index.php' method='post'<button class='enlace' type='submit' name='btnNuevoUser'>Usuario+</button></form></th></tr>";
+    echo "<tr><th>#</th><th>Foto</th><th>Nombre</th><th><form action='index.php' method='post'><button class='enlace' type='submit' name='btnNuevoUser'>Usuario+</button></form></th></tr>";
     foreach ($todos_usuarios as $tupla) {
         echo "<tr>";
         echo "<td>" . $tupla["id_usuario"] . "</td>";
@@ -142,7 +140,10 @@ if ($sentencia->rowCount() > 0) {
         echo "</tr>";
     }
     echo "</table>";
+  
     ?>
+
+    
 </body>
 
 </html>

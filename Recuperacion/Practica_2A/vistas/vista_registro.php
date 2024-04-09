@@ -18,6 +18,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
 
         if (is_string($error_usuario)) {
             $conexion = null;
+            session_destroy();
             die(error_page("Práctica 2º Rec", "<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: " . $error_usuario . "</p>"));
         }
     }
@@ -25,7 +26,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
     $error_clave = $_POST["clave"] == "";
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
     if (!$error_dni) {
-        if (!isset($conexion)) {
+        if (!isset($conexion)) {// comprobamos si hay conexión por si se ha usado repetido() que necesita coneexión 
             try {
                 $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
             } catch (PDOException $e) {
@@ -37,6 +38,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
 
         if (is_string($error_dni)) {
             $conexion = null;
+            session_destroy();
             die(error_page("Práctica 2º Rec", "<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: " . $error_dni . "</p>"));
         }
     }
@@ -47,7 +49,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
     $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_archivo;
 
     if (!$error_form) {
-        // hago la insercion de dato
+        // hago la insercción del usuario
         try {
             if (isset($_POST["subscripcion"])) // si esta cheked le inidco el valor 
             {
@@ -70,7 +72,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
 
         if ($_FILES["archivo"]["name"] != "") {
             // me quedo con la extension
-            $ultimo_id = $conexion->lastInsertId(); // me quedo con la ultima id para ponerla como nombre unico
+            $ultimo_id = $conexion->lastInsertId(); // me quedo con la ultima id para ponerla como nombre unico (solo funciona si la base de datos es auto incremente de ese campo)
             $array_ext = explode(".", $_FILES["archivo"]["name"]);
 
             $ext = "." . end($array_ext); // obtengo la extension
@@ -84,10 +86,10 @@ if (isset($_POST["btnNuevoRegistro"])) {
                     $sentencia->execute([$nombre_nuevo, $ultimo_id]);
                     $sentencia = null;
                 } catch (PDOException $e) {
-                    unlink("images/" . $nombre_nuevo); // si falla
+                    unlink("images/" . $nombre_nuevo); // si falla me borra la imagen 
                     $sentencia = null;
                     $conexion = null;
-                    die(error_page("Práctica 2º REC", "<h1>Práctica 2º REC</h1><p>No se ha podido subir la foto: " . $e->getMessage() . "</p>"));
+                    $mensaje = "Se ha registrado con exito pero con la imagen por defecto en el servidor"; // no morimos porque queremos que siga logueado por si quiere hacer cambios (si los pudiese hacer por la aplicacion que esra no se puede por el tipo de enunciado)
                 }
             } else {
                 $mensaje = "Nse ha registrado con exito pero con la imagen por defecto ya que no se ha podido mover la imagen";
@@ -101,7 +103,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
         header("Location:index.php");
         exit;
     }
-    if (isset($conexion)) {
+    if (isset($conexion)) { // por sui hay errores y se ha quedado la conexión abierta
         $conexion = null;
     }
 }

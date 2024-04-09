@@ -34,7 +34,6 @@ if ($sentencia->rowCount() <= 0) {
 else{
     // acabo de pasar el control de baneo
     $datos_usuario_logeado=$sentencia->fetch(PDO::FETCH_ASSOC);
-    $_SESSION["tipo_usuario"]=$datos_usuario_logeado["tipo"];
     $sentencia=null;
 }
 

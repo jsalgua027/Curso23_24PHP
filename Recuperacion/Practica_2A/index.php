@@ -1,6 +1,6 @@
 <?php
 
-use function PHPSTORM_META\elementType;
+
 
 session_name("Practica2A_rec");
 session_start();
@@ -18,12 +18,12 @@ if(isset($_SESSION["usuario"]))
     //si esta logeado por aqui
     // realizo la seguridad del logeo
    require "src/seguridad.php";
-   if($_SESSION["tipo_usuario"]=="admin")
+   if($datos_usuario_logeado["tipo"]=="admin")
    {
    
-    if(isset($_POST["btnNuevoUser"]))
+    if(isset($_POST["btnNuevoUser"])|| isset($_POST["btnAgregar"]))
     {
-        require "vista/vista_nuevo_user.php";
+        require "vistas/vista_nuevo_user.php";
     }else{
         require "vistas/vista_admin.php";
     }
