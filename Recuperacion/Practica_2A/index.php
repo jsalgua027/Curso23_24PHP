@@ -21,12 +21,7 @@ if(isset($_SESSION["usuario"]))
    if($datos_usuario_logeado["tipo"]=="admin")
    {
    
-    if(isset($_POST["btnNuevoUser"])|| isset($_POST["btnAgregar"]))
-    {
-        require "vistas/vista_nuevo_user.php";
-    }else{
-        require "vistas/vista_admin.php";
-    }
+    require "vistas/vista_admin.php";
    }
    else
    {

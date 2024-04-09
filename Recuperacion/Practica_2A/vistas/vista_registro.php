@@ -121,6 +121,10 @@ if (isset($_POST["btnNuevoRegistro"])) {
         .error {
             color: red
         }
+        .mensaje {
+            color: blue;
+            font-size: 1.5em
+        }
     </style>
 </head>
 
@@ -224,7 +228,13 @@ if (isset($_POST["btnNuevoRegistro"])) {
             <button type="submit" name="btnBorrarDatos" value="borrar">Borrar los datos introducidos</button>
         </p>
     </form>
+    <?php
+    if(isset($_SESSION["mensaje_registro"]))
+    {
+        echo"<p class='mensaje'>".$_SESSION["mensaje_registro"]."</p>";
 
+    }
+    ?>
 </body>
 
 </html>
