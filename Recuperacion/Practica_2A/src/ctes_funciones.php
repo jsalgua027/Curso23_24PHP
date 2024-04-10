@@ -7,6 +7,7 @@ define("USUARIO_BD","jose");
 define("CLAVE_BD","josefa");
 define("NOMBRE_BD","bd_rec_cv");
 define("MINUTOS",5);
+define("FOTO_DEFECTO","no_imagen.jpg");// constante para la logica de no poder borrar esa imgen por defecto
 
 
 
