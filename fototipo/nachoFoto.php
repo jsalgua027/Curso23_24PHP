@@ -21,7 +21,7 @@ $cinco=$array[4];
 $seis=$array[5];
 
 //extraemos el voto de los participantes
-$voto=$_POS["nachoFoto"];
+$voto=$_POST["nachoFoto"];
 
 //actualizo los votos añadiendo el recibido a los anteriores
 if($voto==0){
