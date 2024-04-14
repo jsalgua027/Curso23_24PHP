@@ -26,6 +26,32 @@ if (isset($_POST["btnConBorrar"])) {
     }
 }
 
+if (isset($_POST["btnDetalle"])) {
+    
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        session_destroy();
+        die(error_page("Práctica Rec 2", "<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:" . $e->getMessage() . "</p>"));
+    }
+    
+    try {
+        $consulta_detalle = "select * from usuarios where id_usuario=?"; 
+        $sentencia_detalle = $conexion->prepare($consulta_detalle);
+        $sentencia_detalle->execute([$_POST["btnDetalle"]]);
+    } catch (PDOException $e) { // si falla la conexion
+        $sentencia_detalle = null;
+        $conexion = null;
+        die("<p>No hacer la consulta por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
+    }
+    
+        $usuario_detalle = $sentencia_detalle->fetch(PDO::FETCH_ASSOC);
+
+    
+    
+
+       
+}
 
 
 //aqui hago la consulta a la base de datos para mostralos si al usuario es admin
@@ -116,6 +142,9 @@ try {
 
         .grande {
             font-size: 1.5em
+        }
+        img {
+            width: 100px;
         }
     </style>
 </head>
@@ -342,7 +371,15 @@ try {
         echo "</form>";
         echo "</div>";
     }
-
+  if (isset($_POST["btnDetalle"])) {
+        echo"<h2>Detalle</h2>";
+        echo"<p><strong>Nombre: </strong>".$usuario_detalle["nombre"]."</p>";
+        echo"<p><strong>Usuario: </strong>".$usuario_detalle["nombre"]."</p>";
+        echo"<p><strong>Dni: </strong>".$usuario_detalle["dni"]."</p>";
+        echo"<img src='images/" . $usuario_detalle["foto"] . "'name='foto'title='fotoUser' alt='foto'>";
+       
+    } 
+ 
 
 
     echo "<h2>Listado de los usuarios (no admin)</h2>";
@@ -352,7 +389,7 @@ try {
         echo "<tr>";
         echo "<td>" . $tupla["id_usuario"] . "</td>";
         echo "<td><img src='images/" . $tupla["foto"] . "'name='foto'title='fotoUser' alt='foto'></td>";
-        echo "<td><form action='index.php' method='post'><button class='enlace' name='btnDetalle' value='" . $tupla["nombre"] . "'>" . $tupla["nombre"] . "</button></form></td>";
+        echo "<td><form action='index.php' method='post'><button type='submit'class='enlace' name='btnDetalle' value='" . $tupla["id_usuario"] . "'>" . $tupla["nombre"] . "</button></form></td>";
         echo "<td><form action='index.php' method='post'><input type='hidden' name='foto' value='" . $tupla["foto"] . "'/><button class='enlace' name='btnBorrarUser' value='" . $tupla["id_usuario"] . "'>Borrar</button> - <button class='enlace' name='btnEditar' value='" . $tupla["usuario"] . "'>Editar</button></form></td>";
         echo "</tr>";
     }
