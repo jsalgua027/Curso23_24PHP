@@ -16,6 +16,8 @@ if (isset($_POST["btnConBorrar"])) {
 
 
         $_SESSION["mensaje"] = "Usuario eliminado correctamente.";
+        $sentencia_borrar=null;
+        $conexion=null;
         header("Location:index.php");// salto para borrar los $post
         exit;
     } catch (PDOException $e) {
@@ -39,14 +41,26 @@ if (isset($_POST["btnDetalle"])) {
         $consulta_detalle = "select * from usuarios where id_usuario=?"; 
         $sentencia_detalle = $conexion->prepare($consulta_detalle);
         $sentencia_detalle->execute([$_POST["btnDetalle"]]);
+        // control de errores
+        if($sentencia->rowCount()>0)
+        {
+            $usuario_detalle = $sentencia_detalle->fetch(PDO::FETCH_ASSOC);
+
+        }
+        else
+        {
+            die("<p>No hay ususario con esa ID </p></body></html>");
+        }
+        $sentencia_detalle=null;
+        $conexion=null;
+
     } catch (PDOException $e) { // si falla la conexion
         $sentencia_detalle = null;
         $conexion = null;
         die("<p>No hacer la consulta por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
     }
     
-        $usuario_detalle = $sentencia_detalle->fetch(PDO::FETCH_ASSOC);
-
+       
     
     
 
@@ -158,7 +172,11 @@ try {
         </form>
     </div>
     <?php
-    if (isset($_POST["btnNuevoUser"]) || isset($_POST["btnAgregar"])) {
+    if (isset($_POST["btnNuevoUser"]) || isset($_POST["btnAgregar"])||isset($_POST["btnBorrarDatos"])) {
+        if(isset($_POST["btnBorrarDatos"])) {
+            unset($_POST);
+            
+    }
         if (isset($_POST["btnAgregar"])) {
             $error_usuario = $_POST["usuario"] == "";
             if (!$error_usuario) {
@@ -244,17 +262,19 @@ try {
                             die(error_page("Práctica 2º REC", "<h1>Práctica 2º REC</h1><p>No se ha podido subir la foto: " . $e->getMessage() . "</p>"));
                         }
                     } else {
-                        $mensaje = "Nse ha registrado con exito pero con la imagen por defecto ya que no se ha podido mover la imagen";
+                        $mensaje = "Usuario registrado con exito pero con la imagen por defecto ya que no se ha podido mover la imagen";
                     }
                 }
                 header("location:index.php");
                 exit;
             }
+         
             if (isset($conexion)) {
                 $conexion = null;
             }
         }
     ?>
+    <h3>Insertando Nuevo Usuario</h3>
         <form action="index.php" method="post" enctype="multipart/form-data">
             <p>
                 <label for="usuario">Usuario:</label>
@@ -372,11 +392,18 @@ try {
         echo "</div>";
     }
   if (isset($_POST["btnDetalle"])) {
-        echo"<h2>Detalle</h2>";
-        echo"<p><strong>Nombre: </strong>".$usuario_detalle["nombre"]."</p>";
-        echo"<p><strong>Usuario: </strong>".$usuario_detalle["nombre"]."</p>";
-        echo"<p><strong>Dni: </strong>".$usuario_detalle["dni"]."</p>";
-        echo"<img src='images/" . $usuario_detalle["foto"] . "'name='foto'title='fotoUser' alt='foto'>";
+        echo"<h2>Detalle del Usuario con Id:  ".$usuario_detalle["id_usuario"]."</h2>";
+        if($usuario_detalle)
+        {
+            echo"<p><strong>Nombre: </strong>".$usuario_detalle["nombre"]."</p>";
+            echo"<p><strong>Usuario: </strong>".$usuario_detalle["nombre"]."</p>";
+            echo"<p><strong>Dni: </strong>".$usuario_detalle["dni"]."</p>";
+            echo"<img src='images/" . $usuario_detalle["foto"] . "'name='foto'title='fotoUser' alt='foto'>";
+        }
+        else{
+            echo"<p>El usaurio seleccionado ya no se encuentra en la base de datos</p>";
+        }
+       
        
     } 
  
