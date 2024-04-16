@@ -51,7 +51,7 @@ $fp=fopen($fichero,"w");
 fputs($fp,$insertvoto);
 fclose($fp);
 $respuesta["mensaje"]="OK";
-echo json_encode($respuesta);
+echo json_encode($insertvoto);
 
 
 
