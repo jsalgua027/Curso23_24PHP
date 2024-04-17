@@ -1,4 +1,98 @@
 <?php
+if(isset($_POST["btnConEditar"])){
+    //cojo la id usaurio
+    $id_usuario=$_POST["btnConEditar"]; //del boton
+    $usuario =$_POST["usuario"];// de los values introducidos 
+    $nombre =$_POST["nombre"];
+    $dni =$_POST["dni"];
+    $foto =$_POST["foto_bd"];
+    $sexo =$_POST["sexo"];
+    if(isset($_POST["subscripcion"]))
+    {
+        $subscripcion=1;
+    }
+    else
+    {
+        $subscripcion=0;
+    }
+
+    // compruebo errorews
+    $error_usuario = $_POST["usuario"] == "";
+    if (!$error_usuario) {
+       
+        }
+        $error_usuario = repetido($conexion, "usuarios", "usuario", $_POST["usuario"],"id_usuario", $id_usuario);
+
+        if (is_string($error_usuario)) {
+            $conexion = null;
+            die(error_page("Práctica 2º Rec", "<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: " . $error_usuario . "</p>"));
+        }
+    
+    $error_nombre = $_POST["nombre"] == "";
+    $error_clave = $_POST["clave"] == "";
+    $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
+    if (!$error_dni) {
+        if (!isset($conexion)) {
+            try {
+                $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+            } catch (PDOException $e) {
+                session_destroy();
+                die(error_page("Práctica Rec 2", "<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:" . $e->getMessage() . "</p>"));
+            }
+        }
+        $error_dni = repetido($conexion, "usuarios", "dni", strtoupper($_POST["dni"]));
+
+        if (is_string($error_dni)) {
+            $conexion = null;
+            die(error_page("Práctica 2º Rec", "<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: " . $error_dni . "</p>"));
+        }
+    }
+    $error_sexo = !isset($_POST["sexo"]);
+
+    $array_nombre = explode(".", $_FILES["archivo"]["name"]); // meto el nombre en una variable tipo array
+    $error_archivo = $_FILES["archivo"]["name"] != "" && ($_FILES["archivo"]["error"] || !$array_nombre || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024);/* foto obligatoria */
+    $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_archivo;
+
+    if(!$error_form)
+    {
+
+        try {
+            if($_POST["clave"]== "")
+            {
+                $consulta="update usuarios set  nombre=?, usuario=?, dni=?, sexo=? ,subscripcion=? where id_usuario=? ";
+                $datos_edit=[$nombre,$usuario,strtoupper($dni),$sexo,$subscripcion,$id_usuario];
+            }
+              else {
+                $consulta="update usuarios set  nombre=?, usuario=?, clave=?,  dni=?, sexo=? ,subscripcion=? where id_usuario=? ";
+                $datos_edit=[$nombre,$usuario,md5($_POST["clve"]),strtoupper($dni),$sexo,$subscripcion,$id_usuario];
+            }
+            $sentencia=$conexion->prepare($consulta);
+            $sentencia->execute($datos_edit);
+            $sentencia = null;
+
+        } catch (PDOException $e) { // si falla la conexion
+            $sentencia_detalle = null;
+            $conexion = null;
+            die("<p>No hacer la consulta por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
+        }
+
+        $mensaje="Usuario editado con exito";
+        if($foto["foto"]["name"]!="")
+        {
+           // generar nombre de nueva foto
+           // muevo la foto a images
+           //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd es distinra "no_image.jpg" entonces borro $foto de images y actualzio  base de datos  
+        }
+
+        $conexion=null;
+        $_SESSION["mensaje_accion"]=$mensaje;
+        header("Location:index.php");
+        exit;
+
+    }
+
+}
+
 
 
 if (isset($_POST["btnConBorrar"])) {
@@ -10,15 +104,15 @@ if (isset($_POST["btnConBorrar"])) {
         $sentencia_borrar = $conexion->prepare($consulta_borrar);
         $sentencia_borrar->execute([$_POST["btnConBorrar"]]);
         if ($_POST["foto"] != FOTO_DEFECTO) {
-           
+
             unlink("images/" . $_POST["foto"]);
         }
 
 
         $_SESSION["mensaje"] = "Usuario eliminado correctamente.";
-        $sentencia_borrar=null;
-        $conexion=null;
-        header("Location:index.php");// salto para borrar los $post
+        $sentencia_borrar = null;
+        $conexion = null;
+        header("Location:index.php"); // salto para borrar los $post
         exit;
     } catch (PDOException $e) {
         // Manejo de errores
@@ -27,44 +121,58 @@ if (isset($_POST["btnConBorrar"])) {
         die("<p>No se pudo completar la operación: " . $e->getMessage() . "</p>");
     }
 }
+if (isset($_POST["btnEditar"])) {
+    $id_usuario = $_POST["btnEditar"];
+    try {
+        $consulta = "select * from usuarios where id_usuario=?";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$id_usuario]);
+        // control de errores
+        if ($sentencia->rowCount() > 0) {
+            $detalle_usu = $sentencia->fetch(PDO::FETCH_ASSOC);
+            $usuario = $detalle_usu["usuario"];
+            $nombre = $detalle_usu["nombre"];
+            $dni = $detalle_usu["dni"];
+            $foto = $detalle_usu["foto"];
+            $sexo = $detalle_usu["sexo"];
+            $subscripcion = $detalle_usu["subscripcion"];
+        } else {
+            $detalle_usu = false; // controlo que no se haga cambios en varios navegadores
+        }
+    } catch (PDOException $e) { // si falla la conexion
+        $sentencia_detalle = null;
+        $conexion = null;
+        die("<p>No hacer la consulta por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
+    }
+}
+
 
 if (isset($_POST["btnDetalle"])) {
-    
+
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
     } catch (PDOException $e) {
         session_destroy();
         die(error_page("Práctica Rec 2", "<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:" . $e->getMessage() . "</p>"));
     }
-    
+
     try {
-        $consulta_detalle = "select * from usuarios where id_usuario=?"; 
+        $consulta_detalle = "select * from usuarios where id_usuario=?";
         $sentencia_detalle = $conexion->prepare($consulta_detalle);
         $sentencia_detalle->execute([$_POST["btnDetalle"]]);
         // control de errores
-        if($sentencia->rowCount()>0)
-        {
+        if ($sentencia_detalle->rowCount() > 0) {
             $usuario_detalle = $sentencia_detalle->fetch(PDO::FETCH_ASSOC);
-
-        }
-        else
-        {
+        } else {
             die("<p>No hay ususario con esa ID </p></body></html>");
         }
-        $sentencia_detalle=null;
-        $conexion=null;
-
+        $sentencia_detalle = null;
+        $conexion = null;
     } catch (PDOException $e) { // si falla la conexion
         $sentencia_detalle = null;
         $conexion = null;
         die("<p>No hacer la consulta por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
     }
-    
-       
-    
-    
-
-       
 }
 
 
@@ -87,7 +195,7 @@ try {
     die("<p>No hacer la consulta por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
 }
 
-    $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+$todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
 
 
@@ -157,9 +265,14 @@ try {
         .grande {
             font-size: 1.5em
         }
+
         img {
             width: 100px;
         }
+        .imag_editar{
+            width: 100px;
+        }
+        
     </style>
 </head>
 
@@ -172,11 +285,10 @@ try {
         </form>
     </div>
     <?php
-    if (isset($_POST["btnNuevoUser"]) || isset($_POST["btnAgregar"])||isset($_POST["btnBorrarDatos"])) {
-        if(isset($_POST["btnBorrarDatos"])) {
+    if (isset($_POST["btnNuevoUser"]) || isset($_POST["btnAgregar"]) || isset($_POST["btnBorrarDatos"])) {
+        if (isset($_POST["btnBorrarDatos"])) {
             unset($_POST);
-            
-    }
+        }
         if (isset($_POST["btnAgregar"])) {
             $error_usuario = $_POST["usuario"] == "";
             if (!$error_usuario) {
@@ -268,13 +380,13 @@ try {
                 header("location:index.php");
                 exit;
             }
-         
+
             if (isset($conexion)) {
                 $conexion = null;
             }
         }
     ?>
-    <h3>Insertando Nuevo Usuario</h3>
+        <h3>Insertando Nuevo Usuario</h3>
         <form action="index.php" method="post" enctype="multipart/form-data">
             <p>
                 <label for="usuario">Usuario:</label>
@@ -391,22 +503,147 @@ try {
         echo "</form>";
         echo "</div>";
     }
-  if (isset($_POST["btnDetalle"])) {
-        echo"<h2>Detalle del Usuario con Id:  ".$usuario_detalle["id_usuario"]."</h2>";
-        if($usuario_detalle)
-        {
-            echo"<p><strong>Nombre: </strong>".$usuario_detalle["nombre"]."</p>";
-            echo"<p><strong>Usuario: </strong>".$usuario_detalle["nombre"]."</p>";
-            echo"<p><strong>Dni: </strong>".$usuario_detalle["dni"]."</p>";
-            echo"<img src='images/" . $usuario_detalle["foto"] . "'name='foto'title='fotoUser' alt='foto'>";
+
+//*********************************************************EDITAR******************************************************************************************/
+
+    if (isset($_POST["btnEditar"])||isset($_POST["btnConEditar"])||isset($_POST["btnBorrarEditar"])) {
+        echo "<h2>Detalles del usuario  a Editar con id: " . $id_usuario . "</h2>";
+        if (!isset($usuario)) {
+            // no he obtenido usuario
+            echo "<p>El usuario no se encuntra en la base de daros</p>";
+        } else {
+
+            //tengo pendiente una gestio de datos con el id usuario dependiendo del boton
+
+    ?>
+
+            <form action="index.php" method="post" enctype="multipart/form-data">
+                <p>
+                    <label for="usuario">Usuario:</label>
+                    <input type="text" id="usuario" name="usuario" value="<?php echo $usuario;?>">
+                    <?php
+                    if (isset($_POST["btnConEditar"]) && $error_usuario) {
+                        if ($_POST["usuario"] == "") {
+                            echo "<span class='error'>*Campo obligatorio*</span>";
+                        } else {
+                            echo "<span class='error'>*El usuario esta repetido*</span>";
+                        }
+                    }
+                    ?>
+                </p>
+                <p>
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" value="<?php echo $nombre;?>">
+                    <?php
+                    if (isset($_POST["btnConEditar"]) && $error_nombre) {
+                        echo "<span class='error'>*Campo obligatorio*</span>";
+                    }
+                    ?>
+                </p>
+                <p>
+                    <label for="clave">Contraseña:</label>
+                    <input type="password" id="clave" name="clave" placeholder="Teclee nueva contraseña">
+                    <?php
+                    if (isset($_POST["btnConEditar"]) && $error_clave) {
+                        echo "<span class='error'>*Campo Obligatorio*</span>";
+                    }
+                    ?>
+                </p>
+                <p>
+                    <label for="dni">DNI:</label>
+                    <input type="text" name="dni" id="dni" value="<?php echo $dni;?>">
+                    <?php
+                    if (isset($_POST["btnConEditar"]) && $error_dni) {
+                        if ($_POST["dni"] == "")
+                            echo "<span class='error'>Campo vacio </span>";
+                        elseif (!dni_bien_escrito((strtoupper($_POST["dni"])))) {
+                            echo "<span class='error'>El dni no esta bien escrito </span>";
+                        } elseif (!dni_valido(strtoupper($_POST["dni"]))) {
+
+                            echo "<span class='error'>El dni no es valido </span>";
+                        } else {
+                            echo "<span class='error'>El dni esta repetido </span>";
+                        }
+                    }
+
+
+                    ?>
+                </p>
+                <p>
+                    <label for="sexo">Sexo:</label><br />
+                    <input type="radio" id="hombre" name="sexo" value="hombre" <?php if ($sexo=="hombre") echo "checked" ?>>
+                    <label for="hombre">Hombre:</label><br />
+                    <input type="radio" id="mujer" name="sexo" value="mujer" <?php if ($sexo== "mujer") echo "checked" ?>>
+                    <label for="mujer">Mujer:</label>
+                    <?php
+                    if (isset($_POST["btnConEditar"]) && $error_sexo) {
+                        echo "<span class='error'>*Campo obligatorio*</span>";
+                    }
+                    ?>
+                </p>
+                <p>
+
+                    Incluir mi foto (Max 500KB)
+                    <input type="file" id="archivo" name="archivo">
+
+                    <?php
+                    if (isset($_POST["btnConEditar"]) && $error_archivo) {
+
+
+                        if ($_FILES["archivo"]["error"]) {
+                            echo " <span class='error'> No se ha podido subir el archivo al servidor</span>";
+                        } elseif (!getimagesize($_FILES["archivo"]["tmp_name"])) {
+
+                            echo " <span class='error'>El archivo subido debe de ser una imagen </span>";
+                        } elseif (!explode(".", $_FILES["archivo"]["name"])) {
+                            echo " <span class='error'> El archivo tiene que tener extension</span>";
+                        } else {
+                            echo " <span class='error'> El archivo seleccionado supera los 500 KB MAX</span>";
+                        }
+                    }
+
+
+                    ?>
+                </p>
+                <p>
+                    <input type="checkbox" id="subscripcion" name="subscripcion" value='<?php if($subscripcion) echo "checked";?>'>
+                    Subcribirme al boletín de novedades
+                </p>
+                <p>
+                    
+                    <input type="hidden" name="foto_bd" value='<?php echo $foto?>'>
+                    <button type="submit" name="btnConEditar" value="<?php echo $id_usuario?>">Guardar Cambios</button>
+                    <button type="submit" name="btnBorrarEditar" value="<?php echo $id_usuario?>">Borrar los datos introducidos</button>
+                </p>
+
+                <div>
+                    <img class='imag_editar' src='images/<?php echo $foto?>' title='foto' alt='foto'>
+                </div>
+            </form>
+
+
+
+
+
+
+    <?php
         }
-        else{
-            echo"<p>El usaurio seleccionado ya no se encuentra en la base de datos</p>";
+    }
+
+    if (isset($_POST["btnDetalle"])) {
+        echo "<h2>Detalle del Usuario con Id:  " . $usuario_detalle["id_usuario"] . "</h2>";
+        if ($usuario_detalle) {
+            echo "<p><strong>Nombre: </strong>" . $usuario_detalle["nombre"] . "</p>";
+            echo "<p><strong>Usuario: </strong>" . $usuario_detalle["nombre"] . "</p>";
+            echo "<p><strong>Dni: </strong>" . $usuario_detalle["dni"] . "</p>";
+            echo "<p><strong>Sexo: </strong>" . $usuario_detalle["sexo"] . "</p>";
+            echo "<p><strong>Subscripcion: </strong>" . $usuario_detalle["subscripcion"] . "</p>";
+            echo "<img src='images/" . $usuario_detalle["foto"] . "'name='foto'title='fotoUser' alt='foto'>";
+        } else {
+            echo "<p>El usaurio seleccionado ya no se encuentra en la base de datos</p>";
         }
-       
-       
-    } 
- 
+    }
+
 
 
     echo "<h2>Listado de los usuarios (no admin)</h2>";
@@ -417,7 +654,7 @@ try {
         echo "<td>" . $tupla["id_usuario"] . "</td>";
         echo "<td><img src='images/" . $tupla["foto"] . "'name='foto'title='fotoUser' alt='foto'></td>";
         echo "<td><form action='index.php' method='post'><button type='submit'class='enlace' name='btnDetalle' value='" . $tupla["id_usuario"] . "'>" . $tupla["nombre"] . "</button></form></td>";
-        echo "<td><form action='index.php' method='post'><input type='hidden' name='foto' value='" . $tupla["foto"] . "'/><button class='enlace' name='btnBorrarUser' value='" . $tupla["id_usuario"] . "'>Borrar</button> - <button class='enlace' name='btnEditar' value='" . $tupla["usuario"] . "'>Editar</button></form></td>";
+        echo "<td><form action='index.php' method='post'><input type='hidden' name='foto' value='" . $tupla["foto"] . "'/><button class='enlace' name='btnBorrarUser' value='" . $tupla["id_usuario"] . "'>Borrar</button> - <button class='enlace' name='btnEditar' value='" . $tupla["id_usuario"] . "'>Editar</button></form></td>";
         echo "</tr>";
     }
     echo "</table>";
