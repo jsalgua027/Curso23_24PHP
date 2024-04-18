@@ -16,7 +16,7 @@ if(isset($_POST["btnConEditar"])){
         $subscripcion=0;
     }
 
-    // compruebo errorews
+    // compruebo errores
     $error_usuario = $_POST["usuario"] == "";
     if (!$error_usuario) {
        
@@ -285,6 +285,7 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
         </form>
     </div>
     <?php
+    /**************************************************************NUEVO USUARIO*******************************************/
     if (isset($_POST["btnNuevoUser"]) || isset($_POST["btnAgregar"]) || isset($_POST["btnBorrarDatos"])) {
         if (isset($_POST["btnBorrarDatos"])) {
             unset($_POST);
