@@ -78,7 +78,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
             $ext = "." . end($array_ext); // obtengo la extension
             $nombre_nuevo = "img_" . $ultimo_id . $ext; //concateno el nombre
 
-            @$var = move_uploaded_file($_FILES["archivo"]["tmp_name"], "images/" . $nombre_nuevo);
+         
             if ($var) {
                 try {
                     $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";

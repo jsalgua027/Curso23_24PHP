@@ -64,7 +64,7 @@ if(isset($_POST["btnConEditar"])){
             }
               else {
                 $consulta="update usuarios set  nombre=?, usuario=?, clave=?,  dni=?, sexo=? ,subscripcion=? where id_usuario=? ";
-                $datos_edit=[$nombre,$usuario,md5($_POST["clve"]),strtoupper($dni),$sexo,$subscripcion,$id_usuario];
+                $datos_edit=[$nombre,$usuario,md5($_POST["clave"]),strtoupper($dni),$sexo,$subscripcion,$id_usuario];
             }
             $sentencia=$conexion->prepare($consulta);
             $sentencia->execute($datos_edit);
@@ -81,7 +81,7 @@ if(isset($_POST["btnConEditar"])){
         {
            // generar nombre de nueva foto
            // muevo la foto a images
-           //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd es distinra "no_image.jpg" entonces borro $foto de images y actualzio  base de datos  
+           //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd es distinta "no_image.jpg" entonces borro $foto de images y actualzio  base de datos  
         }
 
         $conexion=null;
