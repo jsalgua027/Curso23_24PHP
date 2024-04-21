@@ -77,11 +77,35 @@ if(isset($_POST["btnConEditar"])){
         }
 
         $mensaje="Usuario editado con exito";
-        if($foto["foto"]["name"]!="")
+        if($_FILES["archivo"]["name"]!="")
         {
            // generar nombre de nueva foto
-           // muevo la foto a images
-           //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd es distinta "no_image.jpg" entonces borro $foto de images y actualzio  base de datos  
+           $nueva_ext=explode(".",$_FILES["archivo"]["name"]);
+           $nuevo_nombre="img_" . $id_usuario . $ext;
+           @$var=move_uploaded_file($_FILES["foto"]["tmp_name"],"images/".$nuevo_nombre);
+        if(@$var)
+        {
+            if($foto_bd!=$nuevo_nombre)
+            {    
+             unlink("images/" . $foto_bd);
+             try {
+                 $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";
+                 $sentencia = $conexion->prepare($consulta);
+                 $sentencia->execute([$nuevo_nombre, $id_usuario]);
+                 $sentencia = null;
+             } catch (PDOException $e) {
+                 unlink("images/" . $nuevo_nombre); // si falla me borra la imagen 
+                 $sentencia = null;
+                 $conexion = null;
+                 $mensaje = "Se ha registrado con exito pero con la imagen por defecto en el servidor"; // no morimos porque queremos que siga logueado por si quiere hacer cambios (si los pudiese hacer por la aplicacion que esra no se puede por el tipo de enunciado)
+             }
+ 
+            }
+            // muevo la foto a images
+            //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd es distinta "no_image.jpg" entonces borro $foto de images y actualzio  base de datos  
+
+        }
+          
         }
 
         $conexion=null;
