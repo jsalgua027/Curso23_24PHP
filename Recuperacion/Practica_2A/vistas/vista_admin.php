@@ -114,10 +114,6 @@ if (isset($_POST["btnConEditar"])) {
     }
 }
 
-if(isset($_POST["btnBorrarFoto"]))// aqui el borrar foto del editar
-{
-
-}
 
 if (isset($_POST["btnConBorrar"])) {
 
@@ -145,7 +141,7 @@ if (isset($_POST["btnConBorrar"])) {
         die("<p>No se pudo completar la operación: " . $e->getMessage() . "</p>");
     }
 }
-if (isset($_POST["btnEditar"])) {
+if (isset($_POST["btnEditar"])|| isset($_POST["btnBorrarFoto"])) {
     $id_usuario = $_POST["btnEditar"];
     try {
         $consulta = "select * from usuarios where id_usuario=?";
@@ -534,7 +530,7 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
     //*********************************************************EDITAR******************************************************************************************/
 
-    if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"]) || isset($_POST["btnBorrarEditar"])) {
+    if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"]) || isset($_POST["btnBorrarEditar"])|| isset($_POST["btnBorrarFoto"])) {
         echo "<h2>Detalles del usuario  a Editar con id: " . $id_usuario . "</h2>";
         if (!isset($usuario)) {
             // no he obtenido usuario
@@ -648,10 +644,13 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                     <img class='imag_editar' src='images/<?php echo $foto ?>' title='foto' alt='foto'></br>
                     <button type="submit" name="btnBorrarFoto" value="<?php echo $id_usuario ?>">Borrar Foto</button>
                     <?php
-                    if(isset($_POST["btnBorrarFoto"]))
+                    if(isset($_POST["btnEditar"])&& isset($_POST["btnBorrarFoto"]))
                     {
-
-                        
+                    ?>
+                         <button type="submit" name="btnBorrarFotoSi" value="<?php  ?>">Si</button>
+                         <button type="submit" name="btnBorrarFotoNo" value="<?php  ?>">No</button>
+                    <?php
+                    
                     }
                     ?>
                 </div>
