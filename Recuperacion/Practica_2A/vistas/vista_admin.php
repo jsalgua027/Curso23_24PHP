@@ -644,7 +644,7 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                     <img class='imag_editar' src='images/<?php echo $foto ?>' title='foto' alt='foto'></br>
                     <button type="submit" name="btnBorrarFoto" value="<?php echo $id_usuario ?>">Borrar Foto</button>
                     <?php
-                    if(isset($_POST["btnEditar"])&& isset($_POST["btnBorrarFoto"]))
+                    if( isset($_POST["btnBorrarFoto"]))
                     {
                     ?>
                          <button type="submit" name="btnBorrarFotoSi" value="<?php  ?>">Si</button>
