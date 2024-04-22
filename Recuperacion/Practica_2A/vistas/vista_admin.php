@@ -1,33 +1,29 @@
 <?php
-if(isset($_POST["btnConEditar"])){
+if (isset($_POST["btnConEditar"])) {
     //cojo la id usaurio
-    $id_usuario=$_POST["btnConEditar"]; //del boton
-    $usuario =$_POST["usuario"];// de los values introducidos 
-    $nombre =$_POST["nombre"];
-    $dni =$_POST["dni"];
-    $foto =$_POST["foto_bd"];
-    $sexo =$_POST["sexo"];
-    if(isset($_POST["subscripcion"]))
-    {
-        $subscripcion=1;
-    }
-    else
-    {
-        $subscripcion=0;
+    $id_usuario = $_POST["btnConEditar"]; //del boton
+    $usuario = $_POST["usuario"]; // de los values introducidos 
+    $nombre = $_POST["nombre"];
+    $dni = $_POST["dni"];
+    $foto = $_POST["foto_bd"];
+    $sexo = $_POST["sexo"];
+    if (isset($_POST["subscripcion"])) {
+        $subscripcion = 1;
+    } else {
+        $subscripcion = 0;
     }
 
     // compruebo errores
     $error_usuario = $_POST["usuario"] == "";
     if (!$error_usuario) {
-       
-        }
-        $error_usuario = repetido($conexion, "usuarios", "usuario", $_POST["usuario"],"id_usuario", $id_usuario);
+    }
+    $error_usuario = repetido($conexion, "usuarios", "usuario", $_POST["usuario"], "id_usuario", $id_usuario);
 
-        if (is_string($error_usuario)) {
-            $conexion = null;
-            die(error_page("Práctica 2º Rec", "<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: " . $error_usuario . "</p>"));
-        }
-    
+    if (is_string($error_usuario)) {
+        $conexion = null;
+        die(error_page("Práctica 2º Rec", "<h1>Práctica 2º Rec</h1><p>No se ha podido realizar la consulta: " . $error_usuario . "</p>"));
+    }
+
     $error_nombre = $_POST["nombre"] == "";
     $error_clave = $_POST["clave"] == "";
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
@@ -40,7 +36,7 @@ if(isset($_POST["btnConEditar"])){
                 die(error_page("Práctica Rec 2", "<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:" . $e->getMessage() . "</p>"));
             }
         }
-        $error_dni = repetido($conexion, "usuarios", "dni", strtoupper($_POST["dni"]));
+        $error_dni = repetido($conexion,"usuarios","dni",strtoupper($_POST["dni"]),"id_usuario",$id_usuario); //OJO AQUI HAY QUE USAR EL DE 6 PARAMETROS
 
         if (is_string($error_dni)) {
             $conexion = null;
@@ -53,71 +49,75 @@ if(isset($_POST["btnConEditar"])){
     $error_archivo = $_FILES["archivo"]["name"] != "" && ($_FILES["archivo"]["error"] || !$array_nombre || !getimagesize($_FILES["archivo"]["tmp_name"]) || $_FILES["archivo"]["size"] > 500 * 1024);/* foto obligatoria */
     $error_form = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_sexo || $error_archivo;
 
-    if(!$error_form)
-    {
+    if (!$error_form) {
 
         try {
-            if($_POST["clave"]== "")
+            if ($_POST["clave"] == "") // si tenia clave
             {
-                $consulta="update usuarios set  nombre=?, usuario=?, dni=?, sexo=? ,subscripcion=? where id_usuario=? ";
-                $datos_edit=[$nombre,$usuario,strtoupper($dni),$sexo,$subscripcion,$id_usuario];
+                $consulta = "update usuarios set  nombre=?, usuario=?, dni=?, sexo=? ,subscripcion=? where id_usuario=? ";
+                $datos_edit = [$nombre, $usuario, strtoupper($dni), $sexo, $subscripcion, $id_usuario];
+            } else { // si no tenia clave
+                $consulta = "update usuarios set  nombre=?, usuario=?, clave=?,  dni=?, sexo=? ,subscripcion=? where id_usuario=? ";
+                $datos_edit = [$nombre, $usuario, md5($_POST["clave"]), strtoupper($dni), $sexo, $subscripcion, $id_usuario];
             }
-              else {
-                $consulta="update usuarios set  nombre=?, usuario=?, clave=?,  dni=?, sexo=? ,subscripcion=? where id_usuario=? ";
-                $datos_edit=[$nombre,$usuario,md5($_POST["clave"]),strtoupper($dni),$sexo,$subscripcion,$id_usuario];
-            }
-            $sentencia=$conexion->prepare($consulta);
+            $sentencia = $conexion->prepare($consulta);
             $sentencia->execute($datos_edit);
             $sentencia = null;
-
         } catch (PDOException $e) { // si falla la conexion
             $sentencia_detalle = null;
             $conexion = null;
             die("<p>No hacer la consulta por fallo de la conexión: " . $e->getMessage() . "</p></body></html>");
         }
 
-        $mensaje="Usuario editado con exito";
-        if($_FILES["archivo"]["name"]!="")
-        {
-           // generar nombre de nueva foto
-           $nueva_ext=explode(".",$_FILES["archivo"]["name"]);
-           $nuevo_nombre="img_" . $id_usuario . $ext;
-           @$var=move_uploaded_file($_FILES["foto"]["tmp_name"],"images/".$nuevo_nombre);
-        if(@$var)
-        {
-            if($foto_bd!=$nuevo_nombre)
-            {    
-             unlink("images/" . $foto_bd);
-             try {
-                 $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";
-                 $sentencia = $conexion->prepare($consulta);
-                 $sentencia->execute([$nuevo_nombre, $id_usuario]);
-                 $sentencia = null;
-             } catch (PDOException $e) {
-                 unlink("images/" . $nuevo_nombre); // si falla me borra la imagen 
-                 $sentencia = null;
-                 $conexion = null;
-                 $mensaje = "Se ha registrado con exito pero con la imagen por defecto en el servidor"; // no morimos porque queremos que siga logueado por si quiere hacer cambios (si los pudiese hacer por la aplicacion que esra no se puede por el tipo de enunciado)
-             }
- 
+        $mensaje = "Usuario editado con exito";
+        if ($_FILES["archivo"]["name"] != "") {
+            // generar nombre de nueva foto
+            $nueva_ext = explode(".", $_FILES["archivo"]["name"]);
+            $ext = "." . end($nueva_ext);
+            $nuevo_nombre = "img_" . $id_usuario . $ext;
+            @$var = move_uploaded_file($_FILES["archivo"]["tmp_name"], "images/" . $nuevo_nombre); // mueveme este fichero , a este sitio con este nombre
+            if (@$var) // si lo he movido
+            {
+                if ($foto_bd != $nuevo_nombre) //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd 
+                {
+
+                    try {
+                        $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";
+                        $sentencia = $conexion->prepare($consulta);
+                        $sentencia->execute([$nuevo_nombre, $id_usuario]);
+                        $sentencia = null;
+                        if ($foto != FOTO_DEFECTO && file_exists(("images/" . $foto_bd))) {
+                            unlink("images/" . $foto_bd);
+                        }
+                    } catch (PDOException $e) {
+                        if (file_exists(("images/" . $nuevo_nombre))) {
+                            unlink("images/" . $nuevo_nombre); // si falla me borra la imagen nueva porque no se ha podido hacer el update
+                        }
+
+                        $sentencia = null;
+                        $conexion = null;
+                        $mensaje = "No se ha podido cambiar la imagen por un problema en el servidor"; // no morimos porque queremos que siga logueado por si quiere hacer cambios (si los pudiese hacer por la aplicacion que esra no se puede por el tipo de enunciado)
+                    }
+                }
+                // muevo la foto a images
+                //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd es distinta "no_image.jpg" entonces borro $foto de images y actualzio  base de datos  
+
+            } else { // si no he podido moverlqa
+                $mensaje = "usuario editado con exito pero sin va,biar la nueva imagen, ya que esta no se ha podido mover a la carpeta destinodel servidor";
             }
-            // muevo la foto a images
-            //si nombre nueva foto es distinta a $foto(bd) y si la $foto_bd es distinta "no_image.jpg" entonces borro $foto de images y actualzio  base de datos  
-
-        }
-          
         }
 
-        $conexion=null;
-        $_SESSION["mensaje_accion"]=$mensaje;
+        $conexion = null;
+        $_SESSION["mensaje_accion"] = $mensaje;
         header("Location:index.php");
         exit;
-
     }
-
 }
 
+if(isset($_POST["btnBorrarFoto"]))// aqui el borrar foto del editar
+{
 
+}
 
 if (isset($_POST["btnConBorrar"])) {
 
@@ -127,7 +127,7 @@ if (isset($_POST["btnConBorrar"])) {
         $consulta_borrar = "DELETE FROM usuarios WHERE id_usuario=?";
         $sentencia_borrar = $conexion->prepare($consulta_borrar);
         $sentencia_borrar->execute([$_POST["btnConBorrar"]]);
-        if ($_POST["foto"] != FOTO_DEFECTO) {
+        if ($_POST["foto"] != FOTO_DEFECTO && file_exists("images/" . $_POST["foto"])) {
 
             unlink("images/" . $_POST["foto"]);
         }
@@ -293,10 +293,10 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
         img {
             width: 100px;
         }
-        .imag_editar{
+
+        .imag_editar {
             width: 100px;
         }
-        
     </style>
 </head>
 
@@ -393,7 +393,10 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                             $sentencia->execute([$nombre_nuevo, $ultimo_id]);
                             $sentencia = null;
                         } catch (PDOException $e) {
-                            unlink("images/" . $nombre_nuevo); // si falla
+                            if (file_exists("images/" . $nombre_nuevo)) {
+                                unlink("images/" . $nombre_nuevo); // si falla
+                            }
+
                             $sentencia = null;
                             $conexion = null;
                             die(error_page("Práctica 2º REC", "<h1>Práctica 2º REC</h1><p>No se ha podido subir la foto: " . $e->getMessage() . "</p>"));
@@ -529,9 +532,9 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
         echo "</div>";
     }
 
-//*********************************************************EDITAR******************************************************************************************/
+    //*********************************************************EDITAR******************************************************************************************/
 
-    if (isset($_POST["btnEditar"])||isset($_POST["btnConEditar"])||isset($_POST["btnBorrarEditar"])) {
+    if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"]) || isset($_POST["btnBorrarEditar"])) {
         echo "<h2>Detalles del usuario  a Editar con id: " . $id_usuario . "</h2>";
         if (!isset($usuario)) {
             // no he obtenido usuario
@@ -545,7 +548,7 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
             <form action="index.php" method="post" enctype="multipart/form-data">
                 <p>
                     <label for="usuario">Usuario:</label>
-                    <input type="text" id="usuario" name="usuario" value="<?php echo $usuario;?>">
+                    <input type="text" id="usuario" name="usuario" value="<?php echo $usuario; ?>">
                     <?php
                     if (isset($_POST["btnConEditar"]) && $error_usuario) {
                         if ($_POST["usuario"] == "") {
@@ -558,7 +561,7 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                 </p>
                 <p>
                     <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" value="<?php echo $nombre;?>">
+                    <input type="text" id="nombre" name="nombre" value="<?php echo $nombre; ?>">
                     <?php
                     if (isset($_POST["btnConEditar"]) && $error_nombre) {
                         echo "<span class='error'>*Campo obligatorio*</span>";
@@ -576,7 +579,7 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                 </p>
                 <p>
                     <label for="dni">DNI:</label>
-                    <input type="text" name="dni" id="dni" value="<?php echo $dni;?>">
+                    <input type="text" name="dni" id="dni" value="<?php echo $dni; ?>">
                     <?php
                     if (isset($_POST["btnConEditar"]) && $error_dni) {
                         if ($_POST["dni"] == "")
@@ -596,9 +599,9 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                 </p>
                 <p>
                     <label for="sexo">Sexo:</label><br />
-                    <input type="radio" id="hombre" name="sexo" value="hombre" <?php if ($sexo=="hombre") echo "checked" ?>>
+                    <input type="radio" id="hombre" name="sexo" value="hombre" <?php if ($sexo == "hombre") echo "checked" ?>>
                     <label for="hombre">Hombre:</label><br />
-                    <input type="radio" id="mujer" name="sexo" value="mujer" <?php if ($sexo== "mujer") echo "checked" ?>>
+                    <input type="radio" id="mujer" name="sexo" value="mujer" <?php if ($sexo == "mujer") echo "checked" ?>>
                     <label for="mujer">Mujer:</label>
                     <?php
                     if (isset($_POST["btnConEditar"]) && $error_sexo) {
@@ -631,18 +634,26 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                     ?>
                 </p>
                 <p>
-                    <input type="checkbox" id="subscripcion" name="subscripcion" value='<?php if($subscripcion) echo "checked";?>'>
+                    <input type="checkbox" id="subscripcion" name="subscripcion" value='<?php if ($subscripcion) echo "checked"; ?>'>
                     Subcribirme al boletín de novedades
                 </p>
                 <p>
-                    
-                    <input type="hidden" name="foto_bd" value='<?php echo $foto?>'>
-                    <button type="submit" name="btnConEditar" value="<?php echo $id_usuario?>">Guardar Cambios</button>
-                    <button type="submit" name="btnBorrarEditar" value="<?php echo $id_usuario?>">Borrar los datos introducidos</button>
+
+                    <input type="hidden" name="foto_bd" value='<?php echo $foto ?>'>
+                    <button type="submit" name="btnConEditar" value="<?php echo $id_usuario ?>">Guardar Cambios</button>
+                    <button type="submit" name="btnBorrarEditar" value="<?php echo $id_usuario ?>">Borrar los datos introducidos</button>
                 </p>
 
                 <div>
-                    <img class='imag_editar' src='images/<?php echo $foto?>' title='foto' alt='foto'>
+                    <img class='imag_editar' src='images/<?php echo $foto ?>' title='foto' alt='foto'></br>
+                    <button type="submit" name="btnBorrarFoto" value="<?php echo $id_usuario ?>">Borrar Foto</button>
+                    <?php
+                    if(isset($_POST["btnBorrarFoto"]))
+                    {
+
+                        
+                    }
+                    ?>
                 </div>
             </form>
 
