@@ -14,7 +14,7 @@ if(isset($_GET['id_categoria'])) {
     $id_categoria = $_GET['id_categoria'];
 
     // Consulta SQL para obtener los productos de una categoría específica
-    $query = "SELECT * FROM productos WHERE id_categoria = :id_categoria";
+    $query = "SELECT * FROM nacho_productos WHERE id_categoria = :id_categoria";
 
     try {
         // Preparar la consulta

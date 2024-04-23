@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 // Endpoint para obtener todas las categorías
 include 'API.php';
 
-$query = "SELECT * FROM categorias";
+$query = "SELECT * FROM nacho_categorias";
 
 try {
     $statement = $pdo->query($query);

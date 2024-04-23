@@ -15,8 +15,8 @@ try {
 
     // Consulta SQL para obtener productos agrupados por categoría
     $sql = "SELECT c.id_categoria, c.categoria, p.id_producto, p.producto, p.precio, p.portadaFoto 
-            FROM categorias c
-            LEFT JOIN productos p ON c.id_categoria = p.id_categoria
+            FROM nacho_categorias c
+            LEFT JOIN nacho_productos p ON c.id_categoria = p.id_categoria
             ORDER BY c.id_categoria, p.id_producto";
     
     $stmt = $pdo->query($sql);
