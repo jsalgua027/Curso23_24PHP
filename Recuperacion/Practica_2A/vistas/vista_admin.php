@@ -636,8 +636,9 @@ $todos_usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                 <p>
 
                     <input type="hidden" name="foto_bd" value='<?php echo $foto ?>'>
-                    <button type="submit" name="btnConEditar" value="<?php echo $id_usuario ?>">Guardar Cambios</button>
-                    <button type="submit" name="btnBorrarEditar" value="<?php echo $id_usuario ?>">Borrar los datos introducidos</button>
+                    <input type="hidden" name="id_usuario" value='<?php echo $id_usuario ?>'>
+                    <button type="submit" name="btnConEditar" >Guardar Cambios</button>
+                    <button type="submit" name="btnBorrarEditar" >Borrar los datos introducidos</button>
                 </p>
 
                 <div>

@@ -1,4 +1,19 @@
 <?php
+
+define("RECAPTCHA_V3_SECRET_KEY", '6LeOHMQpAAAAAHXdsCYDHDTG4tYXaetSYitMeq3V');
+function consumir_servicios_REST($url, $metodo, $datos = null)
+{
+    $llamada = curl_init();
+    curl_setopt($llamada, CURLOPT_URL, $url);
+    curl_setopt($llamada, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($llamada, CURLOPT_CUSTOMREQUEST, $metodo);
+    if (isset($datos))
+        curl_setopt($llamada, CURLOPT_POSTFIELDS, http_build_query($datos));
+    $respuesta = curl_exec($llamada);
+    curl_close($llamada);
+    return $respuesta;
+}
+
 if (isset($_POST["btnBorrarDatos"])) {
     unset($_POST);
 }
@@ -6,6 +21,7 @@ if (isset($_POST["btnBorrarDatos"])) {
 
 //control de errores del registro de ususario normal
 if (isset($_POST["btnNuevoRegistro"])) {
+    $error_captcha=false;
     $error_usuario = $_POST["usuario"] == "";
     if (!$error_usuario) {
         try {
@@ -26,7 +42,7 @@ if (isset($_POST["btnNuevoRegistro"])) {
     $error_clave = $_POST["clave"] == "";
     $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
     if (!$error_dni) {
-        if (!isset($conexion)) {// comprobamos si hay conexión por si se ha usado repetido() que necesita coneexión 
+        if (!isset($conexion)) { // comprobamos si hay conexión por si se ha usado repetido() que necesita coneexión 
             try {
                 $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
             } catch (PDOException $e) {
@@ -50,58 +66,76 @@ if (isset($_POST["btnNuevoRegistro"])) {
 
     if (!$error_form) {
         // hago la insercción del usuario
-        try {
-            if (isset($_POST["subscripcion"])) // si esta cheked le inidco el valor 
-            {
-                $subs = 1;
-            } else {
-                $subs = 0;
-            }
-            $consulta = "insert into usuarios (usuario,nombre,clave,dni,sexo,subscripcion) values(?,?,?,?,?,?)";
-            $clave_encriptada = md5($_POST["clave"]);
-            $sentencia = $conexion->prepare($consulta);
-            $sentencia->execute([$_POST["usuario"], $_POST["nombre"], $clave_encriptada, strtoupper($_POST["dni"]), $_POST["sexo"], $subs]);
-            $sentencia = null;
-        } catch (PDOException $e) {
-            $setencia=null;
-            $conexion = null;
+
+        //Compruebo que no es un robot quien ha rellenado el formulario CAPTCHA
+        $datos_env["secret"] = RECAPTCHA_V3_SECRET_KEY;
+        $datos_env["response"] = $_POST['token'];
+        $respuesta = consumir_servicios_REST("https://www.google.com/recaptcha/api/siteverify", "POST", $datos_env);
+        $arrRespuesta = json_decode($respuesta, true);
+        if (!$arrRespuesta) {
+
             session_destroy();
-            die(error_page("Práctica 2º REC", "<h1>Práctica 2º REC</h1><p>No se ha podido hacer la insercción: " . $e->getMessage() . "</p>"));
+            die(error_page("Práctica Rec 2", "<h1>Práctica Rec 2</h1><p>El servicio recaptcha de Google no disponible en estos momentos. Pruebe a registrarse más tarde.</p>"));
         }
-        $mensaje = "se ha registrado con exito";
 
-        if ($_FILES["archivo"]["name"] != "") {
-            // me quedo con la extension
-            $ultimo_id = $conexion->lastInsertId(); // me quedo con la ultima id para ponerla como nombre unico (solo funciona si la base de datos es auto incremente de ese campo)
-            $array_ext = explode(".", $_FILES["archivo"]["name"]);
+        // verificar la respuesta
+        $error_captcha = !($arrRespuesta["success"] == '1' && $arrRespuesta["action"] == $_POST['action'] && $arrRespuesta["score"] >= 0.5);
 
-            $ext = "." . end($array_ext); // obtengo la extension
-            $nombre_nuevo = "img_" . $ultimo_id . $ext; //concateno el nombre
 
-         
-            if ($var) {
-                try {
-                    $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";
-                    $sentencia = $conexion->prepare($consulta);
-                    $sentencia->execute([$nombre_nuevo, $ultimo_id]);
-                    $sentencia = null;
-                } catch (PDOException $e) {
-                    unlink("images/" . $nombre_nuevo); // si falla me borra la imagen 
-                    $sentencia = null;
-                    $conexion = null;
-                    $mensaje = "Se ha registrado con exito pero con la imagen por defecto en el servidor"; // no morimos porque queremos que siga logueado por si quiere hacer cambios (si los pudiese hacer por la aplicacion que esra no se puede por el tipo de enunciado)
+        if (!$error_captcha) {
+            try {
+                if (isset($_POST["subscripcion"])) // si esta cheked le inidco el valor 
+                {
+                    $subs = 1;
+                } else {
+                    $subs = 0;
                 }
-            } else {
-                $mensaje = "Nse ha registrado con exito pero con la imagen por defecto ya que no se ha podido mover la imagen";
+                $consulta = "insert into usuarios (usuario,nombre,clave,dni,sexo,subscripcion) values(?,?,?,?,?,?)";
+                $clave_encriptada = md5($_POST["clave"]);
+                $sentencia = $conexion->prepare($consulta);
+                $sentencia->execute([$_POST["usuario"], $_POST["nombre"], $clave_encriptada, strtoupper($_POST["dni"]), $_POST["sexo"], $subs]);
+                $sentencia = null;
+            } catch (PDOException $e) {
+                $setencia = null;
+                $conexion = null;
+                session_destroy();
+                die(error_page("Práctica 2º REC", "<h1>Práctica 2º REC</h1><p>No se ha podido hacer la insercción: " . $e->getMessage() . "</p>"));
             }
+            $mensaje = "se ha registrado con exito";
+
+            if ($_FILES["archivo"]["name"] != "") {
+                // me quedo con la extension
+                $ultimo_id = $conexion->lastInsertId(); // me quedo con la ultima id para ponerla como nombre unico (solo funciona si la base de datos es auto incremente de ese campo)
+                $array_ext = explode(".", $_FILES["archivo"]["name"]);
+
+                $ext = "." . end($array_ext); // obtengo la extension
+                $nombre_nuevo = "img_" . $ultimo_id . $ext; //concateno el nombre
+
+
+                if ($var) {
+                    try {
+                        $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";
+                        $sentencia = $conexion->prepare($consulta);
+                        $sentencia->execute([$nombre_nuevo, $ultimo_id]);
+                        $sentencia = null;
+                    } catch (PDOException $e) {
+                        unlink("images/" . $nombre_nuevo); // si falla me borra la imagen 
+                        $sentencia = null;
+                        $conexion = null;
+                        $mensaje = "Se ha registrado con exito pero con la imagen por defecto en el servidor"; // no morimos porque queremos que siga logueado por si quiere hacer cambios (si los pudiese hacer por la aplicacion que esra no se puede por el tipo de enunciado)
+                    }
+                } else {
+                    $mensaje = "Nse ha registrado con exito pero con la imagen por defecto ya que no se ha podido mover la imagen";
+                }
+            }
+            $conexion = null;
+            $_SESSION["mensaje_registro"] = $mensaje;
+            $_SESSION["usuario"] = $_POST["usuario"];
+            $_SESSION["clave"] = md5($_POST["clave"]);
+            $_SESSION["ultima_accion"] = time(); // una vez realizado el registro actualizo el tiempo
+            header("Location:index.php");
+            exit;
         }
-        $conexion = null;
-        $_SESSION["mensaje_registro"] = $mensaje;
-        $_SESSION["usuario"] = $_POST["usuario"];
-        $_SESSION["clave"] = md5($_POST["clave"]);
-        $_SESSION["ultima_accion"] = time(); // una vez realizado el registro actualizo el tiempo
-        header("Location:index.php");
-        exit;
     }
     if (isset($conexion)) { // por sui hay errores y se ha quedado la conexión abierta
         $conexion = null;
@@ -117,10 +151,16 @@ if (isset($_POST["btnNuevoRegistro"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+
+    <!-- Cambia 6LeOHMQpAAAAAOMVr7TocKjHQkuy0clMRLEZBYoQ por tu clave de sitio web -->
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeOHMQpAAAAAOMVr7TocKjHQkuy0clMRLEZBYoQ"></script>
     <style>
         .error {
             color: red
         }
+
         .mensaje {
             color: blue;
             font-size: 1.5em
@@ -224,15 +264,43 @@ if (isset($_POST["btnNuevoRegistro"])) {
             Subcribirme al boletín de novedades
         </p>
         <p>
-            <button type="submit" name="btnNuevoRegistro" value="guardar">Guardar Cambios</button>
-            <button type="submit" name="btnBorrarDatos" value="borrar">Borrar los datos introducidos</button>
+            <button type="submit" data-destino="enviar" name="btnNuevoRegistro" value="guardar">Guardar Cambios</button>
+            <button type="submit" data-destino="borrar" name="btnBorrarDatos" value="borrar">Borrar los datos introducidos</button>
         </p>
-    </form>
-    <?php
-    if(isset($_SESSION["mensaje_registro"]))
-    {
-        echo"<p class='mensaje'>".$_SESSION["mensaje_registro"]."</p>";
+        <?php 
+            if(isset($_POST["btnEnviar"])&& $error_captcha)
+                echo "<p><span class='error'> Según Google Recaptcha, el registo lo está haciendo un robots. Por favor, vuelva a intentarlo.</span></p>";
+        ?>
 
+    </form>
+    <script>
+        //Cómo tengo dos botones que hacen submit tengo que ver cual de ellos es el que lo provoca ya que sólo uno de ellos necesita recaptcha (enviar)
+        var button_enviar;
+        $("button").click(function() {
+            button_enviar = $(this).data('destino') == 'enviar';
+        })
+        $('#form').submit(function(event) {
+            if (button_enviar) {
+                event.preventDefault();
+                /*Cambia 6LeOHMQpAAAAAOMVr7TocKjHQkuy0clMRLEZBYoQ por tu clave de sitio web*/
+                grecaptcha.ready(function() {
+                    grecaptcha.execute('6LeOHMQpAAAAAOMVr7TocKjHQkuy0clMRLEZBYoQ', {
+                        action: 'registro'
+                    }).then(function(token) {
+                        rch - bafm - dpz
+                        $('#form').prepend('<input type="hidden" name="token" value="' + token + '">');
+                        $('#form').prepend('<input type="hidden" name="action" value="registro">');
+                        $('#form').prepend('<input type="hidden" name="btnEnviar">'); //Al hacer el event.preventDefault() el $_POST[btnEnviar] se pierde
+                        $('#form').unbind('submit').submit();
+                    });
+                });
+            }
+        });
+    </script>
+
+    <?php
+    if (isset($_SESSION["mensaje_registro"])) {
+        echo "<p class='mensaje'>" . $_SESSION["mensaje_registro"] . "</p>";
     }
     ?>
 </body>
