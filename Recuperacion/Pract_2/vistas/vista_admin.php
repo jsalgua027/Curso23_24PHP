@@ -332,13 +332,51 @@ if(isset($_POST["btnDetalles"]))
         die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:".$e->getMessage()."</p>"));
     }
 }
+//codigo para paginacion
+
+if(isset($_POST["btnPag"]))
+{
+    $_SESSION["pag"]=$_POST["btnPag"];
+}
+
+if(!isset($_SESSION["pag"]))
+{
+ $_SESSION["pag"]=1;
+}
+if(!isset($_SESSION["regs_mostrar"]))
+{
+   
+    $_SESSION["regs_mostrar"]=3;
+
+}
+$ini_pag=($_SESSION["pag"]-1)*  $_SESSION["regs_mostrar"]; // aqui el calculo para saber que pagina mostrar
+
+//  consulta para obtener todos para la futura paginacion
+try{
+    
+    $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin' ";
+    $sentencia=$conexion->prepare($consulta);
+    $sentencia->execute();
+}
+catch(PDOException $e){
+    $sentencia=null;
+    $conexion=null;
+    session_destroy();
+    die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:".$e->getMessage()."</p>"));
+}
+
+// calculos para obtner  numero de paginas
+$total_registros=$sentencia->rowCount();
+$sentencia=null;
+$n_pags=ceil($total_registros/$_SESSION["regs_mostrar"]);
 
 
-//// Consulta para obtener los usuarios a listar en la Tabla
+
+//// Consulta para obtener los usuarios a listar en la Tabla por pagina
 
 try{
     
-    $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin'";
+    $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin' LIMIT ".$ini_pag.",".$_SESSION["regs_mostrar"]."";
     $sentencia=$conexion->prepare($consulta);
     $sentencia->execute();
 }
@@ -370,6 +408,10 @@ $sentencia=null;
         .mensaje{font-size: 1.25rem;color:blue}
         #t_editar, #t_editar td{border:none}
         .centrado{text-align: center;}
+        .d_flex{
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
@@ -634,6 +676,27 @@ $sentencia=null;
     }
 
     echo "<h2>Listado de los usuarios (no admin)</h2>";
+
+    ?>
+    <div class="centrar centrado">
+        <form id="form_regs_filtro" class="d_flex" action='' method="post">
+            <div>
+                Mostrar
+                <select name="registros" onchange='document.getElementById("form_regs_filtro").submit()'>
+                <option value="3">3</option>
+                <option value="6">6</option>
+                <option value="-1">Todos</option>
+                </select>
+                registros por página
+                <label for='n_registros'></label>
+            </div>
+
+        </form>
+    </div>
+
+
+
+    <?php
     echo "<table class='centrar centrado'>";
     echo "<tr><th>#</th><th>Foto</th><th>Nombre</th><th><form action='index.php' method='post'><button class='enlace' type='submit' name='btnNuevo'>Usuario+</button></form></th></tr>";
     foreach($usuarios as $tupla)
@@ -646,6 +709,37 @@ $sentencia=null;
         echo "</tr>";
     }
     echo "</table>";
+    if($n_pags>1)
+    {
+        echo"<div class='centrar centrado'> ";
+        echo"<form action='index.php' method='post'>";
+        echo"<p>";
+        // botones finales
+        if($_SESSION["pag"]!=1)// si es distinti de pa
+        {
+            echo"<button disable type='submit' name='btnPag' value='1'>|</button>";
+            echo"<button disable type='submit' name='btnPag' value='".($_SESSION["pag"]-1)."'><</button>";
+        }
+        if($_SESSION["pag"]!=$n_pags) // si estas al final de la pagina
+        {
+            echo"<button disable type='submit' name='btnPag' value='".($_SESSION["pag"]+1)."'>>|</button>";
+            echo"<button disable type='submit' name='btnPag' value='".$n_pags."'><</button>";
+        }
+      
+        
+
+        for ($i=1; $i <=$n_pags ; $i++)
+         { 
+            if($_SESSION["pag"]==$i)
+           echo"<button disable type='submit' name='btnPag' value='".$i."'>".$i."</button>";
+            else
+            echo"<button type='submit' name='btnPag' value='".$i."'>".$i."</button>";
+        }
+        echo"</p>";
+        echo"</form>";
+        echo "</div>";
+    }
+
 
     ?>
 </body>

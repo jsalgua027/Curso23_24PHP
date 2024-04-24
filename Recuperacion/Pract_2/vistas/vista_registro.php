@@ -161,7 +161,7 @@ if(isset($_POST["btnEnviar"]))
 </head>
 <body>
 <h1>Práctica Rec 2</h1>
-    <form action="index.php" method="post" enctype="multipart/form-data">
+    <form  id="form" action="index.php" method="post" enctype="multipart/form-data">
         <p>
             <label for="usuario">Usuario: </label><br>
             <input type="text" id="usuario" name="usuario" value="<?php if(isset($_POST["usuario"])) echo $_POST["usuario"];?>" placeholder="Usuario...">
