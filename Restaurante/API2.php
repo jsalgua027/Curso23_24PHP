@@ -30,6 +30,7 @@ try {
         // Si es la primera vez que encontramos esta categoría, creamos un nuevo array para sus productos
         if (!isset($productosPorCategoria[$categoriaId])) {
             $productosPorCategoria[$categoriaId] = array(
+                'id_categoria' => $categoriaId, 
                 'categoria' => $categoriaNombre,
                 'productos' => array()
             );
@@ -45,7 +46,7 @@ try {
     }
 
     // Convertimos el array a formato JSON
-    $json = json_encode($productosPorCategoria, JSON_PRETTY_PRINT);
+    $json = json_encode($productosPorCategoria);
 
     // Devolvemos el JSON como respuesta
     header('Content-Type: application/json');
