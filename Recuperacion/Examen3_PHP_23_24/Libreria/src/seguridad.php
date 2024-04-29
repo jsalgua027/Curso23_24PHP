@@ -1,4 +1,5 @@
 <?php
+//conexión
 try{
     $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
 }
@@ -7,10 +8,11 @@ catch(PDOException $e){
     die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible conectar a la BD. Error:".$e->getMessage()."</p>"));
 }
 
+// compruebo letor
 try{
     $datos[0]=$_SESSION["usuario"];
     $datos[1]=$_SESSION["clave"];
-    $consulta = "SELECT * FROM usuarios WHERE usuario=? AND clave=?";
+    $consulta = "SELECT * FROM usuarios WHERE lector=? AND clave=?";
     $sentencia=$conexion->prepare($consulta);
     $sentencia->execute($datos);
 }
@@ -30,11 +32,10 @@ if($sentencia->rowCount()<=0)
         header("Location:index.php");
         exit();
 }
+
 // Acabo de pasar el control de baneo
 $datos_usuario_log=$sentencia->fetch(PDO::FETCH_ASSOC);
 $sentencia=null;
-
-//Ahora paso el control de tiempo
 
 if(time()-$_SESSION["ultm_accion"]>MINUTOS*60)
 {
@@ -46,4 +47,5 @@ if(time()-$_SESSION["ultm_accion"]>MINUTOS*60)
 }
 // Paso el control de tiempo y lo renuevo
 $_SESSION["ultm_accion"]=time();
+
 ?>
