@@ -351,6 +351,10 @@ if(!isset($_SESSION["regs_mostrar"]))
 }
 $ini_pag=($_SESSION["pag"]-1)*  $_SESSION["regs_mostrar"]; // aqui el calculo para saber que pagina mostrar
 
+//parte del buscador
+if(!isset($_SERVER["buscar"]))
+    $_SESSION["buscar"]=="";
+
 //  consulta para obtener todos para la futura paginacion
 try{
     
@@ -690,7 +694,9 @@ $sentencia=null;
                 registros por página
                 <label for='n_registros'></label>
             </div>
-
+    <div>
+        <input type="text" name="buscar" value=""><button type="submit" name="btnBuscar">Buscar</button>
+    </div>
         </form>
     </div>
 
