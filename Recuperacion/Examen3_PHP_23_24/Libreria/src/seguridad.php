@@ -29,7 +29,7 @@ if($sentencia->rowCount()<=0)
         $conexion=null;
         session_unset();
         $_SESSION["seguridad"]="Usted ya no se encuentra registrado en la BD";
-        header("Location:index.php");
+        header("Location:".$salto);
         exit();
 }
 
@@ -42,7 +42,7 @@ if(time()-$_SESSION["ultm_accion"]>MINUTOS*60)
     $conexion=null;
     session_unset();
     $_SESSION["seguridad"]="Su tiempo de sesión ha expirado. Por favor vuelva a loguearse";
-    header("Location:index.php");
+    header("Location:".$salto);// depende donde estamos $salto varia; esta variable la cambiamos antes del require de seguridad
     exit();
 }
 // Paso el control de tiempo y lo renuevo

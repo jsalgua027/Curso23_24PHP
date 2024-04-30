@@ -468,7 +468,7 @@ $sentencia=null;
 
     if(isset($_POST["btnDetalles"]))
     {
-        require "vistas/vistas_admin/vista_conf_borrar.php";
+        require "vistas/vistas_admin/vista_detalles.php";
     }
 
     if(isset($_POST["btnEditar"]) || isset($_POST["btnContEditar"]) || isset($_POST["btnBorrarEditar"]) || isset($_POST["btnBorrarFoto"]) || isset($_POST["btnNoBorrarFoto"]) || isset($_POST["btnContBorrarFoto"]))

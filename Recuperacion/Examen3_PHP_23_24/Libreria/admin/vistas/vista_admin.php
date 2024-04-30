@@ -21,16 +21,22 @@ try {
 }
 $libros = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 $sentencia = null;
+
+
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica Rec 2</title>
+    <title>Document</title>
     <style>
+        .error {
+            color: red
+        }
+
         .en_linea {
             display: inline
         }
@@ -43,9 +49,19 @@ $sentencia = null;
             cursor: pointer
         }
 
-        .mensaje {
-            font-size: 1.25em;
-            color: blue
+        table {
+            border-collapse: collapse;
+            width: 23%;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black
+        }
+
+        th {
+            background-color: #CCC
         }
 
         .reducida {
@@ -54,6 +70,31 @@ $sentencia = null;
 
         .img_editar {
             width: 30%
+        }
+
+        .centrar {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .mensaje {
+            font-size: 1.25rem;
+            color: blue
+        }
+
+        #t_editar,
+        #t_editar td {
+            border: none
+        }
+
+        .centrado {
+            text-align: center;
+        }
+
+        .d_flex {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5em
         }
 
         .contenedor {
@@ -70,32 +111,28 @@ $sentencia = null;
 </head>
 
 <body>
-    <h1>Práctica Rec 2</h1>
+    <h1>ESTOY EN EL GESTOR DE LIBROS</h1>
     <div>
         Bienvenido <strong><?php echo $datos_usuario_log["lector"]; ?></strong> -
-        <form class="en_linea" action="index.php" method="post">
+        <form class="en_linea" action="../index.php" method="post">
             <button class="enlace" name="btnSalir" type="submit">Salir</button>
         </form>
     </div>
     <h1>Listado de los Libros</h1>
 
     <?php
-    echo "<div class='contenedor'>";
+    echo "<table class='contenedor'>";
+    echo"<tr><th>Ref</th><th>Título</th><th>Acción</th></tr>";
     foreach ($libros as $tupla) {
-        echo "<div class='list_libros'>";
-        echo "<img class='reducida' src='images/" . $tupla["portada"] . "' alt='Foto' title='Foto'></br>";
-        echo "<p>" . $tupla["titulo"] . " -- " . $tupla["precio"] . "</p>";
-        echo "</div>";
+       echo "<tr>";
+       echo "<td>".$tupla["referencia"]."</td>";
+       echo "<td>".$tupla["titulo"]."</td>";
+       echo "<td><form action='' method='post'><button class='enlace' type='submit' value='".$tupla["referencia"]."' name='btnBorrar'>Borrar</button>-<form action='' method='post'><button class='enlace' type='submit' value='".$tupla["referencia"]."' name='btnEditar'>Editar</button></form></td>";
+       echo"</tr>";
     }
-    echo "</div>";
-    if (isset($_SESSION["seguridad"])) {
-        echo "<p class='mensaje'>" . $_SESSION["seguridad"] . "</p>";
-        session_destroy();
-    }
+    echo "</table>";
 
     ?>
-
-
 </body>
 
 </html>
