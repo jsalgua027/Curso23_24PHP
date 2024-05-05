@@ -118,10 +118,13 @@ if ($_SESSION["regs_mostrar"] == -1) {
 
     try {
 
-        if ($_SESSION["buscar"] == "") {
+        if ($_SESSION["buscar"] == "")
+         {
             $consulta = "SELECT * FROM libros ";
-        } else {
-            $consulta = "SELECT * FROM libros  AND titulo LIKE '%" . $_SESSION["buscar"] . "%'";
+        } 
+        else
+         {
+            $consulta = "SELECT * FROM libros  WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%'";
         }
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute();
@@ -151,9 +154,9 @@ try {
     else 
     {
         if ($_SESSION["regs_mostrar"] == -1)
-            $consulta = "SELECT * FROM libros  AND titulo LIKE '%" . $_SESSION["buscar"] . "%'";
+            $consulta = "SELECT * FROM libros WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%'";
         else
-            $consulta = "SELECT * FROM libros  AND titulo LIKE '%" . $_SESSION["buscar"] . "%' LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
+            $consulta = "SELECT * FROM libros WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%' LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
     }
     $sentencia = $conexion->prepare($consulta);
     $sentencia->execute();
@@ -161,7 +164,7 @@ try {
     $sentencia = null;
     $conexion = null;
     session_destroy();
-    die(error_page("Práctica Rec 2", "<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+    die(error_page("Examen Rec_3", "<h1>Examne Rec_3</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
 }
 $libros = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 $sentencia = null;
