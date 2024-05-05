@@ -118,12 +118,9 @@ if ($_SESSION["regs_mostrar"] == -1) {
 
     try {
 
-        if ($_SESSION["buscar"] == "")
-         {
+        if ($_SESSION["buscar"] == "") {
             $consulta = "SELECT * FROM libros ";
-        } 
-        else
-         {
+        } else {
             $consulta = "SELECT * FROM libros  WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%'";
         }
         $sentencia = $conexion->prepare($consulta);
@@ -143,16 +140,13 @@ if ($_SESSION["regs_mostrar"] == -1) {
 
 try {
 
-    if ($_SESSION["buscar"] == "") 
-    {
-       
-            if ($_SESSION["regs_mostrar"] == -1)
-                $consulta = "SELECT * FROM libros";
-            else
-                $consulta = "SELECT * FROM libros LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
-    } 
-    else 
-    {
+    if ($_SESSION["buscar"] == "") {
+
+        if ($_SESSION["regs_mostrar"] == -1)
+            $consulta = "SELECT * FROM libros";
+        else
+            $consulta = "SELECT * FROM libros LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
+    } else {
         if ($_SESSION["regs_mostrar"] == -1)
             $consulta = "SELECT * FROM libros WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%'";
         else
