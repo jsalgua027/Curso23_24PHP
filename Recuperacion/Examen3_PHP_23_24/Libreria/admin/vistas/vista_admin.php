@@ -119,7 +119,9 @@ if ($_SESSION["regs_mostrar"] == -1) {
     try {
 
         if ($_SESSION["buscar"] == "") {
-            $consulta = "SELECT * FROM libros WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%'";
+            $consulta = "SELECT * FROM libros ";
+        } else {
+            $consulta = "SELECT * FROM libros  AND titulo LIKE '%" . $_SESSION["buscar"] . "%'";
         }
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute();
@@ -138,16 +140,20 @@ if ($_SESSION["regs_mostrar"] == -1) {
 
 try {
 
-    if ($_SESSION["buscar"] == "") {
+    if ($_SESSION["buscar"] == "") 
+    {
+       
+            if ($_SESSION["regs_mostrar"] == -1)
+                $consulta = "SELECT * FROM libros";
+            else
+                $consulta = "SELECT * FROM libros LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
+    } 
+    else 
+    {
         if ($_SESSION["regs_mostrar"] == -1)
-
-
-            $consulta = "SELECT * FROM libros  LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
-    } else {
-        if ($_SESSION["regs_mostrar"] == -1)
-            $consulta = "SELECT * FROM libros  Where titulo LIKE '%" . $_SESSION["buscar"] . "%'";
+            $consulta = "SELECT * FROM libros  AND titulo LIKE '%" . $_SESSION["buscar"] . "%'";
         else
-            $consulta = "SELECT * FROM libros  Where titulo LIKE '%" . $_SESSION["buscar"] . "%' LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
+            $consulta = "SELECT * FROM libros  AND titulo LIKE '%" . $_SESSION["buscar"] . "%' LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
     }
     $sentencia = $conexion->prepare($consulta);
     $sentencia->execute();
@@ -259,10 +265,10 @@ $sentencia = null;
             flex-wrap: wrap;
         }
 
-     .h1segundo
-     {
-        flex: 1 100%; 
-     }
+        .h1segundo {
+            flex: 1 100%;
+        }
+
         .buscador {
             flex: 1 100%;
         }
@@ -309,122 +315,122 @@ $sentencia = null;
                     <input type="text" name="buscar" value="<?php echo $_SESSION["buscar"]; ?>"><button type="submit" name="btnBuscar">Buscar</button>
                 </div>
         </div>
+        <?php
+        echo "<table class='contenedor'>";
+        echo "<tr><th>Ref</th><th>Título</th><th>Acción</th></tr>";
+        foreach ($libros as $tupla) {
+            echo "<tr>";
+            echo "<td>" . $tupla["referencia"] . "</td>";
+            echo "<td>" . $tupla["titulo"] . "</td>";
+            echo "<td><form action='' method='post'><button class='enlace' type='submit' value='" . $tupla["referencia"] . "' name='btnBorrar'>Borrar</button>-<button class='enlace' name='btnEditar' value='" . $tupla["referencia"] . "'>Editar</button></form></td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+        if ($n_pags > 1) {
+            echo "<div class='botones'>";
+            echo "<form action='gest_libros.php' method='post'>";
+            echo "<p>";
+            if ($_SESSION["pag"] != 1) {
+                echo "<button  type='submit' name='btnPag' value='1'>|<</button> ";
+                echo "<button  type='submit' name='btnPag' value='" . ($_SESSION["pag"] - 1) . "'><</button> ";
+            }
+
+            for ($i = 1; $i <= $n_pags; $i++) {
+                if ($_SESSION["pag"] == $i)
+                    echo "<button disabled type='submit' name='btnPag' value='" . $i . "'>" . $i . "</button> ";
+                else
+                    echo "<button  type='submit' name='btnPag' value='" . $i . "'>" . $i . "</button> ";
+            }
+            if ($_SESSION["pag"] != $n_pags) {
+                echo "<button  type='submit' name='btnPag' value='" . ($_SESSION["pag"] + 1) . "'>></button> ";
+                echo "<button  type='submit' name='btnPag' value='" . $n_pags . "'>>|</button> ";
+            }
+
+            echo "</p>";
+            echo "</form>";
+            echo "</div>";
+        }
+
+        ?>
+
+    </div>
+
+    </div>
+
+    <div class="tercero">
+        <h3>Agregar un libro nuevo</h3>
+        <form action="gest_libros.php" method="post" enctype="multipart/form-data">
+            <p>
+                <label for="referencia">Referencia:</label>
+                <input type="text" name="referencia" id="referencia" value="<?php if (isset($_POST["referencia"])) echo $_POST["referencia"]; ?>">
                 <?php
-                echo "<table class='contenedor'>";
-                echo "<tr><th>Ref</th><th>Título</th><th>Acción</th></tr>";
-                foreach ($libros as $tupla) {
-                    echo "<tr>";
-                    echo "<td>" . $tupla["referencia"] . "</td>";
-                    echo "<td>" . $tupla["titulo"] . "</td>";
-                    echo "<td><form action='' method='post'><button class='enlace' type='submit' value='" . $tupla["referencia"] . "' name='btnBorrar'>Borrar</button>-<button class='enlace' name='btnEditar' value='" . $tupla["referencia"] . "'>Editar</button></form></td>";
-                    echo "</tr>";
+                if (isset($_POST["referencia"]) && $error_referencia) {
+                    if ($_POST["referencia"] == "")
+                        echo "<span class='error'> Campo Vacío</span>";
+                    elseif (!is_numeric($_POST["referencia"]) || $_POST["referencia"] < 0)
+                        echo "<span class='error'> Referencia no es un número mayor o igual que cero</span>";
+                    else
+                        echo "<span class='error'> Referencia repetida</span>";
                 }
-                echo "</table>";
-                if ($n_pags > 1) {
-                    echo "<div class='botones'>";
-                    echo "<form action='gest_libros.php' method='post'>";
-                    echo "<p>";
-                    if ($_SESSION["pag"] != 1) {
-                        echo "<button  type='submit' name='btnPag' value='1'>|<</button> ";
-                        echo "<button  type='submit' name='btnPag' value='" . ($_SESSION["pag"] - 1) . "'><</button> ";
-                    }
-
-                    for ($i = 1; $i <= $n_pags; $i++) {
-                        if ($_SESSION["pag"] == $i)
-                            echo "<button disabled type='submit' name='btnPag' value='" . $i . "'>" . $i . "</button> ";
-                        else
-                            echo "<button  type='submit' name='btnPag' value='" . $i . "'>" . $i . "</button> ";
-                    }
-                    if ($_SESSION["pag"] != $n_pags) {
-                        echo "<button  type='submit' name='btnPag' value='" . ($_SESSION["pag"] + 1) . "'>></button> ";
-                        echo "<button  type='submit' name='btnPag' value='" . $n_pags . "'>>|</button> ";
-                    }
-
-                    echo "</p>";
-                    echo "</form>";
-                    echo "</div>";
+                ?>
+            </p>
+            <p>
+                <label for="titulo">Título:</label>
+                <input type="text" name="titulo" id="titulo" value="<?php if (isset($_POST["titulo"])) echo $_POST["titulo"]; ?>">
+                <?php
+                if (isset($_POST["titulo"]) && $error_titulo)
+                    echo "<span class='error'> Campo Vacío</span>";
+                ?>
+            </p>
+            <p>
+                <label for="autor">Autor:</label>
+                <input type="text" name="autor" id="autor" value="<?php if (isset($_POST["autor"])) echo $_POST["autor"]; ?>">
+                <?php
+                if (isset($_POST["autor"]) && $error_autor)
+                    echo "<span class='error'> Campo Vacío</span>";
+                ?>
+            </p>
+            <p>
+                <label for="descripcion">Descripción:</label>
+                <textarea name="descripcion" id="descripcion"><?php if (isset($_POST["descripcion"])) echo $_POST["descripcion"]; ?></textarea>
+                <?php
+                if (isset($_POST["descripcion"]) && $error_descripcion)
+                    echo "<span class='error'> Campo Vacío</span>";
+                ?>
+            </p>
+            <p>
+                <label for="precio">Precio:</label>
+                <input type="text" name="precio" id="precio" value="<?php if (isset($_POST["precio"])) echo $_POST["precio"]; ?>">
+                <?php
+                if (isset($_POST["precio"]) && $error_precio) {
+                    if ($_POST["precio"] == "")
+                        echo "<span class='error'> Campo Vacío</span>";
+                    else
+                        echo "<span class='error'> El precio debe ser un número mayor que cero</span>";
+                }
+                ?>
+            </p>
+            <p>
+                <label for="portada">Portada:</label>
+                <input type="file" name="portada" id="portada" accept="image/*">
+                <?php
+                if (isset($_POST["btnAgregar"]) && $error_portada) {
+                    if ($_FILES["portada"]["error"])
+                        echo "<span class='error'>Error en la subida del fichero</span>";
+                    elseif (!explode(".", $_FILES["portada"]["name"]))
+                        echo "<span class='error'>El archivo seleccionado no tiene extensión</span>";
+                    elseif (!getimagesize($_FILES["portada"]["tmp_name"]))
+                        echo "<span class='error'>El archivo seleccionado no es un archivo imagen</span>";
+                    else
+                        echo "<span class='error'>El archivo seleccionado supera los 750KB</span>";
                 }
 
                 ?>
-
-    </div>
-
-    </div>
-
-        <div class="tercero">
-            <h3>Agregar un libro nuevo</h3>
-            <form action="gest_libros.php" method="post" enctype="multipart/form-data">
-                <p>
-                    <label for="referencia">Referencia:</label>
-                    <input type="text" name="referencia" id="referencia" value="<?php if (isset($_POST["referencia"])) echo $_POST["referencia"]; ?>">
-                    <?php
-                    if (isset($_POST["referencia"]) && $error_referencia) {
-                        if ($_POST["referencia"] == "")
-                            echo "<span class='error'> Campo Vacío</span>";
-                        elseif (!is_numeric($_POST["referencia"]) || $_POST["referencia"] < 0)
-                            echo "<span class='error'> Referencia no es un número mayor o igual que cero</span>";
-                        else
-                            echo "<span class='error'> Referencia repetida</span>";
-                    }
-                    ?>
-                </p>
-                <p>
-                    <label for="titulo">Título:</label>
-                    <input type="text" name="titulo" id="titulo" value="<?php if (isset($_POST["titulo"])) echo $_POST["titulo"]; ?>">
-                    <?php
-                    if (isset($_POST["titulo"]) && $error_titulo)
-                        echo "<span class='error'> Campo Vacío</span>";
-                    ?>
-                </p>
-                <p>
-                    <label for="autor">Autor:</label>
-                    <input type="text" name="autor" id="autor" value="<?php if (isset($_POST["autor"])) echo $_POST["autor"]; ?>">
-                    <?php
-                    if (isset($_POST["autor"]) && $error_autor)
-                        echo "<span class='error'> Campo Vacío</span>";
-                    ?>
-                </p>
-                <p>
-                    <label for="descripcion">Descripción:</label>
-                    <textarea name="descripcion" id="descripcion"><?php if (isset($_POST["descripcion"])) echo $_POST["descripcion"]; ?></textarea>
-                    <?php
-                    if (isset($_POST["descripcion"]) && $error_descripcion)
-                        echo "<span class='error'> Campo Vacío</span>";
-                    ?>
-                </p>
-                <p>
-                    <label for="precio">Precio:</label>
-                    <input type="text" name="precio" id="precio" value="<?php if (isset($_POST["precio"])) echo $_POST["precio"]; ?>">
-                    <?php
-                    if (isset($_POST["precio"]) && $error_precio) {
-                        if ($_POST["precio"] == "")
-                            echo "<span class='error'> Campo Vacío</span>";
-                        else
-                            echo "<span class='error'> El precio debe ser un número mayor que cero</span>";
-                    }
-                    ?>
-                </p>
-                <p>
-                    <label for="portada">Portada:</label>
-                    <input type="file" name="portada" id="portada" accept="image/*">
-                    <?php
-                    if (isset($_POST["btnAgregar"]) && $error_portada) {
-                        if ($_FILES["portada"]["error"])
-                            echo "<span class='error'>Error en la subida del fichero</span>";
-                        elseif (!explode(".", $_FILES["portada"]["name"]))
-                            echo "<span class='error'>El archivo seleccionado no tiene extensión</span>";
-                        elseif (!getimagesize($_FILES["portada"]["tmp_name"]))
-                            echo "<span class='error'>El archivo seleccionado no es un archivo imagen</span>";
-                        else
-                            echo "<span class='error'>El archivo seleccionado supera los 750KB</span>";
-                    }
-
-                    ?>
-                </p>
-                <p>
-                    <button type="submit" name="btnAgregar">Agregar</button>
-                </p>
-            </form>
+            </p>
+            <p>
+                <button type="submit" name="btnAgregar">Agregar</button>
+            </p>
+        </form>
 
 </body>
 
