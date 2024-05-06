@@ -80,7 +80,7 @@ if (isset($_POST["btnBorrar"])) {
         $sentencia = null;
         $conexion = null;
         session_destroy();
-        die(error_page("Práctica Rec 2", "<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+        die(error_page("Examen 3 Rec", "<h1>Examen 3 Rec</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
     }
 }
 if (isset($_POST["btnEditar"])) {
@@ -88,6 +88,30 @@ if (isset($_POST["btnEditar"])) {
     $conexion = null;
     header("Location:gest_libros.php");
     exit;
+}
+// detalle
+if(isset($_POST["btnDetalle"]))
+{
+
+    try{
+    
+        $consulta = "select * from libros where referencia=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$_POST["btnDetalle"]]);
+        if($sentencia->rowCount()>0)
+          $detalle_libro=$sentencia->fetch(PDO::FETCH_ASSOC);
+        else
+          $detalle_libro=false;
+
+        $sentencia=null;
+    }
+    catch(PDOException $e){
+        $sentencia=null;
+        $conexion=null;
+        session_destroy();
+        die(error_page("Examen 3 Rec", "<h1>Examen 3 Rec</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+    }
+
 }
 /*Aqui la gestion de paginación*/
 if (isset($_POST["btnPag"]))
@@ -289,6 +313,29 @@ $sentencia = null;
         </form>
     </div>
     <?php
+    if(isset($_POST["btnDetalle"]))
+    {
+    //aqui muestro el detalle del libro 
+
+    echo "<div class='centrar centrado'>";
+    echo "<h3>Detalles del Libro  con referencia: ".$_POST["btnDetalle"]."</h3>";
+    if($detalle_libro)
+    {
+        echo "<p><strong>Referencia: </strong>".$detalle_libro["referencia"]."</p>";
+        echo "<p><strong>Título: </strong>".$detalle_libro["titulo"]."</p>";
+        echo "<p><strong>Autor: </strong>".$detalle_libro["autor"]."</p>";
+        echo "<p><strong>Descripcion: </strong>".$detalle_libro["descripcion"]."</p>";
+        echo "<p><strong>Precio: </strong>".$detalle_libro["precio"]."</p>";
+        echo "<p><strong>Foto: </strong><img class='reducida' src='../images/".$detalle_libro["portada"]."' alt='Foto' title='Foto'/></p>";
+    }
+    else
+        echo "<p>El usuario seleccionado ya no se encuentra en la BD</p>";
+    echo "</div>";
+
+
+    }
+
+
     if (isset($_SESSION["accion"])) {
         echo "<p class='mensaje'>" . $_SESSION["accion"] . "</p>";
         unset($_SESSION["accion"]);
@@ -318,8 +365,8 @@ $sentencia = null;
         foreach ($libros as $tupla) {
             echo "<tr>";
             echo "<td>" . $tupla["referencia"] . "</td>";
-            echo "<td>" . $tupla["titulo"] . "</td>";
-            echo "<td><form action='' method='post'><button class='enlace' type='submit' value='" . $tupla["referencia"] . "' name='btnBorrar'>Borrar</button>-<button class='enlace' name='btnEditar' value='" . $tupla["referencia"] . "'>Editar</button></form></td>";
+            echo "<td><form action='gest_libros.php' method='post'><button class='enlace' type='submit' value='" . $tupla["referencia"] . "' name='btnDetalle'>" . $tupla["titulo"] . "</button>";
+            echo "<td><form action='gest_libros.php' method='post'><button class='enlace' type='submit' value='" . $tupla["referencia"] . "' name='btnBorrar'>Borrar</button>-<button class='enlace' name='btnEditar' value='" . $tupla["referencia"] . "'>Editar</button></form></td>";
             echo "</tr>";
         }
         echo "</table>";

@@ -61,5 +61,20 @@ function repetido_editando($conexion, $tabla, $columna, $valor,$columna_clave,$v
     return $respuesta;
 }
 
+function consumir_servicios_REST($url,$metodo,$datos=null)
+{
+    $llamada=curl_init();
+    curl_setopt($llamada,CURLOPT_URL,$url);
+    curl_setopt($llamada,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($llamada,CURLOPT_CUSTOMREQUEST,$metodo);
+    if(isset($datos))
+        curl_setopt($llamada,CURLOPT_POSTFIELDS,http_build_query($datos));
+    $respuesta=curl_exec($llamada);
+    curl_close($llamada);
+    return $respuesta;
+}
+
+//define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/segunda_api");//clase
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/teo_SW/segunda_api");//casa
 
 ?>

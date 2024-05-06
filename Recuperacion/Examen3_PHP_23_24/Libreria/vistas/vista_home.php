@@ -50,6 +50,7 @@ if (isset($_POST["btnEntrar"])) {
 
 
 /*****consulta para mostra la tabla******/
+/*
 try {
     $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 } catch (PDOException $e) {
@@ -70,8 +71,20 @@ try {
 }
 $libros = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 $sentencia = null;
-
-
+*/
+$url=DIR_SERV."/obtenerLibros";
+$respuesta=consumir_servicios_REST($url,"GET");
+$obj=json_decode($respuesta,true);
+if(!$obj)
+ {
+     session_destroy();
+     die("<p>Error consumiendo el servicio: ".$url."</p></body></html>");
+ }
+ if(isset($obj->error))
+ {
+     session_destroy();
+     die("<p>".$obj->error."</p></body></html>");
+ }
 
 ?>
 <!DOCTYPE html>
@@ -199,10 +212,10 @@ $sentencia = null;
 
     <?php
     echo "<div class='contenedor'>";
-    foreach ($libros as $tupla) {
+    foreach ($obj->libros as $tupla) {
         echo "<div class='list_libros'>";
-        echo "<img class='reducida' src='images/" . $tupla["portada"] . "' alt='Foto' title='Foto'></br>";
-        echo "<p>" . $tupla["titulo"] . " -- " . $tupla["precio"] . "</p>";
+        echo "<img class='reducida' src='images/" . $tupla->portada . "' alt='Foto' title='Foto'></br>";
+        echo "<p>" . $tupla->titulo . " -- " . $tupla->precio . "</p>";
         echo "</div>";
     }
     echo "</div>";

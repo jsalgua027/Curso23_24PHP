@@ -14,9 +14,7 @@ hay que hacer los servicios de el ejercicio examen 3
 // metodo para obtener los libros
 $app->get("/obtener_libros",function(){
 
-    $respuestas["libros"]="Json con todos los libros";
-
-    echo json_encode($respuestas);
+    echo json_encode(obtener_libros());
 
 });
 
