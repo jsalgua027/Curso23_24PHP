@@ -12,8 +12,8 @@ function consumir_servicios_REST($url,$metodo,$datos=null)
     return $respuesta;
 }
 
-define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/primera_api");
-
+//define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/primera_api");//clase
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/teo_SW/primera_api");//casa
 
 ?>
 
@@ -30,7 +30,7 @@ define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recupe
 <h1>Página para probar primera API</h1>
 <?php
 // metodo GET
-    $respuesta=consumir_servicios_REST("http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/primera_api/saludo","GET"); // aqui no uso la constante
+    $respuesta=consumir_servicios_REST("http://localhost/Proyectos/Curso23_24PHP/Recuperacion/teo_SW/primera_api/saludo","GET"); // aqui no uso la constante
 
     $json= json_decode($respuesta,true);
     if(!$json)

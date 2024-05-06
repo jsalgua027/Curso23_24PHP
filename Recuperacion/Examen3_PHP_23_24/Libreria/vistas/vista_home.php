@@ -72,7 +72,10 @@ try {
 $libros = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 $sentencia = null;
 */
-$url=DIR_SERV."/obtenerLibros";
+
+
+
+$url=DIR_SERV."/obtener_libros";
 $respuesta=consumir_servicios_REST($url,"GET");
 $obj=json_decode($respuesta,true);
 if(!$obj)
