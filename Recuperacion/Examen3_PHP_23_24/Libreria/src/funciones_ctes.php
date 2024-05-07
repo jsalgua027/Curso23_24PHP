@@ -74,7 +74,7 @@ function consumir_servicios_REST($url,$metodo,$datos=null)
     return $respuesta;
 }
 
-//define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/segunda_api");//clase
-define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/teo_SW/segunda_api");//casa
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/segunda_api");//clase
+//define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/teo_SW/segunda_api");//casa
 
 ?>
