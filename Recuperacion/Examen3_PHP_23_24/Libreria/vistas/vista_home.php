@@ -77,7 +77,8 @@ $sentencia = null;
 
 $url=DIR_SERV."/obtener_libros";
 $respuesta=consumir_servicios_REST($url,"GET");
-$obj=json_decode($respuesta,true);
+//$obj=json_decode($respuesta,true); // asi te traes el array asociativo
+$obj=json_decode($respuesta); // asi te tres el objeto
 if(!$obj)
  {
      session_destroy();
@@ -214,6 +215,17 @@ if(!$obj)
     <h1>Listado de los Libros</h1>
 
     <?php
+    /*
+    //si te traes el array asociativo 
+    echo "<div class='contenedor'>";
+    foreach ($obj["libros"] as $tupla) {
+        echo "<div class='list_libros'>";
+        echo "<img class='reducida' src='images/" .$tupla['portada'] . "' alt='Foto' title='Foto'></br>";
+        echo "<p>" . $tupla['titulo'] . " -- " .$tupla['precio'] . "</p>";
+        echo "</div>";
+    }
+    */
+    // si te traes el objeto 
     echo "<div class='contenedor'>";
     foreach ($obj->libros as $tupla) {
         echo "<div class='list_libros'>";
@@ -221,6 +233,7 @@ if(!$obj)
         echo "<p>" . $tupla->titulo . " -- " . $tupla->precio . "</p>";
         echo "</div>";
     }
+
     echo "</div>";
 
     ?>

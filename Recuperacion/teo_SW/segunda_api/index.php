@@ -2,13 +2,10 @@
 
 require __DIR__ . '/Slim/autoload.php';
 $app= new \Slim\App;
-/*http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/primera_api/(saludo)
-primer argumento es camino (la llamada)
-hay que hacer los servicios de el ejercicio examen 3
-*/
+
 // metodos de logueado
 
-
+require "src/funciones_ctes.php";
 
 
 // metodo para obtener los libros

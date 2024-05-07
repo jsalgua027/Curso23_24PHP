@@ -1,5 +1,5 @@
 <?php
-require "config_bd.php";
+require "src/config_bd.php";
 
 function obtener_libros()
 {
@@ -15,6 +15,10 @@ function obtener_libros()
         $consulta="select * from libros";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute();
+        $respuesta["libros"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
     }
     catch(PDOException $e){
         $respuesta["error"]="Imposible realizar la consulta:".$e->getMessage();
@@ -24,13 +28,7 @@ function obtener_libros()
     }
     
     
-   $respuesta["libros"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
-       
-    
-
-    $sentencia=null;
-    $conexion=null;
-    return $respuesta;
+  
 }
 
 ?>
