@@ -1,5 +1,7 @@
 <?php
 if (isset($_POST["btnAgregar"])) {
+
+
     $error_referencia = $_POST["referencia"] == "" || !is_numeric($_POST["referencia"]) || $_POST["referencia"] < 0;
     if (!$error_referencia) {
         $error_referencia = repetido($conexion, "libros", "referencia", $_POST["referencia"]);
@@ -83,13 +85,58 @@ if (isset($_POST["btnBorrar"])) {
         die(error_page("Examen 3 Rec", "<h1>Examen 3 Rec</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
     }
 }
+// si le doy a editar me traigo al libro con su referencia
 if (isset($_POST["btnEditar"])) {
-    $_SESSION["accion"] = "EL libro con referencia " . $_POST["btnEditar"] . " se ha editado con éxito";
-    $conexion = null;
-    header("Location:gest_libros.php");
-    exit;
+    try{
+        $referencia=$_POST["btnEditar"];
+        $consulta = "select * from libros where referencia=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$referencia]);
+        if($sentencia->rowCount()>0)
+        {
+            $datos_libro=$sentencia->fetch(PDO::FETCH_ASSOC);
+            $referencia=$datos_libro["referencia"];
+            $titulo=$datos_libro["titulo"];
+            $autor=$datos_libro["autor"];
+            $descripcion=$datos_libro["descripcion"];
+            $precio=$datos_libro["precio"];
+          
+
+        }
+        $sentencia=null;
+    }
+    catch(PDOException $e){
+        $sentencia=null;
+        $conexion=null;
+        session_destroy();
+        die(error_page("Examen 3 Rec", "<h1>Examen 3 Rec</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+    }
 }
-// detalle
+// control de errores del continuar EDTAR !!!!!!!
+
+if(isset($_POST["btnConEditar"]))
+{
+
+    $error_referencia = $_POST["referencia"] == "" || !is_numeric($_POST["referencia"]) || $_POST["referencia"] < 0;
+    if (!$error_referencia) {
+        $error_referencia = repetido($conexion, "libros", "referencia", $_POST["referencia"]);
+        if (is_string($error_referencia)) {
+            session_destroy();
+            $conexion = null;
+            die(error_page("Examen3 Curso 23-24", "<h1>Librería</h1><p>Error en la consulta: " . $error_referencia . "</p>"));
+        }
+    }
+    $error_titulo = $_POST["titulo"] == "";
+    $error_autor = $_POST["autor"] == "";
+    $error_descripcion = $_POST["descripcion"] == "";
+    $error_precio = $_POST["precio"] == "" || !is_numeric($_POST["precio"]) || $_POST["precio"] <= 0;
+    $array_nombre = explode(".", $_FILES["portada"]["name"]);
+    $error_portada = $_FILES["portada"]["name"] != "" && ($_FILES["portada"]["error"] || !$array_nombre || !getimagesize($_FILES["portada"]["tmp_name"]) || $_FILES["portada"]["size"] > 750 * 1024);
+    $error_form = $error_referencia || $error_titulo || $error_autor || $error_descripcion || $error_precio || $error_portada;
+
+}
+
+// detalle del libro
 if(isset($_POST["btnDetalle"]))
 {
 
@@ -400,8 +447,11 @@ $sentencia = null;
     </div>
 
     </div>
-
-    <div class="tercero">
+<?php 
+if(!isset($_POST["btnEditar"]))
+{
+?>
+<div class="tercero">
         <h3>Agregar un libro nuevo</h3>
         <form action="gest_libros.php" method="post" enctype="multipart/form-data">
             <p>
@@ -475,7 +525,94 @@ $sentencia = null;
                 <button type="submit" name="btnAgregar">Agregar</button>
             </p>
         </form>
+<?php
+}
+?>
+    
 
+
+<?php
+/*********************************************EDITAR************************************************/
+if(isset($_POST["btnEditar"])|| isset($_POST["btnConEditar"]))
+{
+?>
+    <div class="tercero">
+    <h3>Formulario Editar</h3>
+    <form action="gest_libros.php" method="post" enctype="multipart/form-data">
+        <p>
+            <label for="referencia">Referencia:</label>
+            <input type="text" name="referencia" id="referencia" value="<?php echo $referencia; ?>">
+            <?php
+            if (isset($_POST["referencia"]) && $error_referencia) {
+                if ($_POST["referencia"] == "")
+                    echo "<span class='error'> Campo Vacío</span>";
+                elseif (!is_numeric($_POST["referencia"]) || $_POST["referencia"] < 0)
+                    echo "<span class='error'> Referencia no es un número mayor o igual que cero</span>";
+                else
+                    echo "<span class='error'> Referencia repetida</span>";
+            }
+            ?>
+        </p>
+        <p>
+            <label for="titulo">Título:</label>
+            <input type="text" name="titulo" id="titulo" value="<?php echo $titulo; ?>">
+            <?php
+            if (isset($_POST["titulo"]) && $error_titulo)
+                echo "<span class='error'> Campo Vacío</span>";
+            ?>
+        </p>
+        <p>
+            <label for="autor">Autor:</label>
+            <input type="text" name="autor" id="autor" value="<?php echo $autor; ?>">
+            <?php
+            if (isset($_POST["autor"]) && $error_autor)
+                echo "<span class='error'> Campo Vacío</span>";
+            ?>
+        </p>
+        <p>
+            <label for="descripcion">Descripción:</label>
+            <textarea name="descripcion" id="descripcion"><?php echo $descripcion; ?></textarea>
+            <?php
+            if (isset($_POST["descripcion"]) && $error_descripcion)
+                echo "<span class='error'> Campo Vacío</span>";
+            ?>
+        </p>
+        <p>
+            <label for="precio">Precio:</label>
+            <input type="text" name="precio" id="precio" value="<?php echo $precio; ?>">
+            <?php
+            if (isset($_POST["precio"]) && $error_precio) {
+                if ($_POST["precio"] == "")
+                    echo "<span class='error'> Campo Vacío</span>";
+                else
+                    echo "<span class='error'> El precio debe ser un número mayor que cero</span>";
+            }
+            ?>
+        </p>
+        <p>
+            <label for="portada">Portada:</label>
+            <input type="file" name="portada" id="portada" accept="image/*">
+            <?php
+            if (isset($_POST["btnContEditar"]) && $error_portada) {
+                if ($_FILES["portada"]["error"])
+                    echo "<span class='error'>Error en la subida del fichero</span>";
+                elseif (!explode(".", $_FILES["portada"]["name"]))
+                    echo "<span class='error'>El archivo seleccionado no tiene extensión</span>";
+                elseif (!getimagesize($_FILES["portada"]["tmp_name"]))
+                    echo "<span class='error'>El archivo seleccionado no es un archivo imagen</span>";
+                else
+                    echo "<span class='error'>El archivo seleccionado supera los 750KB</span>";
+            }
+
+            ?>
+        </p>
+        <p>
+            <button type="submit" name="btnContEditar">Editar Libro</button>
+        </p>
+    </form>
+<?php
+}
+?>
 </body>
 
 </html>
