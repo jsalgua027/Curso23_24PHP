@@ -29,7 +29,7 @@ try {
     $stmt->execute();
 
     // Obtener el ID del pedido recién insertado
-    $id_pedido = $conn->lastInsertId();
+    $id_pedido =$pdo->lastInsertId();
 
     // Insertar los productos y cantidades asociados con el pedido en la tabla de pedido_producto
     foreach ($data['productos'] as $producto) {
