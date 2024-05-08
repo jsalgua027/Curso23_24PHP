@@ -8,8 +8,8 @@ define("NOMBRE_BD","bd_rec_cv");
 define("MINUTOS",55);
 
 define("FOTO_DEFECTO","no_imagen.jpg");
-//6LeOHMQpAAAAAHXdsCYDHDTG4tYXaetSYitMeq3V  clave sercreta
-define("RECAPTCHA_V3_SECRET_KEY", '6LeOHMQpAAAAAHXdsCYDHDTG4tYXaetSYitMeq3V');
+
+define("RECAPTCHA_V3_SECRET_KEY", '6LeclMUpAAAAAEWK6dHXL83DFHFaxFWE9f0LiRV2');
 function consumir_servicios_REST($url,$metodo,$datos=null)
 {
     $llamada=curl_init();
