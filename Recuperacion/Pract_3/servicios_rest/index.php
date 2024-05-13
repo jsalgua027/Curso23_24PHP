@@ -57,7 +57,7 @@ $app->post("/insertar_usuario",function($request){
 });
 
 
-$app->put("/actualizar_foto/{id_usuario}",function($request){
+$app->put("/actualizar_foto",function($request){
 
     $datos[]=$request->getParam("nombre_foto");
     $datos[]=$request->getParam("id_usuario");

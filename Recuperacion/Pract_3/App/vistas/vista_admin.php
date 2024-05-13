@@ -163,25 +163,44 @@ if(isset($_POST["btnContNuevo"]))
     $error_usuario=$_POST["usuario"]=="";
     if(!$error_usuario)
     {
-        $error_usuario=repetido($conexion,"usuarios","usuario",$_POST["usuario"]);
-        if(is_string($error_usuario))
+        $respuesta=consumir_servicios_REST(DIR_SERV."/repetido_insert/usuarios/usuario/".$_POST["usuario"],"GET");
+        $json=json_decode($respuesta,true);
+        if(!$json)
         {
-            $conexion=null;
             session_destroy();
-            die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>".$error_usuario."</p>"));
+            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
         }
+
+        if(isset($json["error_bd"]))
+        {
+            session_destroy();
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+        }
+        $error_usuario=$json["repetido"];
+
     }
     $error_clave=$_POST["clave"]=="";
     $error_dni=$_POST["dni"]=="" || !dni_bien_escrito($_POST["dni"]) || !dni_valido($_POST["dni"]);
     if(!$error_dni)
     {
-        $error_dni=repetido($conexion,"usuarios","dni",strtoupper($_POST["dni"]));
-        if(is_string($error_dni))
+
+        $respuesta=consumir_servicios_REST(DIR_SERV."/repetido_insert/usuarios/dni/".strtoupper($_POST["dni"]),"GET");
+        $json=json_decode($respuesta,true);
+        if(!$json)
         {
-            $conexion=null;
             session_destroy();
-            die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>".$error_dni."</p>"));
+            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
         }
+
+        if(isset($json["error_bd"]))
+        {
+            session_destroy();
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+        }
+        $error_dni=$json["repetido"];
+
     }
  
     $error_foto=$_FILES["foto"]["name"]!="" && ($_FILES["foto"]["error"] || !explode(".", $_FILES["foto"]["name"])|| !getimagesize($_FILES["foto"]["tmp_name"] ) || $_FILES["foto"]["size"]>500*1024);//Foto no obligatoria
@@ -191,51 +210,61 @@ if(isset($_POST["btnContNuevo"]))
     if(!$error_form)
     {
 
-        try{
-            if(isset($_POST["subscripcion"]))
-                $subs=1;
-            else
-                $subs=0;
+        $datos_env_insert["usuario"]=$_POST["usuario"];
+        $datos_env_insert["nombre"]=$_POST["nombre"];
+        $datos_env_insert["clave"]=md5($_POST["clave"]);
+        $datos_env_insert["dni"]=strtoupper($_POST["dni"]);
+        $datos_env_insert["sexo"]=$_POST["sexo"];
+        if(isset($_POST["subscripcion"]))
+            $datos_env_insert["subscripcion"]=1;
+        else
+            $datos_env_insert["subscripcion"]=0;
 
-            $consulta = "insert into usuarios (usuario,nombre,clave,dni,sexo,subscripcion) values (?,?,?,?,?,?)";
-            $sentencia=$conexion->prepare($consulta);
-            $sentencia->execute([$_POST["usuario"],$_POST["nombre"],md5($_POST["clave"]),strtoupper($_POST["dni"]),$_POST["sexo"],$subs]);
-            $sentencia=null;
-          
-        }
-        catch(PDOException $e){
-            $sentencia=null;
-            $conexion=null;
+        
+        $respuesta=consumir_servicios_REST(DIR_SERV."/insertar_usuario","POST",$datos_env_insert);
+        $json=json_decode($respuesta,true);
+        if(!$json)
+        {
             session_destroy();
-            die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:".$e->getMessage()."</p>"));
+            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
         }
-       
-        $mensaje="Uusario insertado con éxito";
+    
+        if(isset($json["error_bd"]))
+        {
+            session_destroy();
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+        }
+
+        $mensaje="Usuario insertado con éxito";
 
         if($_FILES["foto"]["name"]!="")
         {
-            $ultm_id=$conexion->lastInsertId();
+            $ultm_id=$json["ultm_id"];
             $array_ext=explode(".", $_FILES["foto"]["name"]);
             $ext=".".end($array_ext);
             $nombre_nuevo="img_".$ultm_id.$ext;
             @$var=move_uploaded_file($_FILES["foto"]["tmp_name"],"images/".$nombre_nuevo);
             if($var)
             {
-                try{
-                  
-                    $consulta = "update usuarios set foto=? where id_usuario=?";
-                    $sentencia=$conexion->prepare($consulta);
-                    $sentencia->execute([$nombre_nuevo, $ultm_id]);
-                    $sentencia=null;
-                  
+                $datos_env_act["nombre_foto"]=$nombre_nuevo;
+                $datos_env_act["id_usuario"]=$ultm_id;
+                $respuesta=consumir_servicios_REST(DIR_SERV."/actualizar","PUT",$datos_env_act);
+                $json=json_decode($respuesta,true);
+                if(!$json)
+                {
+                    session_destroy();
+                    die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
                 }
-                catch(PDOException $e){
+            
+                if(isset($json["error_bd"]))
+                {
                     if(file_exists("images/".$nombre_nuevo))
                         unlink("images/".$nombre_nuevo);
-                    $sentencia=null;
-                    $conexion=null;
+                    
                     $mensaje="Usuario insertado con éxito pero con la imagen por defecto por un problema en la BD del servidor";
                 }
+                
             }
             else
             {
@@ -244,7 +273,6 @@ if(isset($_POST["btnContNuevo"]))
           
         }
 
-        $conexion=null;
         $_SESSION["mensaje_accion"]=$mensaje;
         header("Location:index.php");
         exit();
@@ -254,27 +282,39 @@ if(isset($_POST["btnContNuevo"]))
 
 if(isset($_POST["btnContBorrar"]))
 {
-    try{
-    
-        $consulta = "DELETE from usuarios where id_usuario=?";
-        $sentencia=$conexion->prepare($consulta);
-        $sentencia->execute([$_POST["btnContBorrar"]]);
-        if($_POST["foto"]!=FOTO_DEFECTO && file_exists("images/".$_POST["foto"]))
-            unlink("images/".$_POST["foto"]);
 
-        $sentencia=null;
-        $conexion=null;
-        $_SESSION["mensaje_accion"]="Usuario borrado con éxito";
-        $_SESSION["pag"]=1;//Al poner paginación cuándo borro siempre me voy página
-        header("Location:index.php");
-        exit;
-    }
-    catch(PDOException $e){
-        $sentencia=null;
-        $conexion=null;
+    $respuesta=consumir_servicios_REST(DIR_SERV."/borrar_usuario/".$_POST["btnContBorrar"],"DELETE",$datos_env);
+    $json=json_decode($respuesta,true);
+    if(!$json)
+    {
         session_destroy();
-        die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:".$e->getMessage()."</p>"));
+        die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
     }
+
+    if(isset($json["error_bd"]))
+    {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+        die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+    }
+
+    if(isset($json["no_auth"]))
+    {
+        session_unset();
+        $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        header("Location:index.php");
+        exit();
+    }
+
+    if($_POST["foto"]!=FOTO_DEFECTO && file_exists("images/".$_POST["foto"]))
+         unlink("images/".$_POST["foto"]);
+
+    $_SESSION["mensaje_accion"]="Usuario borrado con éxito";
+    $_SESSION["pag"]=1;//Al poner paginación cuándo borro siempre me voy página
+    header("Location:index.php");
+    exit;
+    
 }
 
 if(isset($_POST["btnEditar"]) || isset($_POST["btnBorrarEditar"]))
@@ -314,25 +354,37 @@ if(isset($_POST["btnEditar"]) || isset($_POST["btnBorrarEditar"]))
 
 if(isset($_POST["btnDetalles"]))
 {
-    try{
-    
-        $consulta = "select * from usuarios where id_usuario=?";
-        $sentencia=$conexion->prepare($consulta);
-        $sentencia->execute([$_POST["btnDetalles"]]);
-        if($sentencia->rowCount()>0)
-            $detalles_usu=$sentencia->fetch(PDO::FETCH_ASSOC);
-        else
-            $detalles_usu=false;
-
-        $sentencia=null;
-    }
-    catch(PDOException $e){
-        $sentencia=null;
-        $conexion=null;
+    $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_detalles/".$_POST["btnDetalles"],"GET",$datos_env);
+    $json=json_decode($respuesta,true);
+    if(!$json)
+    {
         session_destroy();
-        die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:".$e->getMessage()."</p>"));
+        die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
     }
+
+    if(isset($json["error_bd"]))
+    {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+        die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+    }
+
+    if(isset($json["no_auth"]))
+    {
+        session_unset();
+        $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        header("Location:index.php");
+        exit();
+    }
+
+    $detalles_usu=$json["usuario"];
+
+
 }
+
+
+
 
 ///Código para paginación
 if(isset($_POST["btnPag"]))
@@ -360,6 +412,7 @@ if(!isset($_SESSION["buscar"]))
     $_SESSION["buscar"]="";
 
 
+
 if($_SESSION["regs_mostrar"]==-1)
 {
     $n_pags=1;
@@ -368,32 +421,44 @@ else
 {
     $ini_pag=($_SESSION["pag"]-1)*$_SESSION["regs_mostrar"];
 
-    try{
+   
         
-        if($_SESSION["buscar"]=="")
-        {
-            $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin'";
-            
-        }   
-        else
-        {
-            $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin' AND nombre LIKE '%".$_SESSION["buscar"]."%'";
-     
-        }
-        $sentencia=$conexion->prepare($consulta);
-        $sentencia->execute();
-
+    if($_SESSION["buscar"]=="")
+    {
+        $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_usuarios","GET",$datos_env);
+    }   
+    else
+    {
         
+        $datos_env["buscar"]=$_SESSION["buscar"];
+        $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_usuarios_filtro","GET",$datos_env);
+    
     }
-    catch(PDOException $e){
-        $sentencia=null;
-        $conexion=null;
+    
+    $json=json_decode($respuesta,true);
+    if(!$json)
+    {
         session_destroy();
-        die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:".$e->getMessage()."</p>"));
+        die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
     }
 
-    $total_registros=$sentencia->rowCount();
-    $sentencia=null;
+    if(isset($json["error_bd"]))
+    {
+   
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+        die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+    }
+   
+    if(isset($json["no_auth"]))
+    {
+       session_unset();
+       $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+       header("Location:index.php");
+       exit();
+    }
+
+    $total_registros=count($json["usuarios"]);
     $n_pags=ceil($total_registros/$_SESSION["regs_mostrar"]);
 }
 
@@ -401,40 +466,59 @@ else
 
 //// Consulta para obtener los usuarios a listar en la Tabla
 
-try{
+
     
-    if($_SESSION["buscar"]=="")
-    {
-        if($_SESSION["regs_mostrar"]==-1)
-            $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin'";
-        else
-            $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin' LIMIT ".$ini_pag.",".$_SESSION["regs_mostrar"];
-    }
+if($_SESSION["buscar"]=="")
+{
+    if($_SESSION["regs_mostrar"]==-1)
+        $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_usuarios","GET",$datos_env);
     else
-    {
-        if($_SESSION["regs_mostrar"]==-1)
-            $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin' AND nombre LIKE '%".$_SESSION["buscar"]."%'";
-        else
-            $consulta = "SELECT * FROM usuarios WHERE tipo<>'admin' AND nombre LIKE '%".$_SESSION["buscar"]."%' LIMIT ".$ini_pag.",".$_SESSION["regs_mostrar"];
-    }
-    $sentencia=$conexion->prepare($consulta);
-    $sentencia->execute();
+        $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_usuarios_pag/".$ini_pag."/".$_SESSION["regs_mostrar"],"GET",$datos_env);
 }
-catch(PDOException $e){
-    $sentencia=null;
-    $conexion=null;
+else
+{
+    $datos_env["buscar"]=$_SESSION["buscar"];
+    if($_SESSION["regs_mostrar"]==-1)
+        $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_usuarios_filtro","GET",$datos_env);
+    else
+        $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_usuarios_filtro_pag/".$ini_pag."/".$_SESSION["regs_mostrar"],"GET",$datos_env);
+}
+
+
+
+$json=json_decode($respuesta,true);
+if(!$json)
+{
     session_destroy();
-    die(error_page("Práctica Rec 2","<h1>Práctica Rec 2</h1><p>Imposible realizar la consulta. Error:".$e->getMessage()."</p>"));
+    die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
 }
-$usuarios=$sentencia->fetchAll(PDO::FETCH_ASSOC);
-$sentencia=null;
+
+if(isset($json["error_bd"]))
+{
+
+    session_destroy();
+    consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+    die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+}
+
+if(isset($json["no_auth"]))
+{
+    session_unset();
+    $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+    header("Location:index.php");
+    exit();
+}
+
+
+$usuarios=$json["usuarios"];
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica Rec 2</title>
+    <title>Práctica Rec 3</title>
     <style>
         .error{color:red}
         .en_linea{display:inline}
@@ -452,7 +536,7 @@ $sentencia=null;
     </style>
 </head>
 <body>
-    <h1>Práctica Rec 2</h1>
+    <h1>Práctica Rec 3</h1>
     <div>
         Bienvenido <strong><?php echo $datos_usuario_log["usuario"];?></strong> - 
         <form class="en_linea" action="index.php" method="post">

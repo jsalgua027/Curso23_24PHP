@@ -1,6 +1,6 @@
 <?php
- $api_key["api_key"]=$_SESSION["api_key"];
- $respuesta=consumir_servicios_REST(DIR_SERV."/logueado","POST",$api_key);
+ $datos_env["api_key"]=$_SESSION["api_key"];
+ $respuesta=consumir_servicios_REST(DIR_SERV."/logueado","POST",$datos_env);
  $json=json_decode($respuesta,true);
  if(!$json)
  {
@@ -9,7 +9,9 @@
  }
  if(isset($json["error_bd"]))
  {
+
      session_destroy();
+     consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
      die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
  }
 
@@ -23,10 +25,11 @@
 
 if(isset($json["mensaje"]))
 {
-        session_unset();
-        $_SESSION["seguridad"]="Usted ya no se encuentra registrado en la BD";
-        header("Location:index.php");
-        exit();
+    session_unset();
+    consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+    $_SESSION["seguridad"]="Usted ya no se encuentra registrado en la BD";
+    header("Location:index.php");
+    exit();
 }
 // Acabo de pasar el control de baneo
 $datos_usuario_log=$json["usuario"];

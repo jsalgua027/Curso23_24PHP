@@ -1,7 +1,5 @@
 <?php
-define("DIR_SERV",//"http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Pract_3/servicios_rest"//casa
-"http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/Pract_3/servicios_rest"//clase
-);
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24/Recup/Pract_3/servicios_rest");
 
 define("MINUTOS",55);
 
