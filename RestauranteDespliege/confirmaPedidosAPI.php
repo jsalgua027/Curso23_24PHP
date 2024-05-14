@@ -3,7 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, token, Content-Type, cache-control");
 header('Content-Type: application/json');
-$host = 'https://lldn295.servidoresdns.net/';
+
+$host = 'lldn295.servidoresdns.net';
 $dbname = 'qahz656';
 $username = 'qaiw208';
 $password = '1PesetaSpain';
@@ -11,10 +12,7 @@ $password = '1PesetaSpain';
 // Realizamos la conexión
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    // Establecer el modo de error PDO a excepción
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+    $pdo= new PDO("mysql:host=".$host.";dbname=$dbname", $username, $password,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
     // Recibir datos del pedido desde la aplicación React
     $data = json_decode(file_get_contents('php://input'), true);
   

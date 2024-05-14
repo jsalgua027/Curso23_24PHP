@@ -4,7 +4,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, token, Content-Type, cache-control");
 header('Content-Type: application/json');
-$host = 'https://lldn295.servidoresdns.net/';
+
+$host = 'lldn295.servidoresdns.net';
 $dbname = 'qahz656';
 $username = 'qaiw208';
 $password = '1PesetaSpain';
@@ -19,10 +20,7 @@ try {
     // Obtener el número de pedido de los datos decodificados
     $id_pedido = $postData['id_pedido'];
 
-    // Crear conexión PDO
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    // Establecer el modo de error PDO en excepción
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn= new PDO("mysql:host=".$host.";dbname=$dbname", $username, $password,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
 
     // Preparar la consulta SQL para actualizar el estado de entrega del pedido
     $sql = "UPDATE nacho_pedidos SET entregado = 2 WHERE id_pedido = :id_pedido";

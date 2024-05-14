@@ -3,15 +3,15 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, token, Content-Type, cache-control");
 
-$host = 'https://lldn295.servidoresdns.net/';
+$host = 'lldn295.servidoresdns.net';
 $dbname = 'qahz656';
 $username = 'qaiw208';
 $password = '1PesetaSpain';
 
 // realizo la conexion
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo= new PDO("mysql:host=".$host.";dbname=$dbname", $username, $password,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+
 
     // Consulta SQL para obtener productos agrupados por categoría
     $sql = "SELECT c.id_categoria, c.categoria, p.id_producto, p.producto, p.precio, p.portadaFoto 

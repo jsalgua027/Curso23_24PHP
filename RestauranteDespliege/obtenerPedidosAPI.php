@@ -4,16 +4,13 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, token, Content-Type, cache-control");
 header('Content-Type: application/json');
 
-$host = 'https://lldn295.servidoresdns.net/';
+$host = 'lldn295.servidoresdns.net';
 $dbname = 'qahz656';
 $username = 'qaiw208';
 $password = '1PesetaSpain';
 
 try {
-    // Conexión a la base de datos utilizando PDO
-    $conn = new PDO("mysql:host=$host;dbname=$database", $username, $password);
-    // Configuración para que PDO lance excepciones en caso de errores
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn= new PDO("mysql:host=".$host.";dbname=$dbname", $username, $password,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
 
     // Consulta para obtener todos los pedidos con los detalles de los productos
     $sql = "SELECT p.*, pp.id_producto, pp.cantidad, pr.producto, pr.precio, pr.portadaFoto, pr.id_categoria 
