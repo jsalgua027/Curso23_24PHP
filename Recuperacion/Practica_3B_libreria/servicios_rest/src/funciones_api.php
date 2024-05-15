@@ -87,6 +87,36 @@ function logueado($datos)
 
 }
 
+    function obtener_libros_home(){
+        try{
+            $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
+        }
+        catch(PDOException $e){
+            $respuesta["error_bd"]="Imposible conectar a la BD. Error:".$e->getMessage();
+            return $respuesta;
+        }
+    
+        try{
+           
+            $consulta="select * from libros ";
+            $sentencia=$conexion->prepare($consulta);
+            $sentencia->execute();
+            $respuesta["libros"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+            $sentencia=null;
+            $conexion=null;
+            return $respuesta;
+            
+        }
+        catch(PDOException $e){
+            $sentencia=null;
+            $conexion=null;
+            $respuesta["error_bd"]="Error en la consulta. Error:".$e->getMessage();
+            return $respuesta;
+        }
+
+    }
+
+/*
 function insertar_usuario($datos)
 {
     try{
@@ -452,4 +482,5 @@ function actualizar_usuario_sin_clave($datos)
     }
 
 }
+*/
 ?>

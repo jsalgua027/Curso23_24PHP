@@ -51,26 +51,24 @@ if (isset($_POST["btnEntrar"])) {
 
 /*****consulta para mostra la tabla******/
 
-try {
-    $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
-} catch (PDOException $e) {
+
+$respuesta=consumir_servicios_REST(DIR_SERV."/obtener_libros_home","GET");
+$json=json_decode($respuesta,true);
+if(!$json)
+{
     session_destroy();
-    die(error_page("Examen3 Librería", "<h1>Examen3 Librería</h1><p>Imposible conectar a la BD. Error:" . $e->getMessage() . "</p>"));
+    die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
 }
 
-try {
+if(isset($json["error_bd"]))
+{
 
-    $consulta = "SELECT * FROM libros ";
-    $sentencia = $conexion->prepare($consulta);
-    $sentencia->execute();
-} catch (PDOException $e) {
-    $sentencia = null;
-    $conexion = null;
     session_destroy();
-    die(error_page("Examen3 Librería", "<h1>Examen3 Librería</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+    //consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+    die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>".$json["error_bd"]."</p>"));
 }
-$libros = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-$sentencia = null;
+
+
 
 ?>
 <!DOCTYPE html>
@@ -197,25 +195,16 @@ $sentencia = null;
     <h1>Listado de los Libros</h1>
 
     <?php
-    /*
+    
     //si te traes el array asociativo 
     echo "<div class='contenedor'>";
-    foreach ($obj["libros"] as $tupla) {
+    foreach ($json["libros"] as $tupla) {
         echo "<div class='list_libros'>";
         echo "<img class='reducida' src='images/" .$tupla['portada'] . "' alt='Foto' title='Foto'></br>";
         echo "<p>" . $tupla['titulo'] . " -- " .$tupla['precio'] . "</p>";
         echo "</div>";
     }
-    */
-    // si te traes el objeto 
-    echo "<div class='contenedor'>";
-    foreach ($libros as $tupla) {
-        echo "<div class='list_libros'>";
-        echo "<img class='reducida' src='images/" . $tupla["portada"] . "' alt='Foto' title='Foto'></br>";
-        echo "<p>" .  $tupla["titulo"] . " -- " .  $tupla["precio"] . "</p>";
-        echo "</div>";
-    }
-
+   
     echo "</div>";
 
     ?>

@@ -43,6 +43,11 @@ $app->post("/logueado",function($request){
     
 });
 
+$app->get("/obtener_libros_home",function(){
+
+    echo json_encode(obtener_libros_home());
+});
+/*
 $app->post("/insertar_usuario",function($request){
 
         $datos[]=$request->getParam("nombre");
@@ -234,7 +239,8 @@ $app->put("/actualizar_usuario_sin_clave/{id_usuario}",function($request){
         echo json_encode($respuesta);
     }
 });
-
+*/
 $app->run();
 
 ?>
+

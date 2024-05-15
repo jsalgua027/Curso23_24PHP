@@ -1,16 +1,31 @@
 <?php
-/* conexión*/
+/* conexión
 define("SERVIDOR_BD","localhost");
 define("USUARIO_BD","jose");
 define("CLAVE_BD","josefa");
 define("NOMBRE_BD","bd_libreria_exam");
+*/
 /*control de seguridad*/
 define("MINUTOS",55);
 
 /* foto por defecto */
 define("FOTO_DEFECTO","no_imagen.jpg");
 
+function consumir_servicios_REST($url,$metodo,$datos=null)
+{
+    $llamada=curl_init();
+    curl_setopt($llamada,CURLOPT_URL,$url);
+    curl_setopt($llamada,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($llamada,CURLOPT_CUSTOMREQUEST,$metodo);
+    if(isset($datos))
+        curl_setopt($llamada,CURLOPT_POSTFIELDS,http_build_query($datos));
+    $respuesta=curl_exec($llamada);
+    curl_close($llamada);
+    return $respuesta;
+}
 
+
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Practica_3B_libreria/servicios_rest");//casa
 function error_page($title, $body)
 {
     return '<!DOCTYPE html>
@@ -61,20 +76,6 @@ function repetido_editando($conexion, $tabla, $columna, $valor,$columna_clave,$v
     return $respuesta;
 }
 
-function consumir_servicios_REST($url,$metodo,$datos=null)
-{
-    $llamada=curl_init();
-    curl_setopt($llamada,CURLOPT_URL,$url);
-    curl_setopt($llamada,CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($llamada,CURLOPT_CUSTOMREQUEST,$metodo);
-    if(isset($datos))
-        curl_setopt($llamada,CURLOPT_POSTFIELDS,http_build_query($datos));
-    $respuesta=curl_exec($llamada);
-    curl_close($llamada);
-    return $respuesta;
-}
 
-//define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/teo_SW/segunda_api");//clase
-define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Examen_PHP_23_24/segunda_api");//casa
 
 ?>
