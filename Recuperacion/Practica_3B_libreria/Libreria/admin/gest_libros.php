@@ -5,7 +5,7 @@ session_start();
 require "../src/funciones_ctes.php";
 
 if (isset($_SESSION["usuario"])) {
-    $salto = "../index.php"; // variable para realizar el salto de seguridad correcto si hat baneo o errores
+    $salto = "../index.php"; // variable para realizar el salto de seguridad correcto si hay baneo o errores
     require "../src/seguridad.php";
 
     if ($datos_usuario_log["tipo"] == "admin") //si eres admin

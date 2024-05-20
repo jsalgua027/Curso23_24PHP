@@ -5,14 +5,14 @@ $json=json_decode($respuesta,true);
 if(!$json)
 {
     session_destroy();
-    die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
+    die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
 }
 if(isset($json["error_bd"]))
 {
 
     session_destroy();
     consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
-    die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+    die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>".$json["error_bd"]."</p>"));
 }
 
 if(isset($json["no_auth"]))

@@ -99,7 +99,7 @@ if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"])) {
             $autor = $datos_libro["autor"];
             $descripcion = $datos_libro["descripcion"];
             $precio = $datos_libro["precio"];
-            $foto=$datos_libro["portada"];
+            $foto = $datos_libro["portada"];
         }
         $sentencia = null;
     } catch (PDOException $e) {
@@ -163,35 +163,28 @@ if (isset($_POST["btnContEditar"])) {
             $array_ext = explode(".", $_FILES["portada"]["name"]);
             $ext = "." . end($array_ext);
             $nombre_nuevo = "img_" . $referencia . $ext;
-             //mover nueva foto a images
-             @$var=move_uploaded_file($_FILES["portada"]["tmp_name"],"../images/".$nombre_nuevo);
-             if($var)
-            {
+            //mover nueva foto a images
+            @$var = move_uploaded_file($_FILES["portada"]["tmp_name"], "../images/" . $nombre_nuevo);
+            if ($var) {
                 //si nombre nueva foto es distinta a $foto(bd)
-                if($foto!=$nombre_nuevo)
-                {
-                    try{
-                      $consulta="update libros set portada=? where referencia=?";
-                      $sentencia=$conexion->prepare($consulta);
-                      $sentencia->execute([$nombre_nuevo,$referencia]);
-                      $sentencia=null;
-                      if($foto!=FOTO_DEFECTO && file_exists("images/".$foto))
-                        unlink("../images/".$foto);
-                      
-                    }
-                    catch(PDOException $e){
-                        $sentencia=null;
-                        $conexion=null;
-                        if(file_exists("../images/".$nombre_nuevo))
-                            unlink("../images/".$nombre_nuevo);
-                        $mensaje="Usuario editado con éxito pero sin cambiar a la nueva imagen por un problema con la BD del servidor";
+                if ($foto != $nombre_nuevo) {
+                    try {
+                        $consulta = "update libros set portada=? where referencia=?";
+                        $sentencia = $conexion->prepare($consulta);
+                        $sentencia->execute([$nombre_nuevo, $referencia]);
+                        $sentencia = null;
+                        if ($foto != FOTO_DEFECTO && file_exists("images/" . $foto))
+                            unlink("../images/" . $foto);
+                    } catch (PDOException $e) {
+                        $sentencia = null;
+                        $conexion = null;
+                        if (file_exists("../images/" . $nombre_nuevo))
+                            unlink("../images/" . $nombre_nuevo);
+                        $mensaje = "Usuario editado con éxito pero sin cambiar a la nueva imagen por un problema con la BD del servidor";
                     }
                 }
-            }
-            else
-                $mensaje="Usuario editado con éxito pero sin cambiar a la nueva imagen, ya que ésta no se ha podido mover a la carpeta destino en el servidor";
-
-
+            } else
+                $mensaje = "Usuario editado con éxito pero sin cambiar a la nueva imagen, ya que ésta no se ha podido mover a la carpeta destino en el servidor";
         }
 
 
@@ -252,52 +245,76 @@ if ($_SESSION["regs_mostrar"] == -1) {
 } else {
     $ini_pag = ($_SESSION["pag"] - 1) * $_SESSION["regs_mostrar"];
 
-    try {
 
-        if ($_SESSION["buscar"] == "") {
-            $consulta = "SELECT * FROM libros ";
-        } else {
-            $consulta = "SELECT * FROM libros  WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%'";
-        }
-        $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute();
-    } catch (PDOException $e) {
-        $sentencia = null;
-        $conexion = null;
+
+    if ($_SESSION["buscar"] == "") {
+        $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros", "GET", $datos_env);
+    } else {
+        $datos_env["buscar"] = $_SESSION["buscar"];
+        $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros_filtro", "GET", $datos_env);
+    }
+    $json = json_decode($respuesta, true);
+    if (!$json) {
         session_destroy();
-        die(error_page("Práctica Examen_3", "<h1>Práctica Examen 3</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));
     }
 
-    $total_registros = $sentencia->rowCount();
-    $sentencia = null;
+    if (isset($json["error_bd"])) {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>" . $json["error_bd"] . "</p>"));
+    }
+
+    if (isset($json["no_auth"])) {
+        session_unset();
+        $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        header("Location:index.php");
+        exit();
+    }
+
+    $total_registros = count($json["libros"]);
     $n_pags = ceil($total_registros / $_SESSION["regs_mostrar"]);
 }
 /*****consulta para mostra la tabla******/
 
-try {
 
-    if ($_SESSION["buscar"] == "") {
 
-        if ($_SESSION["regs_mostrar"] == -1)
-            $consulta = "SELECT * FROM libros";
-        else
-            $consulta = "SELECT * FROM libros LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
-    } else {
-        if ($_SESSION["regs_mostrar"] == -1)
-            $consulta = "SELECT * FROM libros WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%'";
-        else
-            $consulta = "SELECT * FROM libros WHERE titulo LIKE '%" . $_SESSION["buscar"] . "%' LIMIT " . $ini_pag . "," . $_SESSION["regs_mostrar"];
-    }
-    $sentencia = $conexion->prepare($consulta);
-    $sentencia->execute();
-} catch (PDOException $e) {
-    $sentencia = null;
-    $conexion = null;
-    session_destroy();
-    die(error_page("Examen Rec_3", "<h1>Examne Rec_3</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+if ($_SESSION["buscar"] == "") {
+
+    if ($_SESSION["regs_mostrar"] == -1)
+        $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros", "GET", $datos_env);
+    else
+        $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros_pag/" . $ini_pag . "/" . $_SESSION["regs_mostrar"], "GET", $datos_env);
+} else {
+    if ($_SESSION["regs_mostrar"] == -1)
+        $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros_filtro", "GET", $datos_env);
+    else
+        $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros_filtro_pag/" . $ini_pag . "/" . $_SESSION["regs_mostrar"], "GET", $datos_env);
 }
-$libros = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-$sentencia = null;
+
+
+$json = json_decode($respuesta, true);
+if (!$json) {
+    session_destroy();
+    die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));
+}
+
+if (isset($json["error_bd"])) {
+
+    session_destroy();
+    consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+    die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3</h1><p>" . $json["error_bd"] . "</p>"));
+}
+
+if (isset($json["no_auth"])) {
+    session_unset();
+    $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+    header("Location:index.php");
+    exit();
+}
+$libros = $json["libros"];
+
 
 
 
@@ -514,7 +531,7 @@ $sentencia = null;
                     ?>
                 </p>
                 <p>
-                <input type="hidden" name="foto_bd" value='<?php echo $foto;?>'>
+                    <input type="hidden" name="foto_bd" value='<?php echo $foto; ?>'>
                     <input type="hidden" name="referenciaBD" value="<?php $referencia; ?>"></input>
                     <button type="submit" name="btnContEditar" value="<?php $referencia; ?>">Editar Libro</button>
                 </p>

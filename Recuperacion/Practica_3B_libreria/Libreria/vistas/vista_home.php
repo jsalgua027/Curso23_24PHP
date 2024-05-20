@@ -18,7 +18,7 @@ if (isset($_POST["btnEntrar"])) {
         if(isset($json["error_bd"]))
         {
             session_destroy();
-            die(error_page("Práctica Rec 3N","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+            die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
         }
 
         if(isset($json["usuario"]))

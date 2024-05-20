@@ -20,7 +20,7 @@ function login($datos)
         $sentencia->execute($datos);
         if($sentencia->rowCount()>0)
         {
-            session_name("API_Pract3_Rec_23_24");
+            session_name("API_Pract3B_Rec_23_24");
             session_start();
 
             $respuesta["usuario"]=$sentencia->fetch(PDO::FETCH_ASSOC);
@@ -116,7 +116,7 @@ function logueado($datos)
 
     }
 
-/*
+
 function insertar_usuario($datos)
 {
     try{
@@ -238,8 +238,8 @@ function repetido_editando($tabla,$columna,$valor,$columna_clave,$valor_clave)
     }
 
 }
-
-function obtener_todos_usuarios()
+//obtener los libros para la parte gest de  libros (La tabla con paginación)
+function obtener_todos_libros()
 {
     try{
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
@@ -251,10 +251,10 @@ function obtener_todos_usuarios()
 
     try{
        
-        $consulta="select * from usuarios where tipo<>'admin'";
+        $consulta="select * from libros ";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute();
-        $respuesta["usuarios"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+        $respuesta["libros"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
         $sentencia=null;
         $conexion=null;
         return $respuesta;
@@ -271,7 +271,7 @@ function obtener_todos_usuarios()
 
 
 
-function obtener_usuarios_pag($pagina,$registros)
+function obtener_libros_pag($pagina,$registros)
 {
     try{
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
@@ -283,10 +283,10 @@ function obtener_usuarios_pag($pagina,$registros)
 
     try{
        
-        $consulta="select * from usuarios where tipo<>'admin' LIMIT ".$pagina.",".$registros;
+        $consulta="select * from libros  LIMIT ".$pagina.",".$registros;
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute();
-        $respuesta["usuarios"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+        $respuesta["libros"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
         $sentencia=null;
         $conexion=null;
         return $respuesta;
@@ -301,7 +301,7 @@ function obtener_usuarios_pag($pagina,$registros)
 
 }
 
-function obtener_todos_usuarios_filtro($buscar)
+function obtener_todos_libros_filtro($buscar)
 {
     try{
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
@@ -313,10 +313,10 @@ function obtener_todos_usuarios_filtro($buscar)
 
     try{
        
-        $consulta="select * from usuarios where tipo<>'admin' and nombre LIKE '%".$buscar."%'";
+        $consulta="select * from libros  and titulo LIKE '%".$buscar."%'";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute();
-        $respuesta["usuarios"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+        $respuesta["libros"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
         $sentencia=null;
         $conexion=null;
         return $respuesta;
@@ -332,7 +332,7 @@ function obtener_todos_usuarios_filtro($buscar)
 }
 
 
-function obtener_usuarios_filtro_pag($pagina,$registros,$buscar)
+function obtener_libros_filtro_pag($pagina,$registros,$buscar)
 {
     try{
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
@@ -344,10 +344,10 @@ function obtener_usuarios_filtro_pag($pagina,$registros,$buscar)
 
     try{
        
-        $consulta="select * from usuarios where tipo<>'admin' and nombre LIKE '%".$buscar."%' LIMIT ".$pagina.",".$registros;
+        $consulta="select * from libros and titulo LIKE '%".$buscar."%' LIMIT ".$pagina.",".$registros;
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute();
-        $respuesta["usuarios"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+        $respuesta["libros"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
         $sentencia=null;
         $conexion=null;
         return $respuesta;
@@ -482,5 +482,5 @@ function actualizar_usuario_sin_clave($datos)
     }
 
 }
-*/
+
 ?>

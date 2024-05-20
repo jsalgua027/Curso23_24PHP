@@ -47,7 +47,7 @@ $app->get("/obtener_libros_home",function(){
 
     echo json_encode(obtener_libros_home());
 });
-/*
+// hasta aqui modificados
 $app->post("/insertar_usuario",function($request){
 
         $datos[]=$request->getParam("nombre");
@@ -102,13 +102,13 @@ $app->get("/repetido_edit/{tabla}/{columna}/{valor}/{columna_clave}/{valor_clave
 });
 
 
-$app->get("/obtener_usuarios",function($request){
+$app->get("/obtener_libros",function($request){
 
     session_id($request->getParam("api_key"));
     session_start();
     if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
     {
-        echo json_encode(obtener_todos_usuarios());
+        echo json_encode(obtener_todos_libros());
     }
     else
     {
@@ -119,12 +119,12 @@ $app->get("/obtener_usuarios",function($request){
 
 });
 
-$app->get("/obtener_usuarios_pag/{pag}/{n_registros}",function($request){
+$app->get("/obtener_libros_pag/{pag}/{n_registros}",function($request){
     session_id($request->getParam("api_key"));
     session_start();
     if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
     {
-        echo json_encode(obtener_usuarios_pag($request->getAttribute("pag"),$request->getAttribute("n_registros")));
+        echo json_encode(obtener_libros_pag($request->getAttribute("pag"),$request->getAttribute("n_registros")));
     }
     else
     {
@@ -134,12 +134,12 @@ $app->get("/obtener_usuarios_pag/{pag}/{n_registros}",function($request){
     }
 });
 
-$app->get("/obtener_usuarios_filtro",function($request){
+$app->get("/obtener_libros_filtro",function($request){
     session_id($request->getParam("api_key"));
     session_start();
     if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
     {
-        echo json_encode(obtener_todos_usuarios_filtro($request->getParam("buscar")));
+        echo json_encode(obtener_todos_libros_filtro($request->getParam("buscar")));
     }
     else
     {
@@ -150,12 +150,12 @@ $app->get("/obtener_usuarios_filtro",function($request){
 
 });
 
-$app->get("/obtener_usuarios_filtro_pag/{pag}/{n_registros}",function($request){
+$app->get("/obtener_libros_filtro_pag/{pag}/{n_registros}",function($request){
     session_id($request->getParam("api_key"));
     session_start();
     if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
     {
-        echo json_encode(obtener_usuarios_filtro_pag($request->getAttribute("pag"),$request->getAttribute("n_registros"),$request->getParam("buscar")));
+        echo json_encode(obtener_libros_filtro_pag($request->getAttribute("pag"),$request->getAttribute("n_registros"),$request->getParam("buscar")));
     }
     else
     {
@@ -239,7 +239,7 @@ $app->put("/actualizar_usuario_sin_clave/{id_usuario}",function($request){
         echo json_encode($respuesta);
     }
 });
-*/
+
 $app->run();
 
 ?>
