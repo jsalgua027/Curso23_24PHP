@@ -1,26 +1,30 @@
 <?php
 
 /*****consulta para mostra la tabla******/
-try {
-    $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
-} catch (PDOException $e) {
+
+$respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros", "GET", $datos_env);
+$json = json_decode($respuesta, true);
+if (!$json) {
     session_destroy();
-    die(error_page("Examen3 Librería", "<h1>Examen3 Librería</h1><p>Imposible conectar a la BD. Error:" . $e->getMessage() . "</p>"));
+    die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));
 }
 
-try {
+if (isset($json["error_bd"])) {
 
-    $consulta = "SELECT * FROM libros ";
-    $sentencia = $conexion->prepare($consulta);
-    $sentencia->execute();
-} catch (PDOException $e) {
-    $sentencia = null;
-    $conexion = null;
     session_destroy();
-    die(error_page("Examen3 Librería", "<h1>Examen3 Librería</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+    consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+    die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3</h1><p>" . $json["error_bd"] . "</p>"));
 }
-$libros = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-$sentencia = null;
+
+if (isset($json["no_auth"])) {
+    session_unset();
+    $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+    header("Location:index.php");
+    exit();
+}
+$libros = $json["libros"];
+
+
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +33,7 @@ $sentencia = null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica Rec 2</title>
+    <title>Práctica Rec 3B</title>
     <style>
         .en_linea {
             display: inline
@@ -70,7 +74,7 @@ $sentencia = null;
 </head>
 
 <body>
-    <h1>Práctica Rec 2</h1>
+    <h1>Práctica Rec 3B</h1>
     <div>
         Bienvenido <strong><?php echo $datos_usuario_log["lector"]; ?></strong> -
         <form class="en_linea" action="index.php" method="post">

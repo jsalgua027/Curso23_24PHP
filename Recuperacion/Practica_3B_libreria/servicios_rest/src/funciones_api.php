@@ -15,7 +15,7 @@ function login($datos)
 
     try{
        
-        $consulta="select * from usuarios where usuario=? AND clave=?";
+        $consulta="select * from usuarios where lector=? AND clave=?";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
         if($sentencia->rowCount()>0)
@@ -27,7 +27,7 @@ function login($datos)
             $respuesta["api_key"]=session_id();
 
 
-            $_SESSION["usuario"]=$respuesta["usuario"]["usuario"];
+            $_SESSION["usuario"]=$respuesta["usuario"]["lector"];
             $_SESSION["clave"]=$respuesta["usuario"]["clave"];
             $_SESSION["tipo"]=$respuesta["usuario"]["tipo"];
             
@@ -63,7 +63,7 @@ function logueado($datos)
 
     try{
        
-        $consulta="select * from usuarios where usuario=? AND clave=?";
+        $consulta="select * from usuarios where lector=? AND clave=?";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
         

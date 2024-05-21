@@ -1,5 +1,5 @@
 <?php
-session_name("Pract2_libreria_Exam_23_24");
+session_name("Practica_3B_libreria");
 session_start();
 
 require "../src/funciones_ctes.php";
@@ -15,7 +15,7 @@ if (isset($_SESSION["usuario"])) {
        
     else
     {
-        $conexion = null;
+        
         header("Location:" . $salto);
      exit();
     }

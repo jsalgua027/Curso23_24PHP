@@ -21,14 +21,14 @@ if (isset($_SESSION["usuario"])) {
         
     else
     {
-        $conexion = null;
+       
         header("Location:admin/gest_libros.php");
         exit();
     }
       
 
 
-    $conexion = null;
+   
 } else {
     require "vistas/vista_home.php";
 }
