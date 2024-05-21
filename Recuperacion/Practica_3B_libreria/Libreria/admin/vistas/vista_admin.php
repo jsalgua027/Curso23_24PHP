@@ -86,26 +86,42 @@ if (isset($_POST["btnAgregar"])) {
     }
 }
 if (isset($_POST["btnBorrar"])) {
-    try {
 
-        $consulta = "DELETE from libros where referencia=?";
-        $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$_POST["btnBorrar"]]);
-        if ($_POST["portada_agre"] != FOTO_DEFECTO && file_exists("images/" . $_POST["portada_agre"]))
-            unlink("images/" . $_POST["portada_agre"]);
 
-        $sentencia = null;
-        $conexion = null;
+    $respuesta=consumir_servicios_REST(DIR_SERV."/borrar_libro/".$_POST["btnBorrar"],"DELETE",$datos_env);
+    $json=json_decode($respuesta,true);
+    if(!$json)
+    {
+        session_destroy();
+        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
+    }
+
+    if(isset($json["error_bd"]))
+    {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>".$json["error_bd"]."</p>"));
+    }
+
+    if(isset($json["no_auth"]))
+    {
+        session_unset();
+        $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        header("Location:index.php");
+        exit();
+    }
+
+    if ($_POST["portada_agre"] != FOTO_DEFECTO && file_exists("../images/" . $_POST["portada_agre"]))
+            unlink("../images/" . $_POST["portada_agre"]);
+
+      
         $_SESSION["accion"] = "El libro ha sido borrado con exito";
         $_SESSION["pag"] = 1; //Al poner paginación cuándo borro siempre me voy página
         header("Location:gest_libros.php");
         exit;
-    } catch (PDOException $e) {
-        $sentencia = null;
-        $conexion = null;
-        session_destroy();
-        die(error_page("Examen 3 Rec", "<h1>Examen 3 Rec</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
-    }
+
+   
 }
 // si le doy a editar me traigo al libro con su referencia
 if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"])) {

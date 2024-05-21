@@ -394,7 +394,7 @@ function obtener_detalles_usuario($id_usuario)
 }
 
 
-function borrar_usuario($id_usuario)
+function borrar_libro($referencia)
 {
     try{
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
@@ -406,9 +406,9 @@ function borrar_usuario($id_usuario)
 
     try{
        
-        $consulta="delete from usuarios where id_usuario=?";
+        $consulta="delete from libros where referencia=?";
         $sentencia=$conexion->prepare($consulta);
-        $sentencia->execute([$id_usuario]);
+        $sentencia->execute([$referencia]);
         $respuesta["mensaje"]="Usuario borrado con éxito";
         $sentencia=null;
         $conexion=null;

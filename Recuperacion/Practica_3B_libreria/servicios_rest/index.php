@@ -178,12 +178,12 @@ $app->get("/obtener_detalles/{id_usuario}",function($request){
     }
 });
 
-$app->delete("/borrar_usuario/{id_usuario}",function($request){
+$app->delete("/borrar_libro/{referencia}",function($request){
     session_id($request->getParam("api_key"));
     session_start();
     if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
     {
-        echo json_encode(borrar_usuario($request->getAttribute("id_usuario")));
+        echo json_encode(borrar_libro($request->getAttribute("referencia")));
     }
     else
     {
