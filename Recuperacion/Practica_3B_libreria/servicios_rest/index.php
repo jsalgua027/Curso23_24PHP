@@ -62,8 +62,8 @@ $app->post("/insertar_libro",function($request){
 
 $app->put("/actualizar_foto",function($request){
 
-    $datos[]=$request->getParam("nombre_foto");
-    $datos[]=$request->getParam("id_usuario");
+    $datos[]=$request->getParam("portada");
+    $datos[]=$request->getParam("referencia");
     
 
     echo json_encode(actualizar_foto($datos));

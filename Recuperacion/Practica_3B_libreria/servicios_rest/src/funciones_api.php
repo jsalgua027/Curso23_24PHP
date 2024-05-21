@@ -132,7 +132,7 @@ function insertar_libro($datos)
         $consulta="insert into libros(referencia,titulo,autor,descripcion,precio) values(?,?,?,?,?)";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
-       // $respuesta["ultm_id"]=$conexion->lastInsertId();
+      //  $respuesta["ultm_referencia"]=$datos["referencia"];
        $respuesta["mensaje"]="Insercción  realizada con éxito";
         $sentencia=null;
         $conexion=null;
@@ -161,7 +161,7 @@ function actualizar_foto($datos)
 
     try{
        
-        $consulta="update usuarios set foto=? where id_usuario=?";
+        $consulta="update usuarios set portada=? where referencia=?";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
         $respuesta["mensaje"]="Actualización realizada con éxito";
