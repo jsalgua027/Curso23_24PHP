@@ -52,6 +52,7 @@ $app->post("/insertar_libro",function($request){
 
         $datos[]=$request->getParam("referencia");
         $datos[]=$request->getParam("titulo");
+        $datos[]=$request->getParam("autor");
         $datos[]=$request->getParam("descripcion");
         $datos[]=$request->getParam("precio");
        

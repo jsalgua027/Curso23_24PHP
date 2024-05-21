@@ -132,7 +132,7 @@ function insertar_libro($datos)
         $consulta="insert into libros(referencia,titulo,autor,descripcion,precio) values(?,?,?,?,?)";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
-      //  $respuesta["ultm_referencia"]=$datos["referencia"];
+         $respuesta["ultm_referencia"]=$datos["referencia"];
        $respuesta["mensaje"]="Insercción  realizada con éxito";
         $sentencia=null;
         $conexion=null;
