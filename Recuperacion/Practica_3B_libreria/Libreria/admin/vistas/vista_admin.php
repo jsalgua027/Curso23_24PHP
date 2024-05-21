@@ -3,14 +3,28 @@ if (isset($_POST["btnAgregar"])) {
 
 
     $error_referencia_agre = $_POST["referencia_agre"] == "" || !is_numeric($_POST["referencia_agre"]) || $_POST["referencia_agre"] < 0;
+
     if (!$error_referencia_agre) {
-        $error_referencia_agre = repetido($conexion, "libros", "referencia", $_POST["referencia_agre"]);
-        if (is_string($error_referencia_agre)) {
+        $respuesta=consumir_servicios_REST(DIR_SERV."/repetido_insert/libros/referencia/".$_POST["referencia_agre"],"GET");
+        $json=json_decode($respuesta,true);
+        if(!$json)
+        {
             session_destroy();
-            $conexion = null;
-            die(error_page("Examen3 Curso 23-24", "<h1>Librería</h1><p>Error en la consulta: " . $error_referencia_agre . "</p>"));
+            die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
         }
+
+        if(isset($json["error_bd"]))
+        {
+            session_destroy();
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+            die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>".$json["error_bd"]."</p>"));
+        }
+        $error_usuario=$json["repetido"];
+
+      
     }
+
+
     $error_titulo_agre = $_POST["titulo_agre"] == "";
     $error_autor_agre = $_POST["autor_agre"] == "";
     $error_descripcion_agre = $_POST["descripcion_agre"] == "";
@@ -19,18 +33,29 @@ if (isset($_POST["btnAgregar"])) {
     $error_portada_agre = $_FILES["portada_agre"]["name"] != "" && ($_FILES["portada_agre"]["error"] || !$array_nombre || !getimagesize($_FILES["portada_agre"]["tmp_name"]) || $_FILES["portada_agre"]["size"] > 750 * 1024);
     $error_form_agre = $error_referencia_agre || $error_titulo_agre || $error_autor_agre || $error_descripcion_agre || $error_precio_agre || $error_portada_agre;
     if (!$error_form_agre) {
+            
+        $datos_env_insert["referencia_agre"]=$_POST["referencia_agre"];
+        $datos_env_insert["titulo_agre"]=$_POST["titulo_agre"];
+        $datos_env_insert["autor_agre"]=$_POST["autor_agre"];
+        $datos_env_insert["descripcion_agre"]=$_POST["descripcion_agre"];
+        $datos_env_insert["precio_agre"]=$_POST["precio_agre"];
 
-        try {
-            $consulta = "insert into libros(referencia, titulo,autor,descripcion,precio) values (?,?,?,?,?)";
-            $sentencia = $conexion->prepare($consulta);
-            $sentencia->execute([$_POST["referencia_agre"], $_POST["titulo_agre"], $_POST["autor_agre"], $_POST["descripcion_agre"], $_POST["precio_agre"]]);
-            $sentencia = null;
-        } catch (PDOException $e) {
-            $sentencia = null;
-            $conexion = null;
+        $respuesta=consumir_servicios_REST(DIR_SERV."/insertar_libro","POST",$datos_env_insert);
+        $json=json_decode($respuesta,true);
+        if(!$json)
+        {
             session_destroy();
-            die(error_page("Examen3 Curso 23-24", "<h1>Librería</h1><p>Error en la consulta: " . $e->getMessage() . "</p>"));
+            die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
         }
+    
+        if(isset($json["error_bd"]))
+        {
+            session_destroy();
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+            die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+        }
+
+            
 
         $_SESSION["accion"] = "Libro agregado con éxito";
         // realizo la inserccion de la foto

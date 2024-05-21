@@ -117,7 +117,7 @@ function logueado($datos)
     }
 
 
-function insertar_usuario($datos)
+function insertar_libro($datos)
 {
     try{
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
@@ -129,10 +129,11 @@ function insertar_usuario($datos)
 
     try{
        
-        $consulta="insert into usuarios(nombre,usuario,clave,dni,sexo,subscripcion) values(?,?,?,?,?,?)";
+        $consulta="insert into libros(referencia,titulo,autor,descripcion,precio) values(?,?,?,?,?)";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
-        $respuesta["ultm_id"]=$conexion->lastInsertId();
+       // $respuesta["ultm_id"]=$conexion->lastInsertId();
+       $respuesta["mensaje"]="Insercción  realizada con éxito";
         $sentencia=null;
         $conexion=null;
         return $respuesta;
