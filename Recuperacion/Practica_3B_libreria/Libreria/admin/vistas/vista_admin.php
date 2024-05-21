@@ -30,11 +30,11 @@ if (isset($_POST["btnAgregar"])) {
     $error_form_agre = $error_referencia_agre || $error_titulo_agre || $error_autor_agre || $error_descripcion_agre || $error_precio_agre || $error_portada_agre;
     if (!$error_form_agre) {
 
-        $datos_env_insert["referencia_agre"] = $_POST["referencia_agre"];
-        $datos_env_insert["titulo_agre"] = $_POST["titulo_agre"];
-        $datos_env_insert["autor_agre"] = $_POST["autor_agre"];
-        $datos_env_insert["descripcion_agre"] = $_POST["descripcion_agre"];
-        $datos_env_insert["precio_agre"] = $_POST["precio_agre"];
+        $datos_env_insert["referencia"] = $_POST["referencia_agre"];
+        $datos_env_insert["titulo"] = $_POST["titulo_agre"];
+        $datos_env_insert["autor"] = $_POST["autor_agre"];
+        $datos_env_insert["descripcion"] = $_POST["descripcion_agre"];
+        $datos_env_insert["precio"] = $_POST["precio_agre"];
 
         $respuesta = consumir_servicios_REST(DIR_SERV . "/insertar_libro", "POST", $datos_env_insert);
         $json = json_decode($respuesta, true);

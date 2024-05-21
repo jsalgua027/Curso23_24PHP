@@ -28,7 +28,10 @@ if (isset($_POST["btnEntrar"])) {
             $_SESSION["ultm_accion"]=time();
             $_SESSION["api_key"]=$json["api_key"];
 
+            if ($datos_usu["tipo"] == "normal")
             header("Location:index.php");
+        else
+            header("Location:admin/gest_libros.php");
             exit();
         }
         else
