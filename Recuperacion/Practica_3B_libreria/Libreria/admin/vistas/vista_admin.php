@@ -35,6 +35,7 @@ if (isset($_POST["btnAgregar"])) {
         $datos_env_insert["autor"] = $_POST["autor_agre"];
         $datos_env_insert["descripcion"] = $_POST["descripcion_agre"];
         $datos_env_insert["precio"] = $_POST["precio_agre"];
+        $datos_env_insert["foto"] = $_FILES["portada_agre"];
 
         $respuesta = consumir_servicios_REST(DIR_SERV . "/insertar_libro", "POST", $datos_env_insert);
         $json = json_decode($respuesta, true);
@@ -60,8 +61,11 @@ if (isset($_POST["btnAgregar"])) {
             $array_ext = explode(".", $_FILES["portada_agre"]["name"]);
             $ext = "." . end($array_ext);
             $nombre_nuevo = "img_" . $ultm_refe . $ext;
+            echo "<p>quillooo".$nombre_nuevo."</p>";
+            print_r($_FILES["portada_agre"]); 
             @$var = move_uploaded_file($_FILES["portada_agre"]["tmp_name"], "../images/" . $nombre_nuevo);
-
+           
+            var_dump($var);
             if ($var) {
 
                 $datos_env_act["portada"] = $nombre_nuevo;
