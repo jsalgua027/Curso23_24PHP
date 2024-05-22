@@ -161,7 +161,7 @@ function actualizar_foto($datos)
 
     try{
        
-        $consulta="update usuarios set portada=? where referencia=?";
+        $consulta="update libros set portada=? where referencia=?";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
         $respuesta["mensaje"]="Actualización realizada con éxito";

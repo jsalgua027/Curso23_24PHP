@@ -61,9 +61,7 @@ if (isset($_POST["btnAgregar"])) {
             $array_ext = explode(".", $_FILES["portada_agre"]["name"]);
             $ext = "." . end($array_ext);
             $nombre_nuevo = "img_" . $ultm_refe . $ext;
-            echo "<p>quillooo".$nombre_nuevo."</p>";
-            print_r($_FILES["portada_agre"]); 
-            @$var = move_uploaded_file($_FILES["portada_agre"]["tmp_name"], "../../images/" . $nombre_nuevo);
+            @$var = move_uploaded_file($_FILES["portada_agre"]["tmp_name"], "../images/" . $nombre_nuevo);
            
             var_dump($var);
             if ($var) {
