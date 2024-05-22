@@ -21,6 +21,7 @@ if (isset($_POST["btnEntrar"])) {
             die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
         }
 
+        
         if(isset($json["usuario"]))
         {
             $_SESSION["usuario"]=$json["usuario"]["lector"];
@@ -28,10 +29,12 @@ if (isset($_POST["btnEntrar"])) {
             $_SESSION["ultm_accion"]=time();
             $_SESSION["api_key"]=$json["api_key"];
 
-            if ($datos_usu["tipo"] == "normal")
-            header("Location:index.php");
-        else
-            header("Location:admin/gest_libros.php");
+            if ($json["usuario"]["tipo"] == "normal")
+               header("Location:index.php");
+            
+            else
+                header("Location:admin/gest_libros.php");
+
             exit();
         }
         else

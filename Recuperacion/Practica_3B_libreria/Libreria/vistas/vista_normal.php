@@ -2,7 +2,7 @@
 
 /*****consulta para mostra la tabla******/
 
-$respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros", "GET", $datos_env);
+$respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_libros_home", "GET");
 $json = json_decode($respuesta, true);
 if (!$json) {
     session_destroy();
@@ -16,12 +16,7 @@ if (isset($json["error_bd"])) {
     die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3</h1><p>" . $json["error_bd"] . "</p>"));
 }
 
-if (isset($json["no_auth"])) {
-    session_unset();
-    $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
-    header("Location:index.php");
-    exit();
-}
+
 $libros = $json["libros"];
 
 
