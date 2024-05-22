@@ -164,12 +164,12 @@ $app->get("/obtener_libros_filtro_pag/{pag}/{n_registros}",function($request){
     }
 });
 
-$app->get("/obtener_detalles/{id_usuario}",function($request){
+$app->get("/obtener_detalles/{referencia}",function($request){
     session_id($request->getParam("api_key"));
     session_start();
     if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
     {
-        echo json_encode(obtener_detalles_usuario($request->getAttribute("id_usuario")));
+        echo json_encode(obtener_detalles_libro($request->getAttribute("referencia")));
     }
     else
     {

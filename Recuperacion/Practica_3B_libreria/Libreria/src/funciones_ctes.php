@@ -25,8 +25,8 @@ function consumir_servicios_REST($url,$metodo,$datos=null)
 }
 
 
-define("DIR_SERV",//"http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Practica_3B_libreria/servicios_rest"//casa
-"http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/Practica_3B_libreria/servicios_rest"//clase
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Practica_3B_libreria/servicios_rest"//casa
+//"http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/Practica_3B_libreria/servicios_rest"//clase
 );
 function error_page($title, $body)
 {

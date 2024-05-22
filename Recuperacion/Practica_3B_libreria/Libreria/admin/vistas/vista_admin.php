@@ -17,7 +17,7 @@ if (isset($_POST["btnAgregar"])) {
             consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
             die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>" . $json["error_bd"] . "</p>"));
         }
-        $error_usuario = $json["repetido"];
+        $error_referencia_agre = $json["repetido"];
     }
 
 
@@ -63,7 +63,7 @@ if (isset($_POST["btnAgregar"])) {
             $nombre_nuevo = "img_" . $ultm_refe . $ext;
             echo "<p>quillooo".$nombre_nuevo."</p>";
             print_r($_FILES["portada_agre"]); 
-            @$var = move_uploaded_file($_FILES["portada_agre"]["tmp_name"], "../images/" . $nombre_nuevo);
+            @$var = move_uploaded_file($_FILES["portada_agre"]["tmp_name"], "../../images/" . $nombre_nuevo);
            
             var_dump($var);
             if ($var) {
@@ -242,23 +242,32 @@ if (isset($_POST["btnContEditar"])) {
 // detalle del libro
 if (isset($_POST["btnDetalle"])) {
 
-    try {
-
-        $consulta = "select * from libros where referencia=?";
-        $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$_POST["btnDetalle"]]);
-        if ($sentencia->rowCount() > 0)
-            $detalle_libro = $sentencia->fetch(PDO::FETCH_ASSOC);
-        else
-            $detalle_libro = false;
-
-        $sentencia = null;
-    } catch (PDOException $e) {
-        $sentencia = null;
-        $conexion = null;
+    $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_detalles/".$_POST["btnDetalle"],"GET",$datos_env);
+    $json=json_decode($respuesta,true);
+    if(!$json)
+    {
         session_destroy();
-        die(error_page("Examen 3 Rec", "<h1>Examen 3 Rec</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
     }
+
+    if(isset($json["error_bd"]))
+    {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>".$json["error_bd"]."</p>"));
+    }
+
+    if(isset($json["no_auth"]))
+    {
+        session_unset();
+        $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        header("Location:index.php");
+        exit();
+    }
+
+ $detalle_libro=$json["libro"];
+   
 }
 /*Aqui la gestion de paginación*/
 if (isset($_POST["btnPag"]))
@@ -583,6 +592,7 @@ $libros = $json["libros"];
         ?>
         <?php
         if (isset($_POST["btnDetalle"])) {
+          
             //aqui muestro el detalle del libro 
 
             echo "<div class='centrar centrado'>";
@@ -597,6 +607,8 @@ $libros = $json["libros"];
             } else
                 echo "<p>El usuario seleccionado ya no se encuentra en la BD</p>";
             echo "</div>";
+          
+      
         }
 
 
