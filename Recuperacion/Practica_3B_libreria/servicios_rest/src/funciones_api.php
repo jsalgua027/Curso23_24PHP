@@ -424,35 +424,7 @@ function borrar_libro($referencia)
 
 }
 
-function actualizar_usuario_clave($datos)
-{
-    try{
-        $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
-    }
-    catch(PDOException $e){
-        $respuesta["error_bd"]="Imposible conectar a la BD. Error:".$e->getMessage();
-        return $respuesta;
-    }
 
-    try{
-       
-        $consulta="update usuarios set nombre=?, usuario=?,clave=?, dni=?, sexo=?, subscripcion=? where id_usuario=?";
-        $sentencia=$conexion->prepare($consulta);
-        $sentencia->execute($datos);
-        $respuesta["mensaje"]="Usuario editado con éxito";
-        $sentencia=null;
-        $conexion=null;
-        return $respuesta;
-        
-    }
-    catch(PDOException $e){
-        $sentencia=null;
-        $conexion=null;
-        $respuesta["error_bd"]="Error en la consulta. Error:".$e->getMessage();
-        return $respuesta;
-    }
-
-}
 
 function actualizar_libro($datos)
 {

@@ -194,29 +194,6 @@ $app->delete("/borrar_libro/{referencia}",function($request){
     }
 });
 
-$app->put("/actualizar_usuario_con_clave/{id_usuario}",function($request){
-    session_id($request->getParam("api_key"));
-    session_start();
-    if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
-    {
-        $datos[]=$request->getParam("nombre");
-        $datos[]=$request->getParam("usuario");
-        $datos[]=$request->getParam("clave");
-        $datos[]=$request->getParam("dni");
-        $datos[]=$request->getParam("sexo");
-        $datos[]=$request->getParam("subscripcion");
-        $datos[]=$request->getAttribute("id_usuario");
-
-        echo json_encode(actualizar_usuario_clave($datos));
-    }
-    else
-    {
-        session_destroy();
-        $respuesta["no_auth"]="No tienes permiso para usar este servicio";
-        echo json_encode($respuesta);
-    }
-});
-
 $app->put("/actualizar_libro/{referencia}",function($request){
     session_id($request->getParam("api_key"));
     session_start();

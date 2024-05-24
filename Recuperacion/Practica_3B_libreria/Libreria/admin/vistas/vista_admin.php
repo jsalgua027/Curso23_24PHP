@@ -63,7 +63,7 @@ if (isset($_POST["btnAgregar"])) {
             $nombre_nuevo = "img_" . $ultm_refe . $ext;
             @$var = move_uploaded_file($_FILES["portada_agre"]["tmp_name"], "../images/" . $nombre_nuevo);
 
-            var_dump($var);
+
             if ($var) {
 
                 $datos_env_act["portada"] = $nombre_nuevo;
@@ -184,15 +184,15 @@ if (isset($_POST["btnContEditar"])) {
     $array_nombre = explode(".", $_FILES["portada"]["name"]);
     $error_portada = $_FILES["portada"]["name"] != "" && ($_FILES["portada"]["error"] || !$array_nombre || !getimagesize($_FILES["portada"]["tmp_name"]) || $_FILES["portada"]["size"] > 750 * 1024);
     $error_form = $error_referencia || $error_titulo || $error_autor || $error_descripcion || $error_precio || $error_portada;
-     
+
     //si paso el control de errores de Editar
     if (!$error_form && isset($_POST["btnContEditar"])) {
 
         //ojo necesitamos recoger los dartos de los imputs  para enviarlos al metodo
-        $datos_env["titulo"]=$titulo;
-        $datos_env["autor"]=$autor;
-        $datos_env["descripcion"]=$descripcion;
-        $datos_env["precio"]=$precio;
+        $datos_env["titulo"] = $titulo;
+        $datos_env["autor"] = $autor;
+        $datos_env["descripcion"] = $descripcion;
+        $datos_env["precio"] = $precio;
 
         $respuesta = consumir_servicios_REST(DIR_SERV . "/actualizar_libro/" . $referencia, "PUT", $datos_env);
         $json = json_decode($respuesta, true);
@@ -251,11 +251,10 @@ if (isset($_POST["btnContEditar"])) {
         //********************************************* */
 
         $mensaje = "Usuario editado con éxito";
-        
-       $_SESSION["accion"] = $mensaje;
+
+        $_SESSION["accion"] = $mensaje;
         header("Location:gest_libros.php");
         exit();
-      
     }
 }
 
