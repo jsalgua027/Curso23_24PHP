@@ -62,7 +62,7 @@ if (isset($_POST["btnAgregar"])) {
             $ext = "." . end($array_ext);
             $nombre_nuevo = "img_" . $ultm_refe . $ext;
             @$var = move_uploaded_file($_FILES["portada_agre"]["tmp_name"], "../images/" . $nombre_nuevo);
-           
+
             var_dump($var);
             if ($var) {
 
@@ -90,63 +90,70 @@ if (isset($_POST["btnAgregar"])) {
 if (isset($_POST["btnBorrar"])) {
 
 
-    $respuesta=consumir_servicios_REST(DIR_SERV."/borrar_libro/".$_POST["btnBorrar"],"DELETE",$datos_env);
-    $json=json_decode($respuesta,true);
-    if(!$json)
-    {
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/borrar_libro/" . $_POST["btnBorrar"], "DELETE", $datos_env);
+    $json = json_decode($respuesta, true);
+    if (!$json) {
         session_destroy();
-        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));
     }
 
-    if(isset($json["error_bd"]))
-    {
+    if (isset($json["error_bd"])) {
 
         session_destroy();
-        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
-        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>".$json["error_bd"]."</p>"));
+        consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>" . $json["error_bd"] . "</p>"));
     }
 
-    if(isset($json["no_auth"]))
-    {
+    if (isset($json["no_auth"])) {
         session_unset();
-        $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
         header("Location:index.php");
         exit();
     }
 
     if ($_POST["portada_agre"] != FOTO_DEFECTO && file_exists("../images/" . $_POST["portada_agre"]))
-            unlink("../images/" . $_POST["portada_agre"]);
+        unlink("../images/" . $_POST["portada_agre"]);
 
-      
-        $_SESSION["accion"] = "El libro ha sido borrado con exito";
-        $_SESSION["pag"] = 1; //Al poner paginación cuándo borro siempre me voy página
-        header("Location:gest_libros.php");
-        exit;
 
-   
+    $_SESSION["accion"] = "El libro ha sido borrado con exito";
+    $_SESSION["pag"] = 1; //Al poner paginación cuándo borro siempre me voy página
+    header("Location:gest_libros.php");
+    exit;
 }
 // si le doy a editar me traigo al libro con su referencia
 if (isset($_POST["btnEditar"]) || isset($_POST["btnConEditar"])) {
-    try {
-        $referencia = $_POST["btnEditar"];
-        $consulta = "select * from libros where referencia=?";
-        $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$referencia]);
-        if ($sentencia->rowCount() > 0) {
-            $datos_libro = $sentencia->fetch(PDO::FETCH_ASSOC);
-            $referencia = $datos_libro["referencia"];
-            $titulo = $datos_libro["titulo"];
-            $autor = $datos_libro["autor"];
-            $descripcion = $datos_libro["descripcion"];
-            $precio = $datos_libro["precio"];
-            $foto = $datos_libro["portada"];
-        }
-        $sentencia = null;
-    } catch (PDOException $e) {
-        $sentencia = null;
-        $conexion = null;
+
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_detalles/" . $_POST["btnEditar"], "GET", $datos_env);
+    $json = json_decode($respuesta, true);
+    if (!$json) {
         session_destroy();
-        die(error_page("Examen 3 Rec", "<h1>Examen 3 Rec</h1><p>Imposible realizar la consulta. Error:" . $e->getMessage() . "</p>"));
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));
+    }
+
+    if (isset($json["error_bd"])) {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>" . $json["error_bd"] . "</p>"));
+    }
+
+    if (isset($json["no_auth"])) {
+        session_unset();
+        $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        header("Location:index.php");
+        exit();
+    }
+
+    $datos_libro = $json["libro"];
+
+    if ($datos_libro) {
+
+        $referencia = $datos_libro["referencia"];
+        $titulo = $datos_libro["titulo"];
+        $autor = $datos_libro["autor"];
+        $descripcion = $datos_libro["descripcion"];
+        $precio = $datos_libro["precio"];
+        $foto = $datos_libro["portada"];
     }
 }
 // control de errores del continuar EDITAR !!!!!!!
@@ -167,7 +174,7 @@ if (isset($_POST["btnContEditar"])) {
         if (is_string($error_referencia)) {
             session_destroy();
             $conexion = null;
-            die(error_page("Examen3 Curso 23-24", "<h1>Librería</h1><p>Error en la consulta: " . $error_referencia . "</p>"));
+            die(error_page("Práctica Rec 3B", "<h1>Librería Práctica Rec 3B</h1><p>Error en la consulta: " . $error_referencia . "</p>"));
         }
     }
     $error_titulo = $_POST["titulo"] == "";
@@ -177,62 +184,78 @@ if (isset($_POST["btnContEditar"])) {
     $array_nombre = explode(".", $_FILES["portada"]["name"]);
     $error_portada = $_FILES["portada"]["name"] != "" && ($_FILES["portada"]["error"] || !$array_nombre || !getimagesize($_FILES["portada"]["tmp_name"]) || $_FILES["portada"]["size"] > 750 * 1024);
     $error_form = $error_referencia || $error_titulo || $error_autor || $error_descripcion || $error_precio || $error_portada;
-
+     
     //si paso el control de errores de Editar
     if (!$error_form && isset($_POST["btnContEditar"])) {
-        try {
 
+        //ojo necesitamos recoger los dartos de los imputs  para enviarlos al metodo
+        $datos_env["titulo"]=$titulo;
+        $datos_env["autor"]=$autor;
+        $datos_env["descripcion"]=$descripcion;
+        $datos_env["precio"]=$precio;
 
-            $consulta = "update libros set   titulo=?, autor=?, descripcion=?, precio=? where referencia=?";
-            $datos_edit = [$titulo, $autor, $descripcion, $precio, $referencia];
-
-
-
-            $sentencia = $conexion->prepare($consulta);
-            $sentencia->execute($datos_edit);
-            $sentencia = null;
-        } catch (PDOException $e) {
-            $sentencia = null;
-            $conexion = null;
+        $respuesta = consumir_servicios_REST(DIR_SERV . "/actualizar_libro/" . $referencia, "PUT", $datos_env);
+        $json = json_decode($respuesta, true);
+        if (!$json) {
             session_destroy();
-            die(error_page("Examen3 Curso 23-24", "<h1>Librería</h1><p>Error en la consulta: " . $error_referencia . "</p>"));
-        }
-        // aqui gestión editar foto
-        if ($_FILES["portada"]["name"] != "") {
-            // generar nombre nueva foto
-            $array_ext = explode(".", $_FILES["portada"]["name"]);
-            $ext = "." . end($array_ext);
-            $nombre_nuevo = "img_" . $referencia . $ext;
-            //mover nueva foto a images
-            @$var = move_uploaded_file($_FILES["portada"]["tmp_name"], "../images/" . $nombre_nuevo);
-            if ($var) {
-                //si nombre nueva foto es distinta a $foto(bd)
-                if ($foto != $nombre_nuevo) {
-                    try {
-                        $consulta = "update libros set portada=? where referencia=?";
-                        $sentencia = $conexion->prepare($consulta);
-                        $sentencia->execute([$nombre_nuevo, $referencia]);
-                        $sentencia = null;
-                        if ($foto != FOTO_DEFECTO && file_exists("images/" . $foto))
-                            unlink("../images/" . $foto);
-                    } catch (PDOException $e) {
-                        $sentencia = null;
-                        $conexion = null;
-                        if (file_exists("../images/" . $nombre_nuevo))
-                            unlink("../images/" . $nombre_nuevo);
-                        $mensaje = "Usuario editado con éxito pero sin cambiar a la nueva imagen por un problema con la BD del servidor";
-                    }
-                }
-            } else
-                $mensaje = "Usuario editado con éxito pero sin cambiar a la nueva imagen, ya que ésta no se ha podido mover a la carpeta destino en el servidor";
+            die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));
         }
 
+        if (isset($json["error_bd"])) {
+            session_destroy();
+            consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+            die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>" . $json["error_bd"] . "</p>"));
+        }
+
+        if (isset($json["no_auth"])) {
+            session_unset();
+            $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+            header("Location:index.php");
+            exit();
+        }
 
         $mensaje = "Usuario editado con éxito";
-        $conexion = null;
-        $_SESSION["accion"] = $mensaje;
+
+
+        if ($_FILES["portada"]["name"] != "") {
+
+            $ultm_refe = $_POST["referencia"];
+
+            $array_ext = explode(".", $_FILES["portada"]["name"]);
+            $ext = "." . end($array_ext);
+            $nombre_nuevo = "img_" . $ultm_refe . $ext;
+            @$var = move_uploaded_file($_FILES["portada"]["tmp_name"], "../images/" . $nombre_nuevo);
+
+            var_dump($var);
+            if ($var) {
+
+                $datos_env_act["portada"] = $nombre_nuevo;
+                $datos_env_act["referencia"] = $ultm_refe;
+                $respuesta = consumir_servicios_REST(DIR_SERV . "/actualizar_foto", "PUT", $datos_env_act);
+                $json = json_decode($respuesta, true);
+                if (!$json) {
+                    session_destroy();
+                    die(error_page("Práctica Rec 3", "<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));
+                }
+
+                if (isset($json["error_bd"])) {
+                    if (file_exists("../images/" . $nombre_nuevo))
+                        unlink("../images/" . $nombre_nuevo);
+
+                    $mensaje = "Usuario insertado con éxito pero con la imagen por defecto por un problema en la BD del servidor";
+                }
+            } else {
+                $mensaje = "Usuario insertado con éxito pero con la imagen por defecto ya que no se ha podido mover la imagen a la carpeta destino en el servidor";
+            }
+        }
+        //********************************************* */
+
+        $mensaje = "Usuario editado con éxito";
+        
+       $_SESSION["accion"] = $mensaje;
         header("Location:gest_libros.php");
         exit();
+      
     }
 }
 
@@ -240,32 +263,28 @@ if (isset($_POST["btnContEditar"])) {
 // detalle del libro
 if (isset($_POST["btnDetalle"])) {
 
-    $respuesta=consumir_servicios_REST(DIR_SERV."/obtener_detalles/".$_POST["btnDetalle"],"GET",$datos_env);
-    $json=json_decode($respuesta,true);
-    if(!$json)
-    {
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/obtener_detalles/" . $_POST["btnDetalle"], "GET", $datos_env);
+    $json = json_decode($respuesta, true);
+    if (!$json) {
         session_destroy();
-        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));  
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>Sin respuesta oportuna de la API</p>"));
     }
 
-    if(isset($json["error_bd"]))
-    {
+    if (isset($json["error_bd"])) {
 
         session_destroy();
-        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
-        die(error_page("Práctica Rec 3B","<h1>Práctica Rec 3B</h1><p>".$json["error_bd"]."</p>"));
+        consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+        die(error_page("Práctica Rec 3B", "<h1>Práctica Rec 3B</h1><p>" . $json["error_bd"] . "</p>"));
     }
 
-    if(isset($json["no_auth"]))
-    {
+    if (isset($json["no_auth"])) {
         session_unset();
-        $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+        $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
         header("Location:index.php");
         exit();
     }
 
- $detalle_libro=$json["libro"];
-   
+    $detalle_libro = $json["libro"];
 }
 /*Aqui la gestion de paginación*/
 if (isset($_POST["btnPag"]))
@@ -590,7 +609,7 @@ $libros = $json["libros"];
         ?>
         <?php
         if (isset($_POST["btnDetalle"])) {
-          
+
             //aqui muestro el detalle del libro 
 
             echo "<div class='centrar centrado'>";
@@ -605,8 +624,6 @@ $libros = $json["libros"];
             } else
                 echo "<p>El usuario seleccionado ya no se encuentra en la BD</p>";
             echo "</div>";
-          
-      
         }
 
 

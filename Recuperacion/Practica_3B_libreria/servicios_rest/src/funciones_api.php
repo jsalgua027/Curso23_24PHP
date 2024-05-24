@@ -454,7 +454,7 @@ function actualizar_usuario_clave($datos)
 
 }
 
-function actualizar_usuario_sin_clave($datos)
+function actualizar_libro($datos)
 {
     try{
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
@@ -466,10 +466,10 @@ function actualizar_usuario_sin_clave($datos)
 
     try{
        
-        $consulta="update usuarios set nombre=?, usuario=?, dni=?, sexo=?, subscripcion=? where id_usuario=?";
+        $consulta="update libros set titulo=?, autor=?, descripcion=?, precio=? where referencia=?";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute($datos);
-        $respuesta["mensaje"]="Usuario editado con éxito";
+        $respuesta["mensaje"]="Libro editado con éxito";
         $sentencia=null;
         $conexion=null;
         return $respuesta;
@@ -478,7 +478,7 @@ function actualizar_usuario_sin_clave($datos)
     catch(PDOException $e){
         $sentencia=null;
         $conexion=null;
-        $respuesta["error_bd"]="Error en la consulta. Error:".$e->getMessage();
+        $respuesta["error_bd"]="Error en la consultaAQUI. Error:".$e->getMessage();
         return $respuesta;
     }
 

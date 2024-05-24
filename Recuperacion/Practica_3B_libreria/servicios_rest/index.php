@@ -217,19 +217,20 @@ $app->put("/actualizar_usuario_con_clave/{id_usuario}",function($request){
     }
 });
 
-$app->put("/actualizar_usuario_sin_clave/{id_usuario}",function($request){
+$app->put("/actualizar_libro/{referencia}",function($request){
     session_id($request->getParam("api_key"));
     session_start();
     if(isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="admin")
     {
-        $datos[]=$request->getParam("nombre");
-        $datos[]=$request->getParam("usuario");
-        $datos[]=$request->getParam("dni");
-        $datos[]=$request->getParam("sexo");
-        $datos[]=$request->getParam("subscripcion");
-        $datos[]=$request->getAttribute("id_usuario");
+        
+        $datos[]=$request->getParam("titulo");
+        $datos[]=$request->getParam("autor");
+        $datos[]=$request->getParam("descripcion");
+        $datos[]=$request->getParam("precio");
+        $datos[]=$request->getAttribute("referencia");
+     
 
-        echo json_encode(actualizar_usuario_sin_clave($datos));
+        echo json_encode( actualizar_libro($datos));
     }
     else
     {
