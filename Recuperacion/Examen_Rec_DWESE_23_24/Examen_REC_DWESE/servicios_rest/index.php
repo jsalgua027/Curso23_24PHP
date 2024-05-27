@@ -48,6 +48,27 @@ $app->post('/salir',function($request){
     echo json_encode(array("log_out"=>"Cerrada sesión en la API"));
 });
 
+$app->get('/usuario/{id_usuario}',function($request){
+  $api_session=$request->getParam("api_session");
+  session_id($api_session);
+  session_start();
+
+   
+      echo json_encode(detalles_usuario($request->getAttribute("id_usuario")));
+  
+
+});
+
+$app->get('/usuariosGuardia/{dia}/{hora}',function($request){
+  $api_session=$request->getParam("api_session");
+  session_id($api_session);
+  session_start();
+ $dia=$request->getAttribute("dia");
+ $hora=$request->getAttribute("hora");
+
+ echo json_encode(usuarios_guardia($dia,$hora));
+
+});
 
 
 // Una vez creado servicios los pongo a disposición

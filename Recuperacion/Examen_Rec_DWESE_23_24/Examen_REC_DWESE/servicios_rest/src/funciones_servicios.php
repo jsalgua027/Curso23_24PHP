@@ -89,6 +89,75 @@ function logueado($usuario,$clave)
 }
 
 
+function detalles_usuario($id_usuario)
+{
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+        
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        return $respuesta;
+    }
+
+    try{
+        $consulta="select * from usuarios where id_usuario=? ";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$id_usuario]);
+        $respuesta["usuario"]=$sentencia->fetch(PDO::FETCH_ASSOC);//Devuelve false si no tiene
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+
+    }
+    catch(PDOException $e){
+
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+    }
+
+
+    $sentencia=null;
+    $conexion=null;
+    return $respuesta;
+}
+
+function usuarios_guardia($dia,$hora)
+{
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+        
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        return $respuesta;
+    }
+
+    try{
+        $consulta="select * from usuarios where id_usuario=? ";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$dia,$hora]);
+        $respuesta["usuario"]=$sentencia->fetch(PDO::FETCH_ASSOC);//Devuelve false si no tiene
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+
+    }
+    catch(PDOException $e){
+
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+    }
+
+
+    $sentencia=null;
+    $conexion=null;
+    return $respuesta;
+}
 
 
 ?>

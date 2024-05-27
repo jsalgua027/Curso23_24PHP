@@ -1,4 +1,5 @@
 <?php
+
  $datos_env["api_session"]=$_SESSION["api_session"];
  $respuesta=consumir_servicios_REST(DIR_SERV."/logueado","GET",$datos_env);
  $json=json_decode($respuesta,true);
