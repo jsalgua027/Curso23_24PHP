@@ -13,12 +13,12 @@ if(isset($_POST["btnEntrar"]))
         if(!$json)
         {
             session_destroy();
-            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>Sin respuesta oportuna de la API</p>"));  
+            die(error_page("Práctica ExamenRec_Horarios_SW_23_24","<h1>Práctica ExamenRec_Horarios_SW_23_24</h1><p>Sin respuesta oportuna de la API login</p>"));  
         }
         if(isset($json["error_bd"]))
         {
             session_destroy();
-            die(error_page("Práctica Rec 3","<h1>Práctica Rec 3</h1><p>".$json["error_bd"]."</p>"));
+            die(error_page("Práctica ExamenRec_Horarios_SW_23_24","<h1>Práctica ExamenRec_Horarios_SW_23_24</h1><p>".$json["error_bd"]."</p>"));
         }
 
         if(isset($json["usuario"]))

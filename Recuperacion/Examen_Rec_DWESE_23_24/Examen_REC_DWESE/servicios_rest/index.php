@@ -17,9 +17,12 @@ $app->post('/login',function($request){
     echo json_encode(login($usuario,$clave));
 });
 
+
+
 $app->get('/logueado',function($request){
     $api_session=$request->getParam("api_session");
     session_id($api_session);
+  // session_id($request->getParam("api_session"));
     session_start();
     if(isset($_SESSION["usuario"]))
     {

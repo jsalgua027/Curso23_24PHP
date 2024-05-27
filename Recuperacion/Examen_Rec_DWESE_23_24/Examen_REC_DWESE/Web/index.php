@@ -1,5 +1,5 @@
 <?php
-session_name("ExamenRec_SW_23_24");
+session_name("ExamenRec_Horarios_SW_23_24");
 session_start();
  require "src/funciones_ctes.php";
 

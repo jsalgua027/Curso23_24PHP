@@ -35,7 +35,6 @@ function login($usuario,$clave)
         session_start();
         $_SESSION["usuario"]=$respuesta["usuario"]["usuario"];
         $_SESSION["clave"]=$respuesta["usuario"]["clave"];
-        $_SESSION["tipo"]=$respuesta["usuario"]["tipo"];
         $respuesta["api_session"]=session_id();
     }
     else
