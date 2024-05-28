@@ -136,10 +136,10 @@ function usuarios_guardia($dia,$hora)
     }
 
     try{
-        $consulta="select * from usuarios where id_usuario=? ";
+        $consulta="SELECT usuarios.* from usuarios,horario_lectivo,grupos where usuarios.id_usuario=horario_lectivo.usuario and horario_lectivo.grupo=grupos.id_grupo and horario_lectivo.dia=? and horario_lectivo.hora=? and grupos.nombre='GUARD'";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute([$dia,$hora]);
-        $respuesta["usuario"]=$sentencia->fetch(PDO::FETCH_ASSOC);//Devuelve false si no tiene
+        $respuesta["usuarios"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);//Devuelve false si no tiene
         $sentencia=null;
         $conexion=null;
         return $respuesta;
