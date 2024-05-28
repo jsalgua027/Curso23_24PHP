@@ -1,8 +1,8 @@
 <?php
 
 
-define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/Examen_Rec_DWESE_23_24/Examen_REC_DWESE/servicios_rest" //clase
-//"http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen_Rec_DWESE_23_24/Examen_REC_DWESE/servicios_rest" // casa
+define("DIR_SERV",//"http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/Examen_Rec_DWESE_23_24/Examen_REC_DWESE/servicios_rest" //clase
+"http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen_Rec_DWESE_23_24/Examen_REC_DWESE/servicios_rest" // casa
 );
 define("MINUTOS",5);
 
