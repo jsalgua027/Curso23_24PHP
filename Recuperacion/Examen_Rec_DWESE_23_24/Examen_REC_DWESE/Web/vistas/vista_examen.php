@@ -107,7 +107,16 @@ for ($hora = 1; $hora < count($horas); $hora++) {
         echo "<tr>";
         echo "<th>Horas</th>";
         echo "<th>Profesor de Guardia</th>";
-        echo "<th>Informacion del profesaor con ID</th>";
+        if(isset($_POST["btnDetalles"]))
+        {
+            echo "<th>Informacion del profesaor con ID: ".$_POST["btnDetalles"]."</th>";
+        }
+       
+       else
+       {
+        echo "<th>Informacion del profesaor con ID: </th>";
+       }
+       
         echo "</tr>";
         for ($hora = 1; $hora < count($horas); $hora++) {
 
@@ -125,7 +134,40 @@ for ($hora = 1; $hora < count($horas); $hora++) {
                 echo"</ol>";
                 echo"</form>";
                 echo "</td>";
-                echo "<td></td>";
+                echo "<td>";
+                if (isset($_POST["btnDetalles"]) && $hora==1)
+                {
+                    $respuesta = consumir_servicios_REST(DIR_SERV . "/usuario/" . $_POST["btnDetalles"], "GET", $datos_env);
+                    $json = json_decode($respuesta, true);
+                    if (!$json) {
+                        session_destroy();
+                        die(error_page("Práctica ExamenRec_SW_23_24  HORARIOS", "<h1>Práctica ExamenRec_SW_23_24  HORARIOS</h1><p>Sin respuesta oportuna de la API usuario</p>"));
+                    }
+            
+                    if (isset($json["error"])) {
+                        session_destroy();
+                        consumir_servicios_REST(DIR_SERV . "/salir", "POST");
+                        die(error_page("Práctica ExamenRec_SW_23_24  HORARIOS", "<h1>Práctica ExamenRec_SW_23_24  HORARIOS</h1><p>" . $json["error_bd"] . "</p>"));
+                    }
+            
+                    if (isset($json["no_auth"])) {
+                        session_unset();
+                        $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+                        header("Location:index.php");
+                        exit();
+                    }
+            
+                 $detalle_usu = $json["usuario"];
+                 if($detalle_usu)
+                 {
+                    echo"<p><strong>Nombre: </strong>".$detalle_usu["nombre"]."</p>";
+                    echo"<p><strong>Usuario: </strong>".$detalle_usu["usuario"]."</p>";
+                    echo"<p><strong>Contraseña: </strong>".$detalle_usu["clave"]."</p>";
+                    echo"<p><strong>Email: </strong>".$detalle_usu["email"]."</p>";
+                 }
+
+                }
+                echo"</td>";
                 echo "</tr>";
             }
         }
