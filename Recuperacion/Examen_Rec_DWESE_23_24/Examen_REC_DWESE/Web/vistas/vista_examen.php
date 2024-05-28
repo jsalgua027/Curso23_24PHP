@@ -116,7 +116,7 @@ for ($hora = 1; $hora < count($horas); $hora++) {
        {
         echo "<th>Informacion del profesaor con ID: </th>";
        }
-       
+       //
         echo "</tr>";
         for ($hora = 1; $hora < count($horas); $hora++) {
 
