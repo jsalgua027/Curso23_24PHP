@@ -101,22 +101,18 @@ for ($hora = 1; $hora < count($horas); $hora++) {
         </form>
         <?php
 
-        echo "<h4>Hoy es:" . $dias[$dia] . " </h4>";
+        echo "<h4>Hoy es:  " . $dias[$dia] . " </h4>";
 
         echo "<table>";
         echo "<tr>";
         echo "<th>Horas</th>";
         echo "<th>Profesor de Guardia</th>";
-        if(isset($_POST["btnDetalles"]))
-        {
-            echo "<th>Informacion del profesaor con ID: ".$_POST["btnDetalles"]."</th>";
+        if (isset($_POST["btnDetalles"])) {
+            echo "<th>Informacion del profesaor con ID: " . $_POST["btnDetalles"] . "</th>";
+        } else {
+            echo "<th>Informacion del profesaor con ID: </th>";
         }
-       
-       else
-       {
-        echo "<th>Informacion del profesaor con ID: </th>";
-       }
-       //
+        //
         echo "</tr>";
         for ($hora = 1; $hora < count($horas); $hora++) {
 
@@ -125,56 +121,57 @@ for ($hora = 1; $hora < count($horas); $hora++) {
                 echo "<td>" . $horas[$hora] . "</td>";
                 echo "<td>";
                 echo "<form action='index.php' method='post'>";
-                echo"<ol>";
-                foreach($profesores_guardia[$hora] as $tupla)
-                {
-                    echo"<li><button class='enlace' name='btnDetalles' value='".$tupla["id_usuario"]."'>".$tupla["nombre"]."</button></li>";
-
+                echo "<ol>";
+                foreach ($profesores_guardia[$hora] as $tupla) {
+                    echo "<li><button class='enlace' name='btnDetalles' value='" . $tupla["id_usuario"] . "'>" . $tupla["nombre"] . "</button></li>";
                 }
-                echo"</ol>";
-                echo"</form>";
+                echo "</ol>";
+                echo "</form>";
                 echo "</td>";
                 echo "<td>";
-                if (isset($_POST["btnDetalles"]) && $hora==1)
-                {
+                if (isset($_POST["btnDetalles"]) && $hora == 1) {
                     $respuesta = consumir_servicios_REST(DIR_SERV . "/usuario/" . $_POST["btnDetalles"], "GET", $datos_env);
                     $json = json_decode($respuesta, true);
                     if (!$json) {
                         session_destroy();
                         die(error_page("Práctica ExamenRec_SW_23_24  HORARIOS", "<h1>Práctica ExamenRec_SW_23_24  HORARIOS</h1><p>Sin respuesta oportuna de la API usuario</p>"));
                     }
-            
+
                     if (isset($json["error"])) {
                         session_destroy();
                         consumir_servicios_REST(DIR_SERV . "/salir", "POST");
                         die(error_page("Práctica ExamenRec_SW_23_24  HORARIOS", "<h1>Práctica ExamenRec_SW_23_24  HORARIOS</h1><p>" . $json["error_bd"] . "</p>"));
                     }
-            
+
                     if (isset($json["no_auth"])) {
                         session_unset();
                         $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
                         header("Location:index.php");
                         exit();
                     }
-            
-                 $detalle_usu = $json["usuario"];
-                 if($detalle_usu)
-                 {
-                    echo"<p><strong>Nombre: </strong>".$detalle_usu["nombre"]."</p>";
-                    echo"<p><strong>Usuario: </strong>".$detalle_usu["usuario"]."</p>";
-                    echo"<p><strong>Contraseña: </strong>".$detalle_usu["clave"]."</p>";
-                    echo"<p><strong>Email: </strong>".$detalle_usu["email"]."</p>";
-                 }
 
+                    $detalle_usu = $json["usuario"];
+                    if ($detalle_usu) {
+                        echo "<p><strong>Nombre: </strong>" . $detalle_usu["nombre"] . "</p>";
+                        echo "<p><strong>Usuario: </strong>" . $detalle_usu["usuario"] . "</p>";
+                        echo "<p><strong>Contraseña: </strong>**********</p>";
+
+                        echo "<p><strong>Email: </strong>";
+                        if (isset($detalle_usu["email"]))
+                            echo $detalle_usu["email"];
+                        else
+                            echo "Email no disponible";
+                        echo"</p>";
+                    }
                 }
-                echo"</td>";
+                echo "</td>";
                 echo "</tr>";
             }
         }
         echo "</table>";
 
 
-      
+
         ?>
     </div>
     <?php
