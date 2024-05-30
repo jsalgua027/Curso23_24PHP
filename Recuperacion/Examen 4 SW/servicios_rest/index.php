@@ -6,16 +6,26 @@ require __DIR__ . '/Slim/autoload.php';
 $app= new \Slim\App;
 
 
+//login
+$app->post('/login',function($request){
+    $usuario=$request->getParam("usuario");
+    $clave=$request->getParam("clave");
 
-$app->get('/conexion_PDO',function($request){
+    echo json_encode(login($usuario,$clave));
 
-    echo json_encode(conexion_pdo());
 });
+//logueado
+//salir
+//alumnos
+//notasAlumno
+//NotasNoEvalAlumno
+//quitarNota
+//ponerNota
+//cambiarNota
 
-$app->get('/conexion_MYSQLI',function($request){
-    
-    echo json_encode(conexion_mysqli());
-});
+
+
+
 
 
 
