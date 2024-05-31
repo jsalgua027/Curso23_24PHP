@@ -3,12 +3,20 @@ session_name("Examen_4_SW");
 session_start();
 require "src/func_ctes.php";
 //si el usuario es tipo tutor
+if(isset($_POST["btnSalir"]))
+{
+    $datos_env["api_session"]=$_SESSION["api_session"];
+    session_destroy();
+    consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+    header("Location:index.php");
+    exit();
+}
 if (isset($_SESSION["usuario"])) {
     //seguridad
-    require "src/seguridad.php";
+   require "src/seguridad.php";
     if ($datos_usuario_log["tipo"] == "alumno") {
         //vista alumno
-        require "vitas/vista_normal.php";
+        require "vistas/vista_normal.php";
     } else //sino 
     {
         //vista_tutor
@@ -16,7 +24,9 @@ if (isset($_SESSION["usuario"])) {
         exit;
     }
 }
+else{
+    require "vistas/vista_login.php";
+}
 
 
 
-require "vistas/vista_login.php";

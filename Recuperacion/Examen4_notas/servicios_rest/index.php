@@ -8,10 +8,12 @@ $app= new \Slim\App;
 
 //login
 $app->post('/login',function($request){
-    $usuario=$request->getParam("usuario");
-    $clave=$request->getParam("clave");
-
-    echo json_encode(login($usuario,$clave));
+  
+       
+ $usuario=$request->getParam("usuario");
+ $clave=$request->getParam("clave");
+     
+   echo json_encode(login($usuario,$clave));
 
 });
 //logueado aqui ya usamos los valores intoducidos al loguarse,

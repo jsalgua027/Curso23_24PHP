@@ -4,7 +4,7 @@ define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen4
 );
 
 
-define("RECAPTCHA_V3_SECRET_KEY", '6LeclMUpAAAAAEWK6dHXL83DFHFaxFWE9f0LiRV2');
+
 function consumir_servicios_REST($url,$metodo,$datos=null)
 {
     $llamada=curl_init();

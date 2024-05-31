@@ -15,7 +15,9 @@ function login($usuario,$clave)
     try{
         $consulta="select * from usuarios where usuario=? and clave=?";
         $sentencia=$conexion->prepare($consulta);
+       // $sentencia->execute($datos);
         $sentencia->execute([$usuario,$clave]);
+     
     }
      catch(PDOException $e){
 
@@ -43,7 +45,7 @@ function login($usuario,$clave)
     $conexion=null;
     return $respuesta;
    
-}
+} 
 
 function logueado($usuario,$clave)
 {
@@ -57,7 +59,7 @@ function logueado($usuario,$clave)
         return $respuesta;
     }
     try {
-       $consulta="select * from usuarios where usuario? and clave=?";
+       $consulta="select * from usuarios where usuario=? and clave=?";
        $sentencia=$conexion->prepare($consulta);
        $sentencia->execute([$usuario,$clave]);
        if($sentencia->rowCount()>0)

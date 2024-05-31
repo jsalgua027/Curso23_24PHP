@@ -7,14 +7,16 @@ if (isset($_POST["btnLogin"]))
     if (!$error_form) //si no hay error de formulario
     {
         //preparo los datos para enviar a al api
-        $datos_env[] = $_POST["usuario"];
-        $datos_env[] = md5($_POST["clave"]); // IMPORTANTE!!!!!! el md5
-        $respuesta = consumir_servicios_REST(DIR_SERV . "/login","POST", $datos_env); // llamo al servicio y le paso los datos
+        $datos_env["usuario"] = $_POST["usuario"];
+        $datos_env["clave"] = md5($_POST["clave"]); // IMPORTANTE!!!!!! el md5
+        $respuesta = consumir_servicios_REST(DIR_SERV."/login","POST", $datos_env); // llamo al servicio y le paso los datos
+      
+        var_dump($respuesta);
         $json = json_decode($respuesta, true); // la respuesta es en un arry asociativo que meto en la variable
         if (!$json) // si no hay json
         {
             session_destroy();
-            die(error_page("Examen 4 Notas", "<h1>Examen 4 Notas</h1><p>Sin respuesta oportuna de la API</p>"));
+            die(error_page("Examen 4 Notas", "<h1>Examen 4 Notas</h1><p>Sin respuesta oportuna de la API login</p>"));
         }
         if (isset($json["error"])) // si recibo el error
         {
@@ -23,6 +25,7 @@ if (isset($_POST["btnLogin"]))
         }
         if (isset($json["usuario"])) // si recibo al usuario de forma correcta meto en variables de session toda la información
         {
+           
             $_SESSION["usuario"] = $json["usuario"]["usuario"];
             $_SESSION["clave"] = $json["usuario"]["clave"];
             $_SESSION["tipo"] = $json["usuario"]["tipo"];

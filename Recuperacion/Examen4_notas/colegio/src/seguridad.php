@@ -1,9 +1,9 @@
 <?php
 // recojo la clave api de mi session  para usarlo en logueado
 
-$datos_env=$_SESSION["api_session"];
+$datos_env["api_session"]=$_SESSION["api_session"];
 // le paso el logueado
-$repuesta=consumir_servicios_REST(DIR_SERV."/logueado", "GET",$datos_env);
+$respuesta=consumir_servicios_REST(DIR_SERV."/logueado","GET",$datos_env);
 $json=json_decode($respuesta,true);
  if(!$json)
  {
