@@ -1,5 +1,6 @@
 <?php
-if (isset($_POST["btnLogin"])) {
+if (isset($_POST["btnLogin"])) 
+{
     $error_usuario = $_POST["usuario"] == "";
     $error_clave = $_POST["clave"] == "";
     $error_form = $error_usuario || $error_clave;
@@ -32,7 +33,7 @@ if (isset($_POST["btnLogin"])) {
             header("Location:index.php");
             exit();
         }
-        // si hay algun error ponemos el error a true;
+        else // si hay algun error ponemos el error a true;
         $error_usuario = true;
     }
 }
