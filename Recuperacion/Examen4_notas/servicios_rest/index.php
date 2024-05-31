@@ -24,9 +24,9 @@ $app->get('/logueado',function($request){
 
  if(isset($_SESSION["usuario"]))
  {
-    $datos[]=$_SESSION["usuario"];
-    $datos[]=$_SESSION["clave"];
-    echo json_encode(logueado($datos));
+    $usuario=$_SESSION["usuario"];
+    $clave=$_SESSION["clave"];
+    echo json_encode(logueado($usuario,$clave));
  }
  else
  {

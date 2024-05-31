@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Vista Tutor</h1>
+    <h1>VISTA NORMAL</h1>
 </body>
 </html>

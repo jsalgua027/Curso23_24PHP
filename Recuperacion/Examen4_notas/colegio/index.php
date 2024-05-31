@@ -7,7 +7,7 @@ if(isset($_SESSION["usuario"]))
 {
 //seguridad
 require "src/seguridad.php";
-if($datos_usu["tipo"]=="alumno")
+if($datos_usuario_log["tipo"]=="alumno")
 {
     //vista alumno
     require "vitas/vista_normal.php";
