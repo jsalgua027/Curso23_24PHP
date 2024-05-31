@@ -1,4 +1,6 @@
 <?php
+session_name("Examen_4_SW");
+session_start();
 require "../src/seguridad.php";
 
 ?>
