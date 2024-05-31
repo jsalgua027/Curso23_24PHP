@@ -1,6 +1,7 @@
 <?php
 define("MINUTOS",15);
-define("DIR_SERV","...");
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen4_notas/servicios_rest"//casa
+);
 
 
 define("RECAPTCHA_V3_SECRET_KEY", '6LeclMUpAAAAAEWK6dHXL83DFHFaxFWE9f0LiRV2');

@@ -14,8 +14,40 @@ $app->post('/login',function($request){
     echo json_encode(login($usuario,$clave));
 
 });
-//logueado
+//logueado aqui ya usamos los valores intoducidos al loguarse,
+// osea usamos los $sessions
+
+$app->get('/logueado',function($request){
+   
+ session_id($request->getParam("api_session"));
+ session_start();
+
+ if(isset($_SESSION["usuario"]))
+ {
+    $datos[]=$_SESSION["usuario"];
+    $datos[]=$_SESSION["clave"];
+    echo json_encode(logueado($datos));
+ }
+ else
+ {
+ 
+    session_destroy();
+    $respuesta["no_auth"]="No tienes permiso para usar este servicio";
+    echo json_encode($respuesta);
+ } 
+
+
+});
 //salir
+
+$app->post("/salir",function($request){
+
+    session_id($request->getParam("api_session"));
+    session_start();
+    session_destroy();
+    $respuesta["logout"]="Sesión cerrada";
+    echo json_encode($respuesta);
+});
 //alumnos
 //notasAlumno
 //NotasNoEvalAlumno

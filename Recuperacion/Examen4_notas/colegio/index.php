@@ -1,9 +1,9 @@
 <?php
 session_name("Examen_4_SW");
 session_start();
-
+ require "src/func_ctes.php";
 //si el usuario es tipo tutor
-if($_SESSION["usuario"])
+if(isset($_SESSION["usuario"]))
 {
 //seguridad
 require "src/seguridad.php";
