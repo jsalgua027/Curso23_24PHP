@@ -85,7 +85,80 @@ function logueado($usuario,$clave)
     }
 }
 
+function alumnos()
+{
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+        
+    }
+    catch(PDOException $e)
+    {
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        return $respuesta;
+    }
+    try {
+       $consulta="select * from usuarios where tipo='alumno'";
+       $sentencia=$conexion->prepare($consulta);
+       $sentencia->execute();
+       if($sentencia->rowCount()>0)
+       {
+        $respuesta["alumnos"]=$sentencia->fetchall(PDO::FETCH_ASSOC);
+       }
+       else
+       {
+        $respuesta["mensaje"]="El usuario no se encuentra registrado en la BD";
+       }
+      
+       $sentencia=null;
+       $conexion=null;
+       return $respuesta;
 
+    }
+    catch(PDOException $e)
+    {
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+    }
+}
 
+function notasAlumno($cod_usu)
+{
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+        
+    }
+    catch(PDOException $e)
+    {
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        return $respuesta;
+    }
+    try {
+       $consulta="SELECT n.cod_usu, u.nombre, a.denominacion, n.nota FROM notas n JOIN asignaturas a ON a.cod_asig = n.cod_asig JOIN usuarios u ON u.cod_usu = n.cod_usu WHERE n.cod_usu = ?";
+       $sentencia=$conexion->prepare($consulta);
+       $sentencia->execute([$cod_usu]);
+       if($sentencia->rowCount()>0)
+       {
+        $respuesta["notas"]=$sentencia->fetch(PDO::FETCH_ASSOC);
+       }
+       else
+       {
+        $respuesta["mensaje"]="El usuario no se encuentra registrado en la BD";
+       }
+      
+       $sentencia=null;
+       $conexion=null;
+       return $respuesta;
+
+    }
+    catch(PDOException $e)
+    {
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+    }
+}
 
 ?>
