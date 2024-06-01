@@ -86,6 +86,22 @@ $app->get("/notasAlumno/{cod_alu}", function ($request) {
 
 });
 //NotasNoEvalAlumno
+$app->get("/NotasNoEvalAlumno/{cod_alu}", function ($request) {
+   
+ 
+   session_id($request->getParam("api_session"));
+   session_start();
+   $alumno=$request->getAttribute("cod_alu");
+   if (isset($_SESSION["usuario"])) {
+
+      echo json_encode(NotasNoEvalAlumno($alumno));
+   } else {
+
+      session_destroy();
+      $respuesta["no_auth"] = "No tienes permiso para usar este servicio";
+      echo json_encode($respuesta);
+   }
+});
 //quitarNota
 //ponerNota
 //cambiarNota
