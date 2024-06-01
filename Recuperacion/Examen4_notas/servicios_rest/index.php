@@ -67,7 +67,7 @@ $app->get("/alumnos", function ($request) {
 $app->get("/notasAlumno/{cod_alu}", function ($request) {
    
  
-    session_id($request->getParam("api_session"));
+   session_id($request->getParam("api_session"));
    session_start();
    $alumno=$request->getAttribute("cod_alu");
    if (isset($_SESSION["usuario"])) {
@@ -83,7 +83,7 @@ $app->get("/notasAlumno/{cod_alu}", function ($request) {
  
 
    
- echo json_encode(notasAlumno($alumno));
+
 });
 //NotasNoEvalAlumno
 //quitarNota

@@ -11,7 +11,7 @@ if (isset($_POST["btnLogin"]))
         $datos_env["clave"] = md5($_POST["clave"]); // IMPORTANTE!!!!!! el md5
         $respuesta = consumir_servicios_REST(DIR_SERV."/login","POST", $datos_env); // llamo al servicio y le paso los datos
       
-        var_dump($respuesta);
+  
         $json = json_decode($respuesta, true); // la respuesta es en un arry asociativo que meto en la variable
         if (!$json) // si no hay json
         {
@@ -29,6 +29,7 @@ if (isset($_POST["btnLogin"]))
             $_SESSION["usuario"] = $json["usuario"]["usuario"];
             $_SESSION["clave"] = $json["usuario"]["clave"];
             $_SESSION["tipo"] = $json["usuario"]["tipo"];
+            $_SESSION["cod_usu"]=$json["usuario"]["cod_usu"];
             $_SESSION["ultm_accion"] = time(); // actualizo el time de la seguridad
             $_SESSION["api_session"] = $json["api_session"]; // la clave api para el control de baneo
 

@@ -140,7 +140,7 @@ function notasAlumno($cod_usu)
        $sentencia->execute([$cod_usu]);
        if($sentencia->rowCount()>0)
        {
-        $respuesta["notas"]=$sentencia->fetch(PDO::FETCH_ASSOC);
+        $respuesta["notas"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);
        }
        else
        {
