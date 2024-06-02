@@ -135,7 +135,7 @@ function notasAlumno($cod_usu)
         return $respuesta;
     }
     try {
-       $consulta="SELECT n.cod_usu, u.nombre, a.denominacion, n.nota FROM notas n JOIN asignaturas a ON a.cod_asig = n.cod_asig JOIN usuarios u ON u.cod_usu = n.cod_usu WHERE n.cod_usu = ? and n.nota<>'0'";
+       $consulta="SELECT n.cod_usu, u.nombre, a.denominacion, n.nota, n.cod_asig FROM notas n JOIN asignaturas a ON a.cod_asig = n.cod_asig JOIN usuarios u ON u.cod_usu = n.cod_usu WHERE n.cod_usu = ? and n.nota<>'0'";
        $sentencia=$conexion->prepare($consulta);
        $sentencia->execute([$cod_usu]);
        if($sentencia->rowCount()>0)
@@ -173,7 +173,7 @@ function NotasNoEvalAlumno($cod_usu)
         return $respuesta;
     }
     try {
-       $consulta="SELECT n.cod_usu, u.nombre, a.denominacion, n.nota FROM notas n JOIN asignaturas a ON a.cod_asig = n.cod_asig JOIN usuarios u ON u.cod_usu = n.cod_usu WHERE n.cod_usu = ? and n.nota='0'";
+       $consulta="SELECT n.cod_usu, u.nombre, a.denominacion, n.nota, n.cod_asig FROM notas n JOIN asignaturas a ON a.cod_asig = n.cod_asig JOIN usuarios u ON u.cod_usu = n.cod_usu WHERE n.cod_usu = ? and n.nota='0'";
        $sentencia=$conexion->prepare($consulta);
        $sentencia->execute([$cod_usu]);
        if($sentencia->rowCount()>0)

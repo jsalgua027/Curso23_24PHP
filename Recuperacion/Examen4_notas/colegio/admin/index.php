@@ -162,6 +162,7 @@ if (isset($_POST["btnVerNotas"])) {
             echo "<h2>Notas del Alumno " . $nombre_alumno_seleccionado . "</h2>";
             echo "<table class='table'>";
             echo "<tr><th>Asignaturas</th><th>Notas</th><th>Accion</th></tr>";
+           // var_dump($datos_notas_alum);
             if (count($datos_notas_alum) > 0)
              {
                 foreach ($datos_notas_alum as $tupla) {
@@ -169,12 +170,16 @@ if (isset($_POST["btnVerNotas"])) {
                     echo "<td>" . $tupla["denominacion"] . "</td>";
                     echo "<td>" . $tupla["nota"] . "</td>";
                     echo "<td><form action='index.php' mehod='post'>";
-                   // echo "<input type='hidden' name='cod_asig' value='" . $tupla["cod_asig"] . "'>";
-                   // echo "<input type='hidden' name='alumnoSeleccionado' value='" . $cod_usu . "'>";
-                    echo"<button class='enlace' name='btnEditar' type='submit'>Editar</button>-<button class='enlace' name='btnBorrar' type='submit'>Borrar</button>";
+                    echo "<input type='hidden' name='codAsig' value='" . $tupla["cod_asig"] . "'>";
+                    echo "<input type='hidden' name='alumnoSeleccionado' value='" . $tupla["cod_usu"] . "'>";
+                   // echo"<button class='enlace' name='btnEditar' type='submit'>Editar</button>-<button class='enlace' name='btnBorrar' type='submit'>Borrar</button>";
                     if(isset($_POST["btnEditar"]))
                     {
                         echo"<button class='enlace' name='btnCambiar' type='submit'>Cambiar</button>-<button class='enlace' name='btnAtras' type='submit'>Atras</button>";  
+                    }
+                    else
+                    {
+                        echo"<button class='enlace' name='btnEditar' type='submit'>Editar</button>-<button class='enlace' name='btnBorrar' type='submit'>Borrar</button>";
                     }
                     echo"</form></td>";
                     echo "<tr>";
