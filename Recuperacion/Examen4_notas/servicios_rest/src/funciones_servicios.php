@@ -15,7 +15,6 @@ function login($usuario,$clave)
     try{
         $consulta="select * from usuarios where usuario=? and clave=?";
         $sentencia=$conexion->prepare($consulta);
-      
         $sentencia->execute([$usuario,$clave]);
      
     }
@@ -30,12 +29,13 @@ function login($usuario,$clave)
     if($sentencia->rowCount()>0)
     {
         $respuesta["usuario"]=$sentencia->fetch(PDO::FETCH_ASSOC);//me traigo los datos
-        session_name("API_Examen_4");
-        session_start();
+        session_name("API_Examen_4");// genero la session de la Api para el api_session
+        session_start();//inicio la sesion
+        $respuesta["api_session"]=session_id(); // genero la clave para la api
         $_SESSION["usuario"]=$respuesta["usuario"]["usuario"]; //guardo el usuario en la sessión
         $_SESSION["clave"]=$respuesta["usuario"]["clave"];// guardo la clave en la sessión
         $_SESSION["tipo"]=$respuesta["usuario"]["tipo"];// guardo la clave en la sessión
-        $respuesta["api_session"]=session_id(); // genero la clave para la api
+      
     }
     else
     {

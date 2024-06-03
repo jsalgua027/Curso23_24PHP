@@ -12,6 +12,7 @@ if(isset($_POST["btnSalir"]))
     exit();
 }
 if (isset($_SESSION["usuario"])) {
+    $salto="index.php";
     //seguridad
    require "src/seguridad.php";
     if ($datos_usuario_log["tipo"] == "alumno") {

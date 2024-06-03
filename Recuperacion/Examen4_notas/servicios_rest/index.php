@@ -20,7 +20,7 @@ $app->post('/login', function ($request) {
 
 $app->get('/logueado', function ($request) {
 
-   session_id($request->getParam("api_session"));
+   session_id($request->getParam("api_session"));//aqui pregunto por la sesion abierta 
    session_start();
 
    if (isset($_SESSION["usuario"])) {

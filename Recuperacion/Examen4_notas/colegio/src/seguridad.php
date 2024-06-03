@@ -22,7 +22,7 @@ $json=json_decode($respuesta,true);
  {
     session_unset();
     $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
-    header("Location:index.php");
+    header("Location:".$salto);
     exit();
  }
 
@@ -31,7 +31,7 @@ if(isset($json["mensaje"]))
     session_unset();
     consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
     $_SESSION["seguridad"]="Usted ya no se encuentra registrado en la BD";
-    header("Location:index.php");
+    header("Location:".$salto);
     exit();
 }
 // Acabo de pasar el control de baneo
@@ -44,7 +44,7 @@ if(time()-$_SESSION["ultm_accion"]>MINUTOS*60)
 {
     session_unset();
     $_SESSION["seguridad"]="Su tiempo de sesión ha expirado. Por favor vuelva a loguearse";
-    header("Location:index.php");
+    header("Location:".$salto);
     exit();
 }
 // Paso el control de tiempo y lo renuevo
