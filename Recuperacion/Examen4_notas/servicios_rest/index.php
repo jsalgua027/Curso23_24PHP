@@ -41,7 +41,7 @@ $app->post("/salir", function ($request) {
    session_id($request->getParam("api_session"));
    session_start();
    session_destroy();
-   $respuesta["logout"] = "Sesión cerrada";
+   $respuesta["log_out"] = "Sesión cerrada";
    echo json_encode($respuesta);
 });
 //alumnos

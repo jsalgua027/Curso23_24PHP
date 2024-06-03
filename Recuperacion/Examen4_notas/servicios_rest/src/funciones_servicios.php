@@ -15,13 +15,13 @@ function login($usuario,$clave)
     try{
         $consulta="select * from usuarios where usuario=? and clave=?";
         $sentencia=$conexion->prepare($consulta);
-       // $sentencia->execute($datos);
+      
         $sentencia->execute([$usuario,$clave]);
      
     }
      catch(PDOException $e){
 
-        $respuesta["error"]="Imposible conectar :".$e->getMessage();
+        $respuesta["error"]="Imposible realizar la consulta :".$e->getMessage();
         $sentencia=null;
         $conexion=null;
         return $respuesta;
