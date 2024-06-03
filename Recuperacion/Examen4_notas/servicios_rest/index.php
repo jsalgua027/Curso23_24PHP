@@ -92,7 +92,7 @@ $app->get("/NotasNoEvalAlumno/{cod_alu}", function ($request) {
    session_id($request->getParam("api_session"));
    session_start();
    $alumno=$request->getAttribute("cod_alu");
-   if (isset($_SESSION["usuario"])) {
+   if (isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="tutor") {
 
       echo json_encode(NotasNoEvalAlumno($alumno));
    } else {
@@ -103,8 +103,57 @@ $app->get("/NotasNoEvalAlumno/{cod_alu}", function ($request) {
    }
 });
 //quitarNota
+$app->delete("/quitarNota/{cod_alu}",function($request){
+   session_id($request->getParam("api_session"));
+   session_start();
+   $alumno=$request->getAttribute("cod_alu");
+   $asignatura=$request->getParam("cod_asig");
+   if (isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="tutor") {
+
+      echo json_encode(quitarNota($alumno,$asignatura));
+   } else {
+
+      session_destroy();
+      $respuesta["no_auth"] = "No tienes permiso para usar este servicio";
+      echo json_encode($respuesta);
+   }
+});
 //ponerNota
+$app->post("/ponerNota/{cod_alu}",function($request){
+   session_id($request->getParam("api_session"));
+   session_start();
+   $alumno=$request->getAttribute("cod_alu");
+   $asignatura=$request->getParam("cod_asig");
+   if (isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="tutor") {
+
+      echo json_encode(ponerNota($alumno,$asignatura));
+   } else {
+
+      session_destroy();
+      $respuesta["no_auth"] = "No tienes permiso para usar este servicio";
+      echo json_encode($respuesta);
+   }
+
+});
 //cambiarNota
+$app->put("/cambiarNota/{cod_alu}",function($request){
+   session_id($request->getParam("api_session"));
+   session_start();
+   $alumno=$request->getAttribute("cod_alu");
+   $asignatura=$request->getParam("cod_asig");
+   $nota=$request->getParam("nota");
+
+   if (isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="tutor") {
+
+      echo json_encode(cambiarNota($alumno,$asignatura,$nota));
+   } else {
+
+      session_destroy();
+      $respuesta["no_auth"] = "No tienes permiso para usar este servicio";
+      echo json_encode($respuesta);
+   }
+
+});
 
 
 

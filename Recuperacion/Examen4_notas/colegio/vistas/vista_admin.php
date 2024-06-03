@@ -15,7 +15,7 @@ $respuesta = consumir_servicios_REST(DIR_SERV . "/alumnos", "GET", $datos_env);
         if (isset($json["no_auth"])) {
             session_unset();
             $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
-            header("Location:index.php");
+            header("Location:".$salto);
             exit();
         }
 
@@ -51,7 +51,7 @@ $respuesta = consumir_servicios_REST(DIR_SERV . "/alumnos", "GET", $datos_env);
             if (isset($json["no_auth"])) {
                 session_unset();
                 $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
-                header("Location:index.php");
+                header("Location:".$salto);
                 exit();
             }
 
@@ -76,7 +76,7 @@ $respuesta = consumir_servicios_REST(DIR_SERV . "/alumnos", "GET", $datos_env);
             if (isset($jsonNo["no_auth"])) {
                 session_unset();
                 $_SESSION["seguridad"] = "Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
-                header("Location:index.php");
+                header("Location:".$salto);
                 exit();
             }
 
@@ -165,7 +165,7 @@ $respuesta = consumir_servicios_REST(DIR_SERV . "/alumnos", "GET", $datos_env);
                             echo "<td>" . $tupla["nota"] . "</td>";
                             echo "<td><form action='index.php' mehod='post'>";
                             echo "<input type='hidden' name='codAsig' value='" . $tupla["cod_asig"] . "'>";
-                            echo "<input type='hidden' name='alumnoSeleccionado' value='" . $tupla["cod_usu"] . "'>";
+                         //   echo "<input type='hidden' name='alumnoSeleccionado' value='" . $tupla["cod_usu"] . "'>";
                             // echo"<button class='enlace' name='btnEditar' type='submit'>Editar</button>-<button class='enlace' name='btnBorrar' type='submit'>Borrar</button>";
                             if (isset($_POST["btnEditar"])) {
                                 echo "<button class='enlace' name='btnCambiar' type='submit'>Cambiar</button>-<button class='enlace' name='btnAtras' type='submit'>Atras</button>";
