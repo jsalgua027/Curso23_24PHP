@@ -1,5 +1,5 @@
 <?php
-$respuesta = consumir_servicios_REST(DIR_SERV . "/notasAlumno/" . $_SESSION["cod_usu"] . "", "GET", $datos_env);
+$respuesta = consumir_servicios_REST(DIR_SERV."/notasAlumno/".$datos_usuario_log["cod_usu"], "GET", $datos_env);
 
 
 $json = json_decode($respuesta, true);
@@ -21,9 +21,9 @@ if (isset($json["no_auth"])) {
     exit();
 }
 // si el alumno no tiene notas lo controlo aqui
-if (isset($json["notas"]) && count($json["notas"]) > 0) {
+
     $datos_notas_alum = $json["notas"];
-}
+
 
 
 
@@ -101,3 +101,4 @@ if (isset($json["notas"]) && count($json["notas"]) > 0) {
 </body>
 
 </html>
+

@@ -50,7 +50,7 @@ $app->get("/alumnos", function ($request) {
    
    session_id($request->getParam("api_session"));
    session_start();
-   if (isset($_SESSION["usuario"])) {
+   if (isset($_SESSION["usuario"])&& $_SESSION["tipo"]=="tutor") {
 
       echo json_encode(alumnos());
    } else {
@@ -103,10 +103,10 @@ $app->get("/NotasNoEvalAlumno/{cod_alu}", function ($request) {
    }
 });
 //quitarNota
-$app->delete("/quitarNota/{cod_alu}",function($request){
+$app->delete("/quitarNota/{cod_usu}",function($request){
    session_id($request->getParam("api_session"));
    session_start();
-   $alumno=$request->getAttribute("cod_alu");
+   $alumno=$request->getAttribute("cod_usu");
    $asignatura=$request->getParam("cod_asig");
    if (isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="tutor") {
 

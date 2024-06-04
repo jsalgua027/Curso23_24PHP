@@ -80,12 +80,8 @@ function alumnos()
         $consulta = "select * from usuarios where tipo='alumno'";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute();
-        if ($sentencia->rowCount() > 0) {
-            $respuesta["alumnos"] = $sentencia->fetchall(PDO::FETCH_ASSOC);
-        } else {
-            $respuesta["mensaje"] = "El usuario no se encuentra registrado en la BD";
-        }
-
+        
+         $respuesta["alumnos"] = $sentencia->fetchall(PDO::FETCH_ASSOC);
         $sentencia = null;
         $conexion = null;
         return $respuesta;
@@ -110,11 +106,9 @@ function notasAlumno($cod_usu)
         // $consulta="SELECT n.cod_usu, u.nombre, a.denominacion, n.nota, n.cod_asig FROM notas n JOIN asignaturas a ON a.cod_asig = n.cod_asig JOIN usuarios u ON u.cod_usu = n.cod_usu WHERE n.cod_usu = ? and n.nota<>'0'";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$cod_usu]);
-        if ($sentencia->rowCount() > 0) {
+        
             $respuesta["notas"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            $respuesta["mensaje"] = "El usuario no se encuentra registrado en la BD";
-        }
+       
 
         $sentencia = null;
         $conexion = null;
