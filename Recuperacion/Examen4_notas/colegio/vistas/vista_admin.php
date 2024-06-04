@@ -93,11 +93,11 @@ if (isset($_POST["alumnoSeleccionado"]))
  if(isset($_POST["btnCambiarNota"]))
  {
     // el control de errores y la llamada al servicio para cambiar la nota
-   var_dump($_POST["nota"]);
+   var_dump($_POST["notaEditable"]);
    var_dump($_POST["cod_asig"]);
    var_dump($_POST["alumnoSeleccionado"]);
 
-   $error_nota=empty($_POST["nota"])||!is_numeric($_POST["nota"]) || ($_POST["nota"]>=0 || $_POST["nota"]<=10);
+   $error_nota=empty($_POST["notaEditable"])||!is_numeric($_POST["notaEditable"]) || ($_POST["notaEditable"]>=0 || $_POST["notaEditable"]<=10);
    $error_form=$error_nota;
    if(!$error_form)
    {
