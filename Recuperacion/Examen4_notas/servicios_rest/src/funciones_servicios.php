@@ -24,7 +24,7 @@ function login($usuario, $clave)
 
     if ($sentencia->rowCount() > 0) {
         $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC); //me traigo los datos
-        session_name("API_Examen_4"); // genero la session de la Api para el api_session
+        session_name("API_Examen_4_Notas"); // genero la session de la Api para el api_session
         session_start(); //inicio la sesion
         $respuesta["api_session"] = session_id(); // genero la clave para la api
         $_SESSION["usuario"] = $respuesta["usuario"]["usuario"]; //guardo el usuario en la sessión
@@ -181,7 +181,7 @@ function ponerNota($alumno, $asignatura)
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
     } catch (PDOException $e) {
-        $respuesta["error"] = "Imposible conectar:" . $e->getMessage();
+        $respuesta["error"] = "Imposible conectar en poner nota conexión:" . $e->getMessage();
         return $respuesta;
     }
     try {
@@ -196,7 +196,7 @@ function ponerNota($alumno, $asignatura)
         return $respuesta;
 
     } catch (PDOException $e) {
-        $respuesta["error"] = "Imposible conectar:" . $e->getMessage();
+        $respuesta["error"] = "Imposible conectar en poner nota Sentencia:" . $e->getMessage();
         $sentencia = null;
         $conexion = null;
         return $respuesta;

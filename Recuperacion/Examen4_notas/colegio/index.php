@@ -1,5 +1,5 @@
 <?php
-session_name("Examen_4_SW");
+session_name("Examen_4_Notas");
 session_start();
 require "src/func_ctes.php";
 //si el usuario es tipo tutor

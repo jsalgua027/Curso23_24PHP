@@ -119,10 +119,10 @@ $app->delete("/quitarNota/{cod_usu}",function($request){
    }
 });
 //ponerNota
-$app->post("/ponerNota/{cod_alu}",function($request){
+$app->post("/ponerNota/{cod_usu}",function($request){
    session_id($request->getParam("api_session"));
    session_start();
-   $alumno=$request->getAttribute("cod_alu");
+   $alumno=$request->getAttribute("cod_usu");
    $asignatura=$request->getParam("cod_asig");
    if (isset($_SESSION["usuario"]) && $_SESSION["tipo"]=="tutor") {
 
@@ -136,10 +136,10 @@ $app->post("/ponerNota/{cod_alu}",function($request){
 
 });
 //cambiarNota
-$app->put("/cambiarNota/{cod_alu}",function($request){
+$app->put("/cambiarNota/{cod_usu}",function($request){
    session_id($request->getParam("api_session"));
    session_start();
-   $alumno=$request->getAttribute("cod_alu");
+   $alumno=$request->getAttribute("cod_usu");
    $asignatura=$request->getParam("cod_asig");
    $nota=$request->getParam("nota");
 
