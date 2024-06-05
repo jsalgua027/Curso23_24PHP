@@ -131,14 +131,12 @@ function NotasNoEvalAlumno($cod_usu)
     }
     try {
 
-        $consulta = "SELECT n.cod_usu, u.nombre, a.denominacion, n.nota, n.cod_asig FROM notas n JOIN asignaturas a ON a.cod_asig = n.cod_asig JOIN usuarios u ON u.cod_usu = n.cod_usu WHERE n.cod_usu = ? and n.nota IS NULL";
+        $consulta = "SELECT * FROM asignaturas where cod_asig not in(select cod_asig from notas where cod_usu=?) ";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$cod_usu]);
-        if ($sentencia->rowCount() > 0) {
-            $respuesta["notas"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            $respuesta["mensaje"] = "El usuario no se encuentra registrado en la BD";
-        }
+       
+            $respuesta["asignaturas"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+        
 
         $sentencia = null;
         $conexion = null;
@@ -215,7 +213,7 @@ function cambiarNota($alumno, $asignatura, $nota)
     }
     try {
 
-        $consulta = "UPDATE notas   SET nota = '  WHERE cod_asig = ? AND cod_usu = ?";
+        $consulta = "UPDATE notas   SET nota = ?  WHERE cod_asig = ? AND cod_usu = ?";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$nota, $alumno, $asignatura]);
 
@@ -231,3 +229,4 @@ function cambiarNota($alumno, $asignatura, $nota)
         return $respuesta;
     }
 }
+

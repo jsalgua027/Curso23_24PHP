@@ -86,7 +86,7 @@ $app->get("/notasAlumno/{cod_alu}", function ($request) {
 
 });
 //NotasNoEvalAlumno
-$app->get("/NotasNoEvalAlumno/{cod_alu}", function ($request) {
+$app->get("/notasNoEvalAlumno/{cod_alu}", function ($request) {
    
  
    session_id($request->getParam("api_session"));
