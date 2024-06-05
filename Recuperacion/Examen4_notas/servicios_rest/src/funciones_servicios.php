@@ -186,7 +186,7 @@ function ponerNota($alumno, $asignatura)
     }
     try {
 
-        $consulta = "INSERT INTO notas (cod_asig, cod_usu, nota) VALUES (?, ?, 0.00)";
+        $consulta = "INSERT INTO notas ( cod_usu,cod_asig, nota) VALUES (?, ?, 0.00)";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$alumno, $asignatura]);
 
@@ -213,7 +213,7 @@ function cambiarNota($alumno, $asignatura, $nota)
     }
     try {
 
-        $consulta = "UPDATE notas   SET nota = ?  WHERE cod_asig = ? AND cod_usu = ?";
+        $consulta = "UPDATE notas   SET nota = ?  WHERE cod_usu = ? AND cod_asig = ?";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$nota, $alumno, $asignatura]);
 
