@@ -3,7 +3,22 @@ session_name("Examen2_SW");
 session_start();
 require "src/funciones_ctes.php";
 // obtengo a todos los usuarios
+if (isset($_POST["btnEditar"])) 
+{
 
+   echo"<p>  el dia es: ".$_POST["dia"]."</p>" ;
+   echo"<p> la hora es: ".$_POST["hora"]."</p>" ;
+   echo"<p> el usuarios es: ".$_POST["usuarios"]."</p>" ;
+   
+/*
+ $dia = $_POST["dia"];
+    $hora = $_POST["hora"];
+    $usuario = $_POST["usuario"];
+*/
+    
+
+
+}
 $respuesta = consumir_servicios_REST(DIR_SERV . "/profesores", "GET");
 $json = json_decode($respuesta, true);
 if (!$json) {
@@ -136,13 +151,16 @@ if (isset($_POST["usuarios"])) {
     if (isset($_POST["btnEditar"])) 
     {
 
+       /*
         $dia = $_POST["dia"];
         $hora = $_POST["hora"];
         $usuario = $_POST["usuarios"];
+       
+       */
     
       
     
-        echo "<h3>Editando la ".$hora." " . $horas[$hora] . " del " . $dias[$dia] . "</h3>";
+     //   echo "<h3>Editando la ".$hora." " . $horas[$hora] . " del " . $dias[$dia] . "</h3>";
     }
     ?>
 </body>
