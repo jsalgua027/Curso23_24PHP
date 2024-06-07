@@ -25,6 +25,13 @@ $app->get('/horarios/{usuario}',function($request){
 
 });
 
+$app->get('/obtenerGrupos/{usuario}',function($request){
+    $usuario=$request->getAttribute("usuario");
+    $hora=$request->getParamt("hora");
+    $dia=$request->gatParam("dia");
+    echo json_encode(obtenerGrupos($usuario,$hora,$dia));
+});
+
 // Una vez creado servicios los pongo a disposición
 $app->run();
 ?>

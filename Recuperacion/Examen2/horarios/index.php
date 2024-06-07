@@ -2,23 +2,24 @@
 session_name("Examen2_SW");
 session_start();
 require "src/funciones_ctes.php";
-// obtengo a todos los usuarios
-if (isset($_POST["btnEditar"])) 
-{
 
-   echo"<p>  el dia es: ".$_POST["dia"]."</p>" ;
-   echo"<p> la hora es: ".$_POST["hora"]."</p>" ;
-   echo"<p> el usuarios es: ".$_POST["usuarios"]."</p>" ;
+if (isset($_POST["btnEditar"])) {
+    /*
+     $_SESSION["dia"] = $_POST["dia"];
+    $_SESSION["hora"] = $_POST["hora"];
+    $_SESSION["profesor"] = $_POST["profesor"];
+    */
    
-/*
- $dia = $_POST["dia"];
-    $hora = $_POST["hora"];
-    $usuario = $_POST["usuario"];
-*/
-    
 
-
+    echo "<p>  el dia es: " . $_POST["dia"] . "</p>";
+    echo "<p> la hora es: " .  $_POST["hora"] . "</p>";
+    echo "<p> el usuarios es: " .  $_POST["usuarios"] . "</p>";
+/* unset($_SESSION["dia"]);
+    unset($_SESSION["hora"]);
+    unset($_SESSION["profesor"]);*/
+   
 }
+// obtengo a todos los usuarios
 $respuesta = consumir_servicios_REST(DIR_SERV . "/profesores", "GET");
 $json = json_decode($respuesta, true);
 if (!$json) {
@@ -77,7 +78,14 @@ if (isset($_POST["usuarios"])) {
         th {
             background-color: gray;
         }
-        .enlace{border:none;background:none;color:blue;text-decoration:underline;cursor:pointer}
+
+        .enlace {
+            border: none;
+            background: none;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer
+        }
     </style>
 </head>
 
@@ -102,66 +110,78 @@ if (isset($_POST["usuarios"])) {
 
     <?php
     // horas
-    $horas[0] = "8:15-9:15";
-    $horas[1] = "9:15-10:15";
-    $horas[2] = "10:15-11:15";
-    $horas[3] = "11:15-11:45"; //recreo
-    $horas[4] = "11:45-12:45";
-    $horas[5] = "12:45-13:45";
-    $horas[6] = "13:45-14:45";
+    $horas[1] = "8:15-9:15";
+    $horas[2] = "9:15-10:15";
+    $horas[3] = "10:15-11:15";
+    $horas[4] = "11:15-11:45"; //recreo
+    $horas[5] = "11:45-12:45";
+    $horas[6] = "12:45-13:45";
+    $horas[7] = "13:45-14:45";
     //días
-    $dias[0] = "Lunes";
-    $dias[1] = "Martes";
-    $dias[2] = "Miercoles";
-    $dias[3] = "Jueves";
-    $dias[4] = "Viernes";
+    $dias[1] = "Lunes";
+    $dias[2] = "Martes";
+    $dias[3] = "Miercoles";
+    $dias[4] = "Jueves";
+    $dias[5] = "Viernes";
 
 
     if (isset($_POST["usuarios"])) {
         echo "<h2>El horario del profesor " . $nombre_profesor . " </h2>";
-        echo "<form action='index.php' method='post'>";
+      
         echo "<table>";
         echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miercoles</th><th>Jueves</th><th>Viernes</th></tr>";
-        for ($hora = 0; $hora <= 6; $hora++) {
+        for ($hora = 1; $hora <= 7; $hora++) {
             echo "<tr>";
             echo "<td>" . $horas[$hora] . " </td>";
             if ($hora == 3) {
                 echo "<td colspan='5'>RECREO</td>";
             } else {
-                for ($dia = 0; $dia <= 4; $dia++) {
+                for ($dia = 1; $dia <= 5; $dia++) {
+              
+                
                     echo "<td>";
-                    foreach ($horarios_profesor as $tupla)
-                     {
-                        if ($tupla["dia"] == $dia && $tupla["hora"] == $hora)
-                            echo $tupla['nombre']."<br/>";
-                            echo "<input type='hidden' name='dia' value='".$tupla["dia"]."'/>";
-                            echo "<input type='hidden' name='hora' value='".$tupla["hora"]."'/>";
-                            echo "<input type='hidden' name='usuarios' value='".$tupla["hora"]."'/>";
+                    foreach ($horarios_profesor as $tupla) {
+                        echo "<form action='index.php' method='post'>";
+                        if ($tupla["dia"] == $dia && $tupla["hora"] == $hora) {
+                            echo $tupla['nombre'] . "<br/>";
+                        }
+
+                       
                     }
+                 
+                    echo "<input type='hidden' name='dia' value='".$dia."'/>";
+                    echo "<input type='hidden' name='hora' value='".$hora."'/>";
+                    echo "<input type='hidden' name='usuarios' value='" . $_POST["usuarios"] . "'/>";
                     echo "<br/><button class='enlace' type='submit' name='btnEditar'>Editar</button>";
+                    echo "</form>";
                     echo "</td>";
+                    
                 }
             }
 
             echo "</tr>";
         }
+                      
         echo "</table>";
-        echo "</form>";
+      
     }
-    if (isset($_POST["btnEditar"])) 
-    {
+    if (isset($_POST["btnEditar"])) {
 
-       /*
+        
         $dia = $_POST["dia"];
         $hora = $_POST["hora"];
         $usuario = $_POST["usuarios"];
+
+        
        
-       */
-    
-      
-    
-     //   echo "<h3>Editando la ".$hora." " . $horas[$hora] . " del " . $dias[$dia] . "</h3>";
+       
+
+
+
+           echo "<h3>Editando la ".$hora." hora de  (" . $horas[$hora] . ") del " . $dias[$dia] . "</h3>";
     }
+
+  
     ?>
 </body>
 
