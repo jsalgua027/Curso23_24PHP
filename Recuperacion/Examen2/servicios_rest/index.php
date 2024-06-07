@@ -27,11 +27,23 @@ $app->get('/horarios/{usuario}',function($request){
 
 $app->get('/obtenerGrupos/{usuario}',function($request){
     $usuario=$request->getAttribute("usuario");
-    $hora=$request->getParamt("hora");
-    $dia=$request->gatParam("dia");
+    $hora=$request->getParam("hora");
+    $dia=$request->getParam("dia");
     echo json_encode(obtenerGrupos($usuario,$hora,$dia));
 });
 
+
+$app->delete('/quitarGrupo/{usuario}',function($request){
+    $usuario=$request->getAttribute("usuario");
+    $grupo=$request->getParam("id_grupo");
+
+    echo json_encode(quitarGrupo($usuario,$grupo));
+});
+
+
+
+
 // Una vez creado servicios los pongo a disposición
 $app->run();
+
 ?>

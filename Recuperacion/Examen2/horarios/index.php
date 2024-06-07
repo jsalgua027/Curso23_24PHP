@@ -3,22 +3,7 @@ session_name("Examen2_SW");
 session_start();
 require "src/funciones_ctes.php";
 
-if (isset($_POST["btnEditar"])) {
-    /*
-     $_SESSION["dia"] = $_POST["dia"];
-    $_SESSION["hora"] = $_POST["hora"];
-    $_SESSION["profesor"] = $_POST["profesor"];
-    */
-   
 
-    echo "<p>  el dia es: " . $_POST["dia"] . "</p>";
-    echo "<p> la hora es: " .  $_POST["hora"] . "</p>";
-    echo "<p> el usuarios es: " .  $_POST["usuarios"] . "</p>";
-/* unset($_SESSION["dia"]);
-    unset($_SESSION["hora"]);
-    unset($_SESSION["profesor"]);*/
-   
-}
 // obtengo a todos los usuarios
 $respuesta = consumir_servicios_REST(DIR_SERV . "/profesores", "GET");
 $json = json_decode($respuesta, true);
@@ -53,7 +38,31 @@ if (isset($_POST["usuarios"])) {
     }
 
     $horarios_profesor = $json["horarios"];
-   // var_dump($horarios_profesor);
+    // var_dump($horarios_profesor);
+}
+if (isset($_POST["btnEditar"])) {
+
+    $datos_env["dia"] = $_POST["dia"];
+    $datos_env["hora"] = $_POST["hora"];
+    $usuario = $_POST["usuarios"];
+   // var_dump("esto es el dia: " . $datos_env["dia"]);
+   // var_dump("esto es el hora: " . $datos_env["hora"]);
+   // var_dump("esto es el usuario: " . $usuario);
+
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/obtenerGrupos/" . $usuario, "GET", $datos_env);
+    $json = json_decode($respuesta, true);
+    //var_dump($json);
+    if (!$json) {
+        session_destroy();
+        die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>Sin respuesta oportuna de la API obtener grupos</p>"));
+    }
+    if (isset($json["error"])) {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+        die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
+    }
+    $grupos = $json["grupos"];
 }
 
 
@@ -73,6 +82,7 @@ if (isset($_POST["usuarios"])) {
             border-collapse: collapse;
             border: 1px solid black;
             text-align: center;
+            width: 500px;
         }
 
         th {
@@ -85,6 +95,10 @@ if (isset($_POST["usuarios"])) {
             color: blue;
             text-decoration: underline;
             cursor: pointer
+        }
+        .segunda
+        {
+            width: 500px;
         }
     </style>
 </head>
@@ -125,9 +139,9 @@ if (isset($_POST["usuarios"])) {
     $dias[5] = "Viernes";
 
 
-    if (isset($_POST["usuarios"])) {
+    if (isset($_POST["usuarios"])|| isset($_POST["btnQuitar"])) {
         echo "<h2>El horario del profesor " . $nombre_profesor . " </h2>";
-      
+
         echo "<table>";
         echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miercoles</th><th>Jueves</th><th>Viernes</th></tr>";
         for ($hora = 1; $hora <= 7; $hora++) {
@@ -137,52 +151,55 @@ if (isset($_POST["usuarios"])) {
                 echo "<td colspan='5'>RECREO</td>";
             } else {
                 for ($dia = 1; $dia <= 5; $dia++) {
-              
-                
+
+
                     echo "<td>";
                     foreach ($horarios_profesor as $tupla) {
                         echo "<form action='index.php' method='post'>";
                         if ($tupla["dia"] == $dia && $tupla["hora"] == $hora) {
                             echo $tupla['nombre'] . "<br/>";
                         }
-
-                       
                     }
-                 
-                    echo "<input type='hidden' name='dia' value='".$dia."'/>";
-                    echo "<input type='hidden' name='hora' value='".$hora."'/>";
+
+                    echo "<input type='hidden' name='dia' value='" . $dia . "'/>";
+                    echo "<input type='hidden' name='hora' value='" . $hora . "'/>";
                     echo "<input type='hidden' name='usuarios' value='" . $_POST["usuarios"] . "'/>";
                     echo "<br/><button class='enlace' type='submit' name='btnEditar'>Editar</button>";
                     echo "</form>";
                     echo "</td>";
-                    
                 }
             }
 
             echo "</tr>";
         }
-                      
-        echo "</table>";
-      
-    }
-    if (isset($_POST["btnEditar"])) {
 
-        
+        echo "</table>";
+    }
+    if (isset($_POST["btnEditar"])|| isset($_POST["btnQuitar"])) {
+
+
         $dia = $_POST["dia"];
         $hora = $_POST["hora"];
         $usuario = $_POST["usuarios"];
+        echo "<h3>Editando la " . $hora . " hora de  (" . $horas[$hora] . ") del " . $dias[$dia] . "</h3>";
 
-        
-       
-       
+        var_dump($grupos);
+        echo "<table class='segunda'>";
+        echo"<tr><th>Grupo</th><th>Acción</th></tr>";
+        foreach($grupos as $tupla)
+        {
+            echo"<tr>";
+            echo"<td>".$tupla["nombre"]."</td>";
+            echo"<td> <form action='index.php' method='get'><button class='enlace' type='submit' name='btnQuitar'>Quitar</button></form></td>";
+            echo"</tr>";
+        }
+        echo "</table>";
 
-
-
-           echo "<h3>Editando la ".$hora." hora de  (" . $horas[$hora] . ") del " . $dias[$dia] . "</h3>";
     }
 
-  
+
     ?>
+  
 </body>
 
 </html>
