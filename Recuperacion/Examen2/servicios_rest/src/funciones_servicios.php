@@ -127,3 +127,30 @@ function gruposNoIncluidos($hora,$dia,$usuario)
     $sentencia = null;
     return $respuesta;
 }
+
+function insertarGrupo($usuario,$dia,$hora,$grupo)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["error"] = "Imposible conectar en poner nota conexión:" . $e->getMessage();
+        return $respuesta;
+    }
+    try {
+      
+        $consulta = "INSERT INTO horario_lectivo  (usuario,dia,hora,grupo) VALUES (?,?,?,?)";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$usuario,$dia,$hora,$grupo]);
+
+        $respuesta["mensaje"] = "Insertado grupo con exito";
+        $sentencia = null;
+        $conexion = null;
+        return $respuesta;
+
+    } catch (PDOException $e) {
+        $respuesta["error"] = "Imposible conectar en poner nota Sentencia:" . $e->getMessage();
+        $sentencia = null;
+        $conexion = null;
+        return $respuesta;
+    }
+}

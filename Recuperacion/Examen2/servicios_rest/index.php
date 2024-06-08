@@ -49,6 +49,14 @@ $app->post('/gruposNoIncluidos/{usuario}',function($request){
     echo json_encode(gruposNoIncluidos($dia,$hora,$usuario));
 
 });
+$app->post('/insertarGrupo/{usuario}',function($request){
+    $usuario=$request->getAttribute("usuario");
+    $dia=$request->getParam("dia");
+    $hora=$request->getParam("hora");
+    $grupo=$request->getParam("grupo");
+    echo json_encode(insertarGrupo($usuario,$dia,$hora,$grupo));
+
+});
 
 
 // Una vez creado servicios los pongo a disposición
