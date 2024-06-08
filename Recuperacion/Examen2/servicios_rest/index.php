@@ -35,12 +35,20 @@ $app->get('/obtenerGrupos/{usuario}',function($request){
 
 $app->delete('/quitarGrupo/{usuario}',function($request){
     $usuario=$request->getAttribute("usuario");
-    $grupo=$request->getParam("id_grupo");
+    $grupo=$request->getParam("grupo");
+    $dia=$request->getParam("dia");
+    $hora=$request->getParam("hora");
 
-    echo json_encode(quitarGrupo($usuario,$grupo));
+    echo json_encode(quitarGrupo($usuario,$grupo,$dia,$hora));
 });
 
+$app->post('/gruposNoIncluidos/{usuario}',function($request){
+    $usuario=$request->getAttribute("usuario");
+    $dia=$request->getParam("dia");
+    $hora=$request->getParam("hora");
+    echo json_encode(gruposNoIncluidos($usuario,$dia,$hora));
 
+});
 
 
 // Una vez creado servicios los pongo a disposición

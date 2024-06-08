@@ -22,6 +22,46 @@ if (isset($json["error"])) {
 
 $usuarios = $json["usuarios"];
 
+if (isset($_POST["btnQuitar"])){
+    $datos_env["grupo"]=$_POST["grupoQuitar"];
+    $datos_env["dia"]=$_POST["diaQuitar"];
+    $datos_env["hora"]=$_POST["horaQuitar"];
+    $usuario=$_POST["usuarios"];
+
+
+
+   
+
+   $respuesta = consumir_servicios_REST(DIR_SERV . "/quitarGrupo/" . $usuario, "DELETE", $datos_env);
+   $json = json_decode($respuesta, true);
+  
+   if (!$json) {
+       session_destroy();
+       die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>Sin respuesta oportuna de la API Quitar Grupo</p>"));
+   }
+   if (isset($json["error"])) {
+
+       session_destroy();
+       consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+       die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
+   }
+
+
+        $_SESSION["mensaje_accion"]="¡¡ Grupo Eliminado con exito !!";
+        $_SESSION["usuarios"]=$_POST["usuarios"];
+        header("Location:index.php");
+        exit;
+
+}
+
+if(isset($_SESSION["usuarios"]))
+{
+    $_POST["usuarios"]=$_SESSION["usuarios"];
+    unset($_SESSION["usuarios"]);
+}
+
+
+
 if (isset($_POST["usuarios"])) {
     $usuario = $_POST["usuarios"];
     $respuesta = consumir_servicios_REST(DIR_SERV . "/horarios/" . $usuario . "", "GET");
@@ -39,15 +79,14 @@ if (isset($_POST["usuarios"])) {
 
     $horarios_profesor = $json["horarios"];
     // var_dump($horarios_profesor);
+ 
 }
 if (isset($_POST["btnEditar"])) {
 
     $datos_env["dia"] = $_POST["dia"];
     $datos_env["hora"] = $_POST["hora"];
     $usuario = $_POST["usuarios"];
-   // var_dump("esto es el dia: " . $datos_env["dia"]);
-   // var_dump("esto es el hora: " . $datos_env["hora"]);
-   // var_dump("esto es el usuario: " . $usuario);
+  
 
     $respuesta = consumir_servicios_REST(DIR_SERV . "/obtenerGrupos/" . $usuario, "GET", $datos_env);
     $json = json_decode($respuesta, true);
@@ -64,7 +103,6 @@ if (isset($_POST["btnEditar"])) {
     }
     $grupos = $json["grupos"];
 }
-
 
 ?>
 <!DOCTYPE html>
@@ -139,7 +177,7 @@ if (isset($_POST["btnEditar"])) {
     $dias[5] = "Viernes";
 
 
-    if (isset($_POST["usuarios"])|| isset($_POST["btnQuitar"])) {
+    if (isset($_POST["usuarios"])) {
         echo "<h2>El horario del profesor " . $nombre_profesor . " </h2>";
 
         echo "<table>";
@@ -183,19 +221,40 @@ if (isset($_POST["btnEditar"])) {
         $usuario = $_POST["usuarios"];
         echo "<h3>Editando la " . $hora . " hora de  (" . $horas[$hora] . ") del " . $dias[$dia] . "</h3>";
 
-        var_dump($grupos);
-        echo "<table class='segunda'>";
-        echo"<tr><th>Grupo</th><th>Acción</th></tr>";
-        foreach($grupos as $tupla)
-        {
-            echo"<tr>";
-            echo"<td>".$tupla["nombre"]."</td>";
-            echo"<td> <form action='index.php' method='get'><button class='enlace' type='submit' name='btnQuitar'>Quitar</button></form></td>";
-            echo"</tr>";
+        if(count($grupos)>0){
+            echo "<table class='segunda'>";
+            echo"<tr><th>Grupo</th><th>Acción</th></tr>";
+            foreach($grupos as $tupla)
+            {
+                echo"<tr>";
+                echo"<td>".$tupla["nombre"]."</td>";
+                echo"<td> <form action='index.php' method='post'><button class='enlace' type='submit' name='btnQuitar'>Quitar</button>";
+                echo "<input type='hidden' name='usuarios' value='" . $tupla["usuario"] . "'/>";
+                echo "<input type='hidden' name='grupoQuitar' value='" . $tupla["id_grupo"] . "'/>";
+                echo "<input type='hidden' name='diaQuitar' value='" . $tupla["dia"] . "'/>";
+                echo "<input type='hidden' name='horaQuitar' value='" . $tupla["hora"] . "'/>";
+                echo"</form>";
+                echo "</td>";
+                echo"</tr>";
+            }
+            echo "</table>";
         }
-        echo "</table>";
+        else
+        {
+            echo "<table class='segunda'>";
+            echo"<tr><th>Grupo</th><th>Acción</th></tr>";
+            echo "</table>";
+        }
+      
+        
 
     }
+
+    if(isset($_SESSION ["mensaje_accion"]))
+            {
+                echo "<p class='mensaje'>".$_SESSION ["mensaje_accion"]."</p>";
+                unset($_SESSION["mensaje_accion"]);
+            }
 
 
     ?>

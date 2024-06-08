@@ -61,7 +61,7 @@ function obtenerGrupos($usuario,$hora,$dia)
         return $respuesta;
     }
     try {
-        //SELECT grupos.nombre from grupos, horario_lectivo WHERE horario_lectivo.grupo= grupos.id_grupo and usuario=44 and horario_lectivo.hora=2 and horario_lectivo.dia=4;
+      
         $consulta="SELECT grupos.nombre, grupos.id_grupo, horario_lectivo.usuario, horario_lectivo.dia,  horario_lectivo.hora  from grupos, horario_lectivo WHERE horario_lectivo.grupo= grupos.id_grupo and usuario=? and horario_lectivo.hora=? and horario_lectivo.dia=?";      
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$usuario,$hora,$dia]);
@@ -77,7 +77,7 @@ function obtenerGrupos($usuario,$hora,$dia)
     return $respuesta;
 }
 
-function quitarGrupo($usuario,$grupo)
+function quitarGrupo($usuario,$grupo,$dia,$hora)
 {
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -87,16 +87,42 @@ function quitarGrupo($usuario,$grupo)
     }
     try {
         
-        $consulta="SELECT horario_lectivo.dia, horario_lectivo.hora, horario_lectivo.grupo,grupos.nombre from horario_lectivo, grupos WHERE horario_lectivo.grupo=grupos.id_grupo and usuario=?";      
+        $consulta="DELETE from horario_lectivo WHERE horario_lectivo.usuario=? and horario_lectivo.grupo=? and horario_lectivo.dia=? and horario_lectivo.hora=?";      
         $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$usuario,$grupo]);
+        $sentencia->execute([$usuario,$grupo,$dia,$hora]);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "Error al realizar la consulta Profesores para su borrado:" . $e->getMessage();
+        $conexion = null;
+        $sentencia = null;
+        return $respuesta;
+    }
+    $respuesta["mensaje"] ="Grupo quitado con exito";
+    $conexion = null;
+    $sentencia = null;
+    return $respuesta;
+}
+
+function gruposNoIncluidos($usuario,$hora,$dia)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["error"] = "Imposible conectar:" . $e->getMessage();
+        return $respuesta;
+    }
+    try {
+        
+      
+        $consulta="SELECT horario_lectivo.id_horario, grupos.nombre , grupos.id_grupo FROM horario_lectivo, grupos WHERE horario_lectivo.grupo=grupos.id_grupo AND horario_lectivo.hora=? and horario_lectivo.dia=? and horario_lectivo.usuario not in (SELECT usuarios.id_usuario FROM usuarios WHERE usuarios.id_usuario=?)";      
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$usuario,$hora,$dia]);
     } catch (PDOException $e) {
         $respuesta["error"] = "Error al realizar la consulta Profesores:" . $e->getMessage();
         $conexion = null;
         $sentencia = null;
         return $respuesta;
     }
-    $respuesta["mensaje"] ="Grupo quitado con exito";
+    $respuesta["gruposNO"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
     $conexion = null;
     $sentencia = null;
     return $respuesta;
