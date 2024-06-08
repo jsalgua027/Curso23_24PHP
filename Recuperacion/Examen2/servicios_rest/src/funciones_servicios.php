@@ -102,7 +102,7 @@ function quitarGrupo($usuario,$grupo,$dia,$hora)
     return $respuesta;
 }
 
-function gruposNoIncluidos($usuario,$hora,$dia)
+function gruposNoIncluidos($hora,$dia,$usuario)
 {
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -115,7 +115,7 @@ function gruposNoIncluidos($usuario,$hora,$dia)
       
         $consulta="SELECT horario_lectivo.id_horario, grupos.nombre , grupos.id_grupo FROM horario_lectivo, grupos WHERE horario_lectivo.grupo=grupos.id_grupo AND horario_lectivo.hora=? and horario_lectivo.dia=? and horario_lectivo.usuario not in (SELECT usuarios.id_usuario FROM usuarios WHERE usuarios.id_usuario=?)";      
         $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$usuario,$hora,$dia]);
+        $sentencia->execute([$hora,$dia,$usuario]);
     } catch (PDOException $e) {
         $respuesta["error"] = "Error al realizar la consulta Profesores:" . $e->getMessage();
         $conexion = null;

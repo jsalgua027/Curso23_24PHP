@@ -22,41 +22,39 @@ if (isset($json["error"])) {
 
 $usuarios = $json["usuarios"];
 
-if (isset($_POST["btnQuitar"])){
-    $datos_env["grupo"]=$_POST["grupoQuitar"];
-    $datos_env["dia"]=$_POST["diaQuitar"];
-    $datos_env["hora"]=$_POST["horaQuitar"];
-    $usuario=$_POST["usuarios"];
+if (isset($_POST["btnQuitar"])) {
+    $datos_env["grupo"] = $_POST["grupoQuitar"];
+    $datos_env["dia"] = $_POST["diaQuitar"];
+    $datos_env["hora"] = $_POST["horaQuitar"];
+    $usuario = $_POST["usuarios"];
 
 
 
-   
-
-   $respuesta = consumir_servicios_REST(DIR_SERV . "/quitarGrupo/" . $usuario, "DELETE", $datos_env);
-   $json = json_decode($respuesta, true);
-  
-   if (!$json) {
-       session_destroy();
-       die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>Sin respuesta oportuna de la API Quitar Grupo</p>"));
-   }
-   if (isset($json["error"])) {
-
-       session_destroy();
-       consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
-       die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
-   }
 
 
-        $_SESSION["mensaje_accion"]="¡¡ Grupo Eliminado con exito !!";
-        $_SESSION["usuarios"]=$_POST["usuarios"];
-        header("Location:index.php");
-        exit;
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/quitarGrupo/" . $usuario, "DELETE", $datos_env);
+    $json = json_decode($respuesta, true);
 
+    if (!$json) {
+        session_destroy();
+        die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>Sin respuesta oportuna de la API Quitar Grupo</p>"));
+    }
+    if (isset($json["error"])) {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+        die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
+    }
+
+
+    $_SESSION["mensaje_accion"] = "¡¡ Grupo Eliminado con exito !!";
+    $_SESSION["usuarios"] = $_POST["usuarios"];
+    header("Location:index.php");
+    exit;
 }
 
-if(isset($_SESSION["usuarios"]))
-{
-    $_POST["usuarios"]=$_SESSION["usuarios"];
+if (isset($_SESSION["usuarios"])) {
+    $_POST["usuarios"] = $_SESSION["usuarios"];
     unset($_SESSION["usuarios"]);
 }
 
@@ -79,14 +77,14 @@ if (isset($_POST["usuarios"])) {
 
     $horarios_profesor = $json["horarios"];
     // var_dump($horarios_profesor);
- 
+
 }
 if (isset($_POST["btnEditar"])) {
 
     $datos_env["dia"] = $_POST["dia"];
     $datos_env["hora"] = $_POST["hora"];
     $usuario = $_POST["usuarios"];
-  
+
 
     $respuesta = consumir_servicios_REST(DIR_SERV . "/obtenerGrupos/" . $usuario, "GET", $datos_env);
     $json = json_decode($respuesta, true);
@@ -102,6 +100,28 @@ if (isset($_POST["btnEditar"])) {
         die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
     }
     $grupos = $json["grupos"];
+
+
+    // select del grupoNOincluidos
+    $datos_env2["dia"] = $_POST["dia"];
+    $datos_env2["hora"] = $_POST["hora"];
+    $usuario2 = $_POST["usuarios"];
+
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/gruposNoIncluidos/" . $usuario2, "POST", $datos_env2);
+    $json = json_decode($respuesta, true);
+
+    if (!$json) {
+        session_destroy();
+        die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>Sin respuesta oportuna de la API obtener grupos</p>"));
+    }
+    if (isset($json["error"])) {
+
+        session_destroy();
+        consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+        die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
+    }
+    $gruposNO = $json["gruposNO"];
+   // var_dump($gruposNO);
 }
 
 ?>
@@ -134,8 +154,8 @@ if (isset($_POST["btnEditar"])) {
             text-decoration: underline;
             cursor: pointer
         }
-        .segunda
-        {
+
+        .segunda {
             width: 500px;
         }
     </style>
@@ -182,18 +202,19 @@ if (isset($_POST["btnEditar"])) {
 
         echo "<table>";
         echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miercoles</th><th>Jueves</th><th>Viernes</th></tr>";
-        for ($hora = 1; $hora <= 7; $hora++) {
+        for ($hora = 1; $hora < 8; $hora++) {
             echo "<tr>";
             echo "<td>" . $horas[$hora] . " </td>";
             if ($hora == 3) {
                 echo "<td colspan='5'>RECREO</td>";
             } else {
-                for ($dia = 1; $dia <= 5; $dia++) {
+                for ($dia = 1; $dia < 6; $dia++) {
 
 
                     echo "<td>";
+                    echo "<form action='index.php' method='post'>";
                     foreach ($horarios_profesor as $tupla) {
-                        echo "<form action='index.php' method='post'>";
+                       
                         if ($tupla["dia"] == $dia && $tupla["hora"] == $hora) {
                             echo $tupla['nombre'] . "<br/>";
                         }
@@ -213,7 +234,7 @@ if (isset($_POST["btnEditar"])) {
 
         echo "</table>";
     }
-    if (isset($_POST["btnEditar"])|| isset($_POST["btnQuitar"])) {
+    if (isset($_POST["btnEditar"]) || isset($_POST["btnQuitar"])) {
 
 
         $dia = $_POST["dia"];
@@ -221,44 +242,55 @@ if (isset($_POST["btnEditar"])) {
         $usuario = $_POST["usuarios"];
         echo "<h3>Editando la " . $hora . " hora de  (" . $horas[$hora] . ") del " . $dias[$dia] . "</h3>";
 
-        if(count($grupos)>0){
+        if (count($grupos) > 0) {
             echo "<table class='segunda'>";
-            echo"<tr><th>Grupo</th><th>Acción</th></tr>";
-            foreach($grupos as $tupla)
-            {
-                echo"<tr>";
-                echo"<td>".$tupla["nombre"]."</td>";
-                echo"<td> <form action='index.php' method='post'><button class='enlace' type='submit' name='btnQuitar'>Quitar</button>";
+            echo "<tr><th>Grupo</th><th>Acción</th></tr>";
+            foreach ($grupos as $tupla) {
+                echo "<tr>";
+                echo "<td>" . $tupla["nombre"] . "</td>";
+                echo "<td> <form action='index.php' method='post'><button class='enlace' type='submit' name='btnQuitar'>Quitar</button>";
                 echo "<input type='hidden' name='usuarios' value='" . $tupla["usuario"] . "'/>";
                 echo "<input type='hidden' name='grupoQuitar' value='" . $tupla["id_grupo"] . "'/>";
                 echo "<input type='hidden' name='diaQuitar' value='" . $tupla["dia"] . "'/>";
                 echo "<input type='hidden' name='horaQuitar' value='" . $tupla["hora"] . "'/>";
-                echo"</form>";
+                echo "</form>";
                 echo "</td>";
-                echo"</tr>";
+                echo "</tr>";
             }
             echo "</table>";
-        }
-        else
-        {
+        } else {
             echo "<table class='segunda'>";
-            echo"<tr><th>Grupo</th><th>Acción</th></tr>";
+            echo "<tr><th>Grupo</th><th>Acción</th></tr>";
             echo "</table>";
         }
-      
-        
+
+    ?>
+        <form action="index.php" method="post">
+            <select id="grupos" name="gruposNo">
+                <?php
+                foreach ($gruposNO as $tupla) {
+
+                    echo "<option value=''>" . $tupla["nombre"] . "</option>";
+                }
+
+                ?>
+            </select>
+            <button type="submit" name="btnAñadir">Añadir</button>
+        </form>
+    <?php
+
+
 
     }
 
-    if(isset($_SESSION ["mensaje_accion"]))
-            {
-                echo "<p class='mensaje'>".$_SESSION ["mensaje_accion"]."</p>";
-                unset($_SESSION["mensaje_accion"]);
-            }
+    if (isset($_SESSION["mensaje_accion"])) {
+        echo "<p class='mensaje'>" . $_SESSION["mensaje_accion"] . "</p>";
+        unset($_SESSION["mensaje_accion"]);
+    }
 
 
     ?>
-  
+
 </body>
 
 </html>

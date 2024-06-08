@@ -46,7 +46,7 @@ $app->post('/gruposNoIncluidos/{usuario}',function($request){
     $usuario=$request->getAttribute("usuario");
     $dia=$request->getParam("dia");
     $hora=$request->getParam("hora");
-    echo json_encode(gruposNoIncluidos($usuario,$dia,$hora));
+    echo json_encode(gruposNoIncluidos($dia,$hora,$usuario));
 
 });
 
