@@ -12,6 +12,25 @@ $app->post('/salir',function($request){
     echo json_encode($respuesta);
 });
 
+$app->get('/login',function($request){
+    $usuario=$request->getParam("usuario");
+    $clave=$request->getParam("clave");
+
+    echo json_encode(login($usuario,$clave));
+
+
+});
+$app->post('/logueado',function($request){
+
+    session_id($request->getParam("api_session"));
+    session_start();
+    if(isset($_SESSION["usuario"]))
+    {
+        $user=$_SESSION["usuario"];
+        $pass=$_SESSION["clave"];
+        echo json_encode(logueado($user,$pass));
+    }
+});
 
 $app->run();
 
