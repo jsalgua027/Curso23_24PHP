@@ -53,7 +53,7 @@ else
 
 });
 
-$app->get("usuariosGuardia/{dia}/{hora}",function($request){
+$app->get("/usuariosGuardia/{dia}/{hora}",function($request){
     session_id($request->getParam("api_session"));
     session_start();
     $dia=$request->getAttribute("dia");
@@ -73,15 +73,17 @@ $app->get("usuariosGuardia/{dia}/{hora}",function($request){
 
 });
 
-$app->get("deGuardia/",function($request){
+$app->get("/deGuardia",function($request){
+
     session_id($request->getParam("api_session"));
-    session_start();
+    session_start();  
     $dia=$request->getParam("dia");
     $hora=$request->getParam("hora");
     $usuario=$request->getParam("usuario");
+
     if(isset($_SESSION["usuario"]))
     {
-        echo json_encode(deGuardia($dia,$hora,$usuario));
+        echo json_encode(deGuardia($usuario,$dia,$hora));
     }
     else
     {
