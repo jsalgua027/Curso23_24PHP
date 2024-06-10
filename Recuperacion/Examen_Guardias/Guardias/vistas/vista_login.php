@@ -2,16 +2,18 @@
     if(isset($_POST["btnEntrar"]))
     {
         
-        echo"<p>ENTRA</p>";
+       
         $error_usuario=$_POST["usuario"]=="";
         $error_clave=$_POST["clave"]=="";
         $error_form=$error_usuario||$error_clave;
-
+       
         if(!$error_form)
         {
-
+            echo"<p>ENTRA</p>";
             $datos_env["usuario"]=$_POST["usuario"];
             $datos_env["clave"]=md5($_POST["clave"]);
+            var_dump($datos_env["usuario"]);
+            var_dump(md5($_POST["clave"]));
             //llamo a login
             $respuesta=consumir_servicios_REST(DIR_SERV."/login","GET",$datos_env);
             $json=json_decode($respuesta,true);

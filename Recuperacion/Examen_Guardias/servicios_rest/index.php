@@ -32,6 +32,13 @@ $app->post('/logueado',function($request){
     }
 });
 
+$app->get('/prueba',function($request){
+
+   
+        echo json_encode(prueba());
+    
+});
+
 $app->run();
 
 ?>
