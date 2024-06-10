@@ -93,6 +93,15 @@ if (isset($_POST["btnLogin"]))
         </p>
         <button type="submit" name="btnLogin">Login</button>
     </form>
+    <?php
+    if(isset($_SESSION["seguridad"]))
+    {
+        echo "<p class='mensaje'>".$_SESSION["seguridad"]."</p>";
+        session_destroy();
+    }
+
+
+    ?>  
 </body>
 
 </html>
