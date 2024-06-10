@@ -12,7 +12,7 @@ $app->post('/salir',function($request){
     echo json_encode($respuesta);
 });
 
-$app->get('/login',function($request){
+$app->post('/login',function($request){
     $usuario=$request->getParam("usuario");
     $clave=$request->getParam("clave");
 

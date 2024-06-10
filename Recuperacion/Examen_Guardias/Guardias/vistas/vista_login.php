@@ -15,7 +15,7 @@
             var_dump($datos_env["usuario"]);
             var_dump(md5($_POST["clave"]));
             //llamo a login
-            $respuesta=consumir_servicios_REST(DIR_SERV."/login","GET",$datos_env);
+            $respuesta=consumir_servicios_REST(DIR_SERV."/login","POST",$datos_env);
             $json=json_decode($respuesta,true);
             var_dump($json);
             if(!$json)
@@ -39,6 +39,8 @@
                 $_SESSION["clave"]=$json["usuario"]["clave"];
                 $_SESSION["ult_accion"]=time();
                 $_SESSION["api_session"]=$json["api_session"];
+                header("Location:index.php");
+                exit;
             }
 
 

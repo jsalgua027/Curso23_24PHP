@@ -11,7 +11,7 @@ function login($usuario,$clave)
     }
 
     try {
-       $consulta= "select * from usuarios where usuario=? and clave=? ";
+       $consulta= "select * from usuarios where usuario=? and clave=?";
        $sentencia=$conexion->prepare($consulta);
        $sentencia->execute([$usuario,$clave]);
 
@@ -29,8 +29,8 @@ function login($usuario,$clave)
         session_name("API_examen_guardias");
         session_start();
         $respuesta["api_session"]=session_id();
-        $_SESSION["usuario"]=$_SESSION["usuario"]["usuario"];
-        $_SESSION["clave"]=$_SESSION["usuario"]["clave"];
+        $_SESSION["usuario"]=$respuesta["usuario"]["usuario"];
+        $_SESSION["clave"]=$respuesta["usuario"]["clave"];
 
     }
     else
