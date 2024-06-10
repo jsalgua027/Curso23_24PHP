@@ -167,6 +167,8 @@ if (isset($_POST["btnEditar"])) {
     <h1>Examen2 PHP</h1>
     <h2>Horario de los Profesores</h2>
     <form action="index.php" method="post">
+        <p>
+            <label for="usuarios">Horario del Profesor: </label>
         <select id="usuarios" name="usuarios">
             <?php
             foreach ($usuarios as $tupla) {
@@ -180,6 +182,7 @@ if (isset($_POST["btnEditar"])) {
             ?>
         </select>
         <button type="submit" name="btnVerHorario">Ver Horario</button>
+        </p>
     </form>
 
     <?php
