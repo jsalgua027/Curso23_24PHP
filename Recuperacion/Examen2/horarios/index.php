@@ -210,7 +210,7 @@ if (isset($_POST["btnEditar"])) {
         for ($hora = 1; $hora < 8; $hora++) {
             echo "<tr>";
             echo "<td>" . $horas[$hora] . " </td>";
-            if ($hora == 3) {
+            if ($hora == 4) {
                 echo "<td colspan='5'>RECREO</td>";
             } else {
                 for ($dia = 1; $dia < 6; $dia++) {
