@@ -148,7 +148,7 @@ if (isset($_POST["btnEquipo"])) {
 
     echo "</table>";
 
-    if (isset($_POST["btnEquipo"])) {
+    if (isset($_POST["btnEquipo"])|| isset($_POST["btnProfesor"])) {
         echo "<h2>EQUIPO DE GUARDIA " . $_POST["numero"] . "</h2>";
        
 
@@ -168,6 +168,14 @@ if (isset($_POST["btnEquipo"])) {
                    echo "<td>";
                     echo "<form action='index.php' method='post'><button class='enlace' name='btnProfesor'>".$tupla["nombre"]."</button></form>";
                     echo "</td>";
+                    /*
+                    if(isset($_POST["btnProfesor"]))
+                    {   
+                        echo "<td>";
+                        echo "".$tupla["id_usuario"]."";
+                        echo "</td>";
+                    }
+                        */
                     echo"</tr>";
                 }
            
