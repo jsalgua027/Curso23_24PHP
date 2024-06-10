@@ -124,6 +124,8 @@ if (isset($_POST["btnEditar"])) {
    // var_dump($gruposNO);
 }
 
+
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

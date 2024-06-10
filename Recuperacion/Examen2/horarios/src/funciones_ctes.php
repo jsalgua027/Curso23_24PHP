@@ -1,7 +1,7 @@
 <?php
 define("MINUTOS",15);
-define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen2/servicios_rest"//casa
-//"http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/Examen2/servicios_rest"//clase
+define("DIR_SERV",//"http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen2/servicios_rest"//casa
+"http://localhost/Proyectos/Curso23_24PHP/Curso23_24PHP/Recuperacion/Examen2/servicios_rest"//clase
 );
 
 
@@ -31,4 +31,5 @@ function error_page($title, $body)
     <body>'.$body.'</body>
     </html>';
 }
+
 ?>
