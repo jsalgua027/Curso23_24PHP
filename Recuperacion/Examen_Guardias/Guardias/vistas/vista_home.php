@@ -1,5 +1,5 @@
 <?php
-if (isset($_POST["btnEquipo"])) {
+if (isset($_POST["btnEquipo"]) || isset($_POST["btnProfesor"])) {
 
     if ($_POST["hora"] > 3) {
         $hora = ($_POST["hora"]) - 1;
@@ -14,11 +14,11 @@ if (isset($_POST["btnEquipo"])) {
     echo "<p>el dia  es :  " . $datos_env["hora"] . "</p>";
     echo "<p>el usuario es :  " . $datos_env["usuario"] . "</p>";
 
-   
-   
+
+
     $respuesta = consumir_servicios_REST(DIR_SERV . "/deGuardia", "GET", $datos_env);
     $json = json_decode($respuesta, true);
-  
+
 
     if (!$json) {
         session_destroy();
@@ -30,13 +30,13 @@ if (isset($_POST["btnEquipo"])) {
         consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
         die(error_page("Examen Guardias", "<h1>Examen Guardias</h1><p>" . $json["error"] . "</p>"));
     }
-  
-    $guardia=$json["de_guardia"];
- 
 
-    $respuesta = consumir_servicios_REST(DIR_SERV . "/usuariosGuardia/". $_POST["dia"]."/". $_POST["hora"]."", "GET", $datos_env);
+    $guardia = $json["de_guardia"];
+
+
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/usuariosGuardia/" . $_POST["dia"] . "/" . $_POST["hora"] . "", "GET", $datos_env);
     $json2 = json_decode($respuesta, true);
-  
+
 
     if (!$json2) {
         session_destroy();
@@ -49,13 +49,10 @@ if (isset($_POST["btnEquipo"])) {
         die(error_page("Examen Guardias", "<h1>Examen Guardias</h1><p>" . $json["error"] . "</p>"));
     }
 
-    $profesores_guardia=$json2["profesores"];
-  
+    $profesores_guardia = $json2["profesores"];
+
 
     var_dump($profesores_guardia);
-   
-   
-
 }
 
 ?>
@@ -148,40 +145,39 @@ if (isset($_POST["btnEquipo"])) {
 
     echo "</table>";
 
-    if (isset($_POST["btnEquipo"])|| isset($_POST["btnProfesor"])) {
+    if (isset($_POST["btnEquipo"]) || isset($_POST["btnProfesor"])) {
         echo "<h2>EQUIPO DE GUARDIA " . $_POST["numero"] . "</h2>";
-       
 
-        if($guardia==false)
-        {
-            echo "<h2>!!Atención, usted no se encuentra de guardia el  ".$dias[$_POST["dia"]]." a ".$horas[$_POST["hora"]]."</h2>";
-        }
-        else
-        {
+
+        if ($guardia == false) {
+            echo "<h2>!!Atención, usted no se encuentra de guardia el  " . $dias[$_POST["dia"]] . " a " . $horas[$_POST["hora"]] . "</h2>";
+        } else {
             echo "<h3>" . $dias[$_POST["dia"]] . " a " . $horas[$_POST["hora"]] . "</h3>";
-            echo"<table>";
-            echo"<tr><th>Profesores de Guardia</th><th>Información del Profesor con id:</th></tr>";
-          
-             foreach($profesores_guardia as $tupla)
-                {
-                    echo"<tr>";
-                   echo "<td>";
-                    echo "<form action='index.php' method='post'><button class='enlace' name='btnProfesor'>".$tupla["nombre"]."</button></form>";
-                    echo "</td>";
-                    /*
-                    if(isset($_POST["btnProfesor"]))
-                    {   
-                        echo "<td>";
-                        echo "".$tupla["id_usuario"]."";
-                        echo "</td>";
-                    }
-                        */
-                    echo"</tr>";
-                }
-           
-                   
-            echo"</table>";
+            echo "<table>";
+            echo "<tr><th>Profesores de Guardia</th><th>Información del Profesor con id: </th></tr>";
+            for ($i = 0; $i < count($profesores_guardia); $i++) {
+                echo "<tr>";
+                echo "<td>";
+                echo "<form action='index.php' method='post'><button class='enlace' name='btnProfesor'>" . $profesores_guardia[$i]["nombre"] . "</button>";
+                echo "<input type='hidden' name='dia' value='" . $_POST["dia"] . "'/>";
+                echo "<input type='hidden' name='hora' value='" . $_POST["hora"] . "'/>";
+                echo "<input type='hidden' name='numero' value='" . $_POST["numero"] . "'/>";
+                echo "<input type='hidden' name='id_usuario' value='" . $profesores_guardia[$i]["id_usuario"] . "'/>";
+                echo "</form>";
+                echo "</td>";
 
+                if (isset($_POST["btnProfesor"]) && $i==0) {
+                    echo "<td rowspan='".count($profesores_guardia)."'>";
+                    echo "<p><strong>Nombre: </strong></p>";
+                    echo "<p><strong>Usuario: </strong></p>";
+                    echo "<p><strong>Contraseña: </strong></p>";
+                    echo "<p><strong>Email : </strong></p>";
+                    echo "</td>";
+                }
+                echo "</tr>";
+            }
+           
+            echo "</table>";
         }
     }
 
