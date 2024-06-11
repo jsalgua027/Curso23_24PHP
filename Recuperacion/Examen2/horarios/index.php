@@ -3,25 +3,6 @@ session_name("Examen2_SW");
 session_start();
 require "src/funciones_ctes.php";
 
-
-// obtengo a todos los usuarios
-$respuesta = consumir_servicios_REST(DIR_SERV . "/profesores", "GET");
-$json = json_decode($respuesta, true);
-if (!$json) {
-    session_destroy();
-    die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>Sin respuesta oportuna de la API notasAlumno</p>"));
-}
-if (isset($json["error"])) {
-
-    session_destroy();
-    consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
-    die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
-}
-// si el alumno no tiene notas lo controlo aqui
-
-
-$usuarios = $json["usuarios"];
-
 if (isset($_POST["btnQuitar"])) {
     $datos_env["grupo"] = $_POST["grupoQuitar"];
     $datos_env["dia"] = $_POST["diaQuitar"];
@@ -69,6 +50,24 @@ if(isset($_SESSION["mensaje_accion"]))
 
 */
 
+// obtengo a todos los usuarios
+$respuesta = consumir_servicios_REST(DIR_SERV . "/profesores", "GET");
+$json = json_decode($respuesta, true);
+if (!$json) {
+    session_destroy();
+    die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>Sin respuesta oportuna de la API notasAlumno</p>"));
+}
+if (isset($json["error"])) {
+
+    session_destroy();
+    consumir_servicios_REST(DIR_SERV . "/salir", "POST", $datos_env);
+    die(error_page("Examen 2 Horarios", "<h1>Examen 2 Horarios</h1><p>" . $json["error"] . "</p>"));
+}
+// si el alumno no tiene notas lo controlo aqui
+$usuarios = $json["usuarios"];
+
+
+
 
 
 if (isset($_POST["usuarios"])) {
@@ -90,9 +89,10 @@ if (isset($_POST["usuarios"])) {
     // var_dump($horarios_profesor);
 
     // solucion profesor
-    foreach ($json["horarios"] as $tupla) {
+    foreach ($json["horarios"] as $tupla)
+     {
         if (isset($horario_pro[$tupla["dia"]][$tupla["hora"]])) // si existe esta posicion
-            $horario_pro[$tupla["dia"]][$tupla["hora"]] = "/" . $tupla["nombre"]; // me concatenas
+            $horario_pro[$tupla["dia"]][$tupla["hora"]].= "/" . $tupla["nombre"]; // me concatenas
         else
             $horario_pro[$tupla["dia"]][$tupla["hora"]] = $tupla["nombre"];
     }
@@ -160,7 +160,7 @@ if (isset($_POST["btnEditar"])) { // aqui el profesor usaa la variable dia if(is
             border-collapse: collapse;
             border: 1px solid black;
             text-align: center;
-            width: 500px;
+            width: 800px;
         }
 
         th {
@@ -233,9 +233,8 @@ if (isset($_POST["btnEditar"])) { // aqui el profesor usaa la variable dia if(is
             if ($hora == 4) {
                 echo "<td colspan='5'>RECREO</td>";
             } else {
-                for ($dia = 1; $dia < 6; $dia++) {
-
-
+                for ($dia = 1; $dia < 6; $dia++)
+                 {
                     echo "<td>";
                     echo "<form action='index.php' method='post'>";
                     foreach ($horarios_profesor as $tupla) {
@@ -275,7 +274,8 @@ if (isset($_POST["btnEditar"])) { // aqui el profesor usaa la variable dia if(is
                 echo "<td colspan='5'>RECREO</td>";
             } else 
             {
-                for ($dia = 1; $dia < count($dias); $dia++) {
+                for ($dia = 1; $dia < count($dias); $dia++) 
+                {
                     echo "<td>";
                     if(isset($horario_pro[$dia][$hora]))
                         echo $horario_pro[$dia][$hora];
@@ -284,9 +284,9 @@ if (isset($_POST["btnEditar"])) { // aqui el profesor usaa la variable dia if(is
                         echo "<input type='hidden' name='dia' value='" . $dia . "'/>";
                         echo "<input type='hidden' name='hora' value='" . $hora . "'/>";
                         echo "<input type='hidden' name='usuarios' value='" . $_POST["usuarios"] . "'/>";
-                        echo "<br/><button class='enlace' type='submit' name='btnEditar'>Editar</button>";
+                        echo "<button class='enlace' type='submit' name='btnEditar'>Editar</button>";
                         echo "</form>";
-                    echo "</td>";
+                     echo "</td>";
 
                 }
             }
