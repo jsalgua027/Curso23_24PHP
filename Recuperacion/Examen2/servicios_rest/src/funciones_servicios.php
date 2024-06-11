@@ -112,8 +112,8 @@ function gruposNoIncluidos($hora,$dia,$usuario)
     }
     try {
         
-      
-        $consulta="SELECT horario_lectivo.id_horario, grupos.nombre , grupos.id_grupo FROM horario_lectivo, grupos WHERE horario_lectivo.grupo=grupos.id_grupo AND horario_lectivo.hora=? and horario_lectivo.dia=? and horario_lectivo.usuario not in (SELECT usuarios.id_usuario FROM usuarios WHERE usuarios.id_usuario=?)";      
+        $consulta="SELECT grupos.* from grupos where id_grupo not in(select grupo from horario_lectivo where hora=? and dia=? and usuario=?)";
+        $consulta1="SELECT horario_lectivo.id_horario, grupos.nombre , grupos.id_grupo FROM horario_lectivo, grupos WHERE horario_lectivo.grupo=grupos.id_grupo AND horario_lectivo.hora=? and horario_lectivo.dia=? and horario_lectivo.usuario not in (SELECT usuarios.id_usuario FROM usuarios WHERE usuarios.id_usuario=?)";      
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$hora,$dia,$usuario]);
     } catch (PDOException $e) {
