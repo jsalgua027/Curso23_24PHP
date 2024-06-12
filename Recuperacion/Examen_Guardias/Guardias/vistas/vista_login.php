@@ -9,15 +9,14 @@
        
         if(!$error_form)
         {
-            echo"<p>ENTRA</p>";
+           
             $datos_env["usuario"]=$_POST["usuario"];
             $datos_env["clave"]=md5($_POST["clave"]);
-            var_dump($datos_env["usuario"]);
-            var_dump(md5($_POST["clave"]));
+       
             //llamo a login
             $respuesta=consumir_servicios_REST(DIR_SERV."/login","POST",$datos_env);
             $json=json_decode($respuesta,true);
-            var_dump($json);
+         
             if(!$json)
             {
                 session_destroy();

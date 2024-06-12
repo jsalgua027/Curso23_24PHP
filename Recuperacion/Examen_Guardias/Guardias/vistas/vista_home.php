@@ -10,15 +10,9 @@ if (isset($_POST["btnEquipo"]) || isset($_POST["btnProfesor"])) {
     $datos_env["dia"] = $_POST["dia"];
     $datos_env["hora"] = $_POST["hora"];
     $datos_env["usuario"] = $datos_usuario_log["id_usuario"];
-    echo "<p>la hora es :  " . $datos_env["dia"] . "</p>";
-    echo "<p>el dia  es :  " . $datos_env["hora"] . "</p>";
-    echo "<p>el usuario es :  " . $datos_env["usuario"] . "</p>";
-
-
 
     $respuesta = consumir_servicios_REST(DIR_SERV . "/deGuardia", "GET", $datos_env);
     $json = json_decode($respuesta, true);
-
 
     if (!$json) {
         session_destroy();
@@ -52,7 +46,7 @@ if (isset($_POST["btnEquipo"]) || isset($_POST["btnProfesor"])) {
     $profesores_guardia = $json2["profesores"];
 
 
-    var_dump($profesores_guardia);
+   
 }
 
 ?>
