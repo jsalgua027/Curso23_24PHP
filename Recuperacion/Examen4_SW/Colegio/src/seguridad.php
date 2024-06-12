@@ -1,4 +1,4 @@
-$_SESSION["usuario"]=$_SESSION["usuaro"]["usuario"];<?php
+<?php
 
 $datos_env["api_session"]=$_SESSION["api_session"];
 $respuesta=consumir_servicios_REST(DIR_SERV."/logueado","GET",$datos_env);
