@@ -17,7 +17,7 @@ if(isset($obj["error"]))
 }
 
 $horario_profe=$obj["horario"];
-
+var_dump($horario_profe)
 
 
 
@@ -79,17 +79,13 @@ $horario_profe=$obj["horario"];
             {
                 for ($dia=1; $dia <=5 ; $dia++) { 
                     echo "<td>"; 
-                    if(!isset($horario_profe[$dia]["grupo"])||!($horario_profe[$dia]["grupo"]))
-                    {
-                        echo"";
+                
+                    for ($i=0; $i <count($horario_profe) ; $i++) { 
+                        echo"".$horario_profe[$i]["grupo"]."<br/>";
+                        echo"".$horario_profe[$i]["aula"]."";
                     }
-                    else{
-                        echo"".$horario_profe[$hora]["grupo"]."<br/>";
-                        echo"".$horario_profe[$hora]["aula"]."";
-                    }
-                      
-                                                                                   
-
+                 
+                     
                     echo "</td>";
                 }
             }

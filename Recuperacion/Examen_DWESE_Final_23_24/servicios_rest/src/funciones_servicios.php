@@ -97,7 +97,8 @@ function horariosProfesor($usuario)
         return $respuesta;
     }
     try{
-        $consulta="SELECT horario_lectivo.dia, horario_lectivo.hora , grupos.nombre as grupo, aulas.nombre as aula FROM horario_lectivo, grupos, aulas where horario_lectivo.grupo=grupos.id_grupo and horario_lectivo.aula= aulas.id_aula and horario_lectivo.usuario=?";
+
+        $consulta="SELECT horario_lectivo.dia, horario_lectivo.hora, grupos.nombre as grupo,aulas.nombre as aula FROM horario_lectivo,grupos,aulas WHERE horario_lectivo.grupo = grupos.id_grupo and horario_lectivo.aula = aulas.id_aula and horario_lectivo.usuario=?";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute([$usuario]);
      
