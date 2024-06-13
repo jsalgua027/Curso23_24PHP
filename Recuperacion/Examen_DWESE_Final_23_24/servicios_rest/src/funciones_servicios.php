@@ -133,7 +133,7 @@ function horarioGrupo($id_grupo)
         return $respuesta;
     }
     try{
-        $consulta="SELECT horario_lectivo.dia, horario_lectivo.hora, horario_lectivo.usuario, aulas.nombre FROM horario_lectivo, grupos, aulas WHERE horario_lectivo.aula = aulas.id_aula and horario_lectivo.grupo= grupos.id_grupo and horario_lectivo.grupo=?";
+        $consulta="SELECT horario_lectivo.dia, horario_lectivo.hora, usuarios.usuario, aulas.nombre as aula FROM horario_lectivo, grupos, aulas , usuarios WHERE horario_lectivo.aula = aulas.id_aula and horario_lectivo.grupo= grupos.id_grupo and horario_lectivo.usuario = usuarios.id_usuario and horario_lectivo.grupo=?";
         $sentencia=$conexion->prepare($consulta);
         $sentencia->execute([$id_grupo]);
      

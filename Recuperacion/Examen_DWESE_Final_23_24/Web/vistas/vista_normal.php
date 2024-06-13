@@ -17,9 +17,6 @@ if(isset($obj["error"]))
 }
 
 $horario_profe=$obj["horario"];
-var_dump($horario_profe)
-
-
 
 ?>
 
@@ -37,6 +34,7 @@ var_dump($horario_profe)
         table,th, td{border:1px solid black;}
         table{border-collapse:collapse;text-align:center}
         th{background-color:#CCC}
+        .horas{background-color:#CCC}
     </style>
 </head>
 <body>
@@ -70,7 +68,7 @@ var_dump($horario_profe)
     for ($hora=1; $hora <=7 ; $hora++) { 
         
        echo "<tr>";
-            echo "<td>".$horas[$hora]."</td>";
+            echo "<td class=horas>".$horas[$hora]."</td>";
             if($hora==4)
             {
                 echo "<td colspan='5'>RECREO</td>";
@@ -81,8 +79,13 @@ var_dump($horario_profe)
                     echo "<td>"; 
                 
                     for ($i=0; $i <count($horario_profe) ; $i++) { 
-                        echo"".$horario_profe[$i]["grupo"]."<br/>";
-                        echo"".$horario_profe[$i]["aula"]."";
+                        if($horario_profe[$i]["dia"]==$dia && $horario_profe[$i]["hora"]==$hora)
+                        {
+                            echo"".$horario_profe[$i]["grupo"]."<br/>";
+                            echo"(".$horario_profe[$i]["aula"].")<br/>";
+                            
+                        }
+                      
                     }
                  
                      

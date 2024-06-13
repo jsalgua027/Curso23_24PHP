@@ -121,18 +121,17 @@ $grupos=$obj["grupos"];
                 else
                 {
                     for ($dia=1; $dia <=5 ; $dia++) { 
-                        echo "<td>"; 
-                        if(!isset($horarios_grupo[$dia]["nombre"])||!($horarios_grupo[$dia]["nombre"]))
-                        {
-                            echo"";
-                        }
-                        else{
-                            echo"".$horarios_grupo[$hora]["nombre"]."<br/>";
+                        echo"<td>";
+                        for ($i=0; $i <count($horarios_grupo) ; $i++) { 
+                            if($horarios_grupo[$i]["dia"]==$dia && $horarios_grupo[$i]["hora"]==$hora)
+                            {
+                                echo"".$horarios_grupo[$i]["usuario"]."";
+                                echo"(".$horarios_grupo[$i]["aula"].")<br/>";
+                                
+                            }
                           
-                        }
-                          
-                                                                                       
-    
+                        }                                                              
+                            echo"<form action='index.php' method='post'><button class='enlace' type='submit' name='btnEditar'>Editar</button></form>";
                         echo "</td>";
                     }
                 }
