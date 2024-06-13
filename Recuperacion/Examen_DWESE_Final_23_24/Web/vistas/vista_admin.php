@@ -1,4 +1,28 @@
 <?php
+if(isset($_POST["btnQuitar"]))
+{
+    $id_grupo = $_POST["grupos"];
+    $dia = $_POST["dia"];
+    $hora = $_POST["hora"];
+    $usuario=  $_POST["usuario"];
+
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/borrarProfesor/" . $dia . "/" . $hora . "/" . $id_grupo . "/" . $usuario . "", "DELETE", $datos_env);
+    $obj = json_decode($respuesta, true);
+    if (!$obj) {
+        session_destroy();
+        die(error_page("Examen Final PHP", "<h1>Examen Final PHP</h1><p>Error consumiendo el servicio: Horarios Grupos</p>"));
+    }
+
+    if (isset($obj["error"])) {
+        session_destroy();
+        die(error_page("Examen Final PHP", "<h1>Examen Final PHP</h1><p>" . $obj["error"] . "</p>"));
+    }
+    $_SESSION["mensaje_accion"]=$obj["mensaje"];
+
+
+}
+
+
 if (isset($_POST["btnEditar"])) {
     $id_grupo = $_POST["grupos"];
     $dia = $_POST["dia"];
@@ -204,7 +228,7 @@ $grupos = $obj["grupos"];
             echo "<tr>";
         }
         echo "<table>";
-        if (isset($_POST["btnEditar"])) {
+        if (isset($_POST["btnEditar"])||isset($_POST["btnQuitar"])) {
             echo "<h3>Editando la " . $_POST["hora"] . "º Hora (" . $horas[$_POST["hora"]] . ") del " . $dias[$_POST["dia"]] . "</h3>";
 
             echo "<table>";
@@ -215,6 +239,12 @@ $grupos = $obj["grupos"];
                 echo "<td>";
                 echo "<form action='index.php' method='post'>";
                 echo "<button class='enlace' type='submit' name='btnQuitar'>Quitar</button>";
+                echo "<input type='hidden' name='dia' value='" .$_POST["dia"] . "'>";
+                echo "<input type='hidden' name='hora' value='" .$_POST["hora"] . "'>";
+                echo "<input type='hidden' name='dia' value='" .$_POST["dia"] . "'>";
+                echo "<input type='hidden' name='grupos' value='" . $_POST["grupos"] . "'>";
+                echo "<input type='hidden' name='usuario' value='" . $tupla["id_usuario"] . "'>";
+                  echo "<input type='hidden' name='btnEditar' value=''>";
                 echo "</form>";
                 echo "</td>";
                 echo "</tr>";
@@ -240,7 +270,14 @@ $grupos = $obj["grupos"];
             </form>
     <?php
         }
+
     }
+    if(isset($_SESSION["mensaje_accion"]))
+    {
+        echo "<p class='mensaje'>".$_SESSION["mensaje_accion"]."</p>";
+        unset($_SESSION["mensaje_accion"]);
+    }
+   
     ?>
 
 

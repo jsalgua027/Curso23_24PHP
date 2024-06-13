@@ -259,6 +259,41 @@ function profesoresOcupados($dia,$hora,$id_grupo)
    
 } 
 
+function borrarProfesor($dia,$hora,$id_grupo,$usuario)
+{
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+        
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar :".$e->getMessage();
+        return $respuesta;
+    }
+    try{
+      
+        $consulta="DELETE from horario_lectivo where horario_lectivo.dia=? and horario_lectivo.hora=? and horario_lectivo.grupo=? and horario_lectivo.usuario=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$dia,$hora,$id_grupo,$usuario]);
+     
+    }
+     catch(PDOException $e){
+
+        $respuesta["error"]="Imposible conectar :".$e->getMessage();
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+    }
+
+    
+        $respuesta["mensaje"]="Profesor borrado con exito";
+       
+   
+    $sentencia=null;
+    $conexion=null;
+    return $respuesta;
+   
+} 
+
 
 
 

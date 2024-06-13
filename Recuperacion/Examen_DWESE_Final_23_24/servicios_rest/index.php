@@ -129,6 +129,28 @@ $app->get('/profesoresOcupados/{dia}/{hora}/{id_grupo}', function ($request) {
    }
 });
 
+$app->delete('/borrarProfesor/{dia}/{hora}/{id_grupo}/{id_usuario}', function ($request) {
+
+   session_id($request->getParam("api_session"));
+   session_start();
+   $dia=$request->getAttribute("dia");
+   $hora=$request->getAttribute("hora");
+   $id_grupo=$request->getAttribute("id_grupo");
+   $usuario=$request->getAttribute("id_usuario");
+
+   if (isset($_SESSION["usuario"]) &&  $_SESSION["tipo"]=="admin") {
+   
+      
+      echo json_encode(borrarProfesor($dia,$hora,$id_grupo,$usuario));
+   }
+   else {
+ 
+      session_destroy();
+      $respuesta["no_auth"] = "No tienes permiso para usar este servicio";
+      echo json_encode($respuesta);
+   }
+});
+
 // Una vez creado servicios los pongo a disposición
 $app->run();
 ?>
