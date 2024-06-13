@@ -190,6 +190,76 @@ function todosGrupos()
    
 } 
 
+function profesoresLibres($dia,$hora,$id_grupo)
+{
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+        
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar :".$e->getMessage();
+        return $respuesta;
+    }
+    try{
+        $consulta="SELECT usuarios.id_usuario, usuarios.nombre FROM usuarios WHERE usuarios.tipo <> 'admin' AND usuarios.id_usuario NOT IN ( SELECT horario_lectivo.usuario FROM horario_lectivo WHERE horario_lectivo.dia = ? AND horario_lectivo.hora = ? AND horario_lectivo.grupo = ? )";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$dia,$hora,$id_grupo]);
+     
+    }
+     catch(PDOException $e){
+
+        $respuesta["error"]="Imposible conectar :".$e->getMessage();
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+    }
+
+   
+        $respuesta["profesores_libres"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);//me traigo los datos
+       
+   
+    $sentencia=null;
+    $conexion=null;
+    return $respuesta;
+   
+} 
+
+function profesoresOcupados($dia,$hora,$id_grupo)
+{
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+        
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar :".$e->getMessage();
+        return $respuesta;
+    }
+    try{
+        //SELECT usuarios.id_usuario, usuarios.usuario, aulas.nombre FROM usuarios, horario_lectivo, aulas WHERE horario_lectivo.usuario=usuarios.id_usuario and horario_lectivo.aula=aulas.id_aula and usuarios.tipo<> 'admin' AND horario_lectivo.dia=5 and horario_lectivo.hora=1 AND horario_lectivo.grupo=4;
+        $consulta="SELECT usuarios.id_usuario, usuarios.usuario, aulas.nombre FROM usuarios, horario_lectivo, aulas WHERE horario_lectivo.usuario=usuarios.id_usuario and horario_lectivo.aula=aulas.id_aula and usuarios.tipo<> 'admin' AND horario_lectivo.dia=? and horario_lectivo.hora=? AND horario_lectivo.grupo=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$dia,$hora,$id_grupo]);
+     
+    }
+     catch(PDOException $e){
+
+        $respuesta["error"]="Imposible conectar :".$e->getMessage();
+        $sentencia=null;
+        $conexion=null;
+        return $respuesta;
+    }
+
+   
+        $respuesta["profesores_Ocupados"]=$sentencia->fetchAll(PDO::FETCH_ASSOC);//me traigo los datos
+       
+   
+    $sentencia=null;
+    $conexion=null;
+    return $respuesta;
+   
+} 
+
+
 
 
 ?>
