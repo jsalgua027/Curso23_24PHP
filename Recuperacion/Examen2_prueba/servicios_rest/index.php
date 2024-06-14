@@ -69,6 +69,26 @@ $app->get('/logueado',function($request){
      }
       
    });
+
+   $app->get('/GruposDia/{dia}/{hora}/{id_usuario}',function($request){
+    session_id($request->getParam("api_session"));
+    session_start();
+     if(isset($_SESSION["usuario"]))
+     {
+       
+        $dia=$request->getAttribute("dia");
+        $hora=$request->getAttribute("hora");
+        $usuario=$request->getAttribute("id_usuario");
+         echo json_encode(GruposDia($dia,$hora,$usuario));
+     }
+     else
+     {
+         $respuesta["no_auth"]="El usuario no esta autorizado";
+         session_destroy();
+         echo json_encode($respuesta);
+     }
+      
+   });
   
 
 

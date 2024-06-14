@@ -1,5 +1,5 @@
 <?php
-if (isset($_POST["btnVerHorario"])) {
+if (isset($_POST["btnVerHorario"])||isset($_POST["btnEditar"])) {
     $usuario = $_POST["profesores"];
     $respuesta = consumir_servicios_REST(DIR_SERV . "/horario/" . $usuario, "GET", $datos_env);
     $json = json_decode($respuesta, true);
@@ -23,7 +23,7 @@ if (isset($_POST["btnVerHorario"])) {
     }
 
       $horario = $json["horarios_profesor"];
-     var_dump($horario);
+    
   
     foreach ($json["horarios_profesor"] as $tupla)
      {
@@ -33,6 +33,38 @@ if (isset($_POST["btnVerHorario"])) {
             $h_profesor[$tupla["dia"]][$tupla["hora"]]= $tupla["nombre"];
         }
     }
+}
+
+if(isset($_POST["btnEditar"]))
+{
+  
+    $dia=$_POST["dia"];
+    $hora=$_POST["hora"];
+    $profe=$_POST["profesores"];
+
+   
+
+    $respuesta = consumir_servicios_REST(DIR_SERV . "/GruposDia/".$dia."/".$hora."/".$profe."", "GET", $datos_env);
+$json = json_decode($respuesta, true);
+if (!$json) {
+    session_destroy();
+    die(error_page("<h1>Examen 2 PRUEBA</h1>", "<p>Error al consumir los servicios de la API Horario profesor<p>"));
+}
+//que llegue el mensaje de error
+if (isset($json["error"])) {
+    session_destroy();
+    consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+    die(error_page("<h1>Examen 2 PRUEBA</h1>", "<p>Error al " . $json["error"] . "<p>"));
+}
+if(isset($json["no_auth"]))
+{
+    session_unset();
+    $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+    header("Location:index.php");
+    exit();
+}
+$gruposProfe=$json["grupos_profe"];
+
 }
 
 $respuesta = consumir_servicios_REST(DIR_SERV . "/profesores", "GET", $datos_env);
@@ -122,7 +154,7 @@ $profesores = $json["profesores"];
     </form>
 
     <?php
-    if (isset($_POST["btnVerHorario"])) {
+    if (isset($_POST["btnVerHorario"]) || isset($_POST["btnEditar"])) {
         echo "<h2>El horario del Profesor: " . $nombre_profesor . "</h2>";
 
         $horas[1]="8:15 - 9:15";
@@ -175,8 +207,43 @@ $profesores = $json["profesores"];
             echo "</tr>";
         }
         echo"</table>";
+      
+    }
+
+    if(isset($_POST["btnEditar"]))
+    {
+  echo"<h2>Editando la ".$_POST["hora"]."º Hora (".$horas[$_POST["hora"]].") del ".$dias[$_POST["dia"]]."</h2>";
+  
+echo"<table>";
+echo"<tr><th>Grupo</th><th>Acción</th></tr>";
+
+  foreach($gruposProfe as $tupla)
+  {
+      echo"<tr>";
+      echo"<td>".$tupla["nombre"]."</td>";
+      echo"<td>";
+      echo "<form action='index.php' method='post'>";
+      echo "<input type='hidden' name='dia' value='".$_POST["dia"]."'/>";
+      echo "<input type='hidden' name='hora' value='".$_POST["hora"]."'/>";
+      echo "<input type='hidden' name='profesores' value='".$_POST["profesores"]."'/>";
+       echo "<input type='hidden' name='btnEditar' value=''/>";
+      echo "<button class='enlace' type='submit' name='btnQuitar'>Quitar</button>";
+      echo "</form>"; 
+      echo "</td>";
+      echo"</tr>";
+  }
+
+echo"</table>";
 
     }
+ if(isset($_POST["btnQuitar"]))
+ {
+ echo "<p> el dia es:".$_POST["dia"]."</p>";
+ echo "<p> el hora es: ".$_POST["hora"]."</p>";
+ echo "<p> el el usuario es: ".$_POST["profesores"]."</p>";
+
+
+ } 
 
 
     ?>
