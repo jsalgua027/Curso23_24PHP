@@ -18,13 +18,13 @@ if(isset($_POST["btnLogin"]))
         die(error_page("<h1>Examen 2 PRUEBA</h1>","<p>Error al consumir los servicios de la API Login<p>"));
        }
        //que llegue el mensaje de error
-       if($json["error"])
+       if(isset($json["error"]))
        {
         session_destroy();
         die(error_page("<h1>Examen 2 PRUEBA</h1>","<p>Error al ".$json["error"]."<p>"));
        }
        //que llegue el mensaje 
-       if($json["mensaje"])
+       if(isset($json["mensaje"]))
        {
         $error_usuario=true;
        }

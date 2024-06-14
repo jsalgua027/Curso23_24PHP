@@ -18,7 +18,7 @@ $app->post('/login',function($request){
     echo json_encode(login($usuario,$clave));
 });
 
-$app->post('/logueado',function($request){
+$app->get('/logueado',function($request){
    session_id($request->getParam("api_session"));
    session_start();
     if(isset($_SESSION["usuario"]))
@@ -35,6 +35,40 @@ $app->post('/logueado',function($request){
     }
      
   });
+
+  $app->get('/profesores',function($request){
+    session_id($request->getParam("api_session"));
+    session_start();
+     if(isset($_SESSION["usuario"]))
+     {
+        
+         echo json_encode(profesores());
+     }
+     else
+     {
+         $respuesta["no_auth"]="El usuario no esta autorizado";
+         session_destroy();
+         echo json_encode($respuesta);
+     }
+      
+   });
+
+   $app->get('/horario/{id_usuario}',function($request){
+    session_id($request->getParam("api_session"));
+    session_start();
+     if(isset($_SESSION["usuario"]))
+     {
+        $usuario=$request->getAttribute("id_usuario");
+         echo json_encode(horarios($usuario));
+     }
+     else
+     {
+         $respuesta["no_auth"]="El usuario no esta autorizado";
+         session_destroy();
+         echo json_encode($respuesta);
+     }
+      
+   });
   
 
 

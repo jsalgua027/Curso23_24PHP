@@ -16,7 +16,7 @@ if(isset($_POST["btnSalir"]))
 
 if(isset($_SESSION["usuario"]))
 {
-   // require "src/seguridad.php";
+    require "src/seguridad.php";
     require "vistas/vista_exam.php";
 }
 else
