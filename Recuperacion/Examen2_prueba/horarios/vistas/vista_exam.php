@@ -1,6 +1,4 @@
 <?php
-
-
  if(isset($_POST["btnQuitar"]))
  {
 
@@ -36,39 +34,41 @@
     exit;
 
  }
+
+
  if(isset($_POST["btnAgregar"]))
-{
-    $respuesta=consumir_servicios_REST(DIR_SERV."/agregarGrupo/".$_POST["dia"]."/".$_POST["hora"]."/".$_POST["profesores"]."/".$_POST["grupo"],"POST",$datos_env);
-    $json=json_decode($respuesta,true);
-    if(!$json)
-    {
-        session_destroy();
-        die(error_page("Examen2 PHP con SW","<h1>Examen2 PHP con SW</h1><p>Sin respuesta oportuna de la API</p>"));  
-    }
-    if(isset($json["error"]))
-    {
-
-        session_destroy();
-        consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
-        die(error_page("Examen2 PHP con SW","<h1>Examen2 PHP con SW</h1><p>".$json["error"]."</p>"));
-    }
-
-    if(isset($json["no_auth"]))
-    {
-        session_unset();
-        $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
-        header("Location:index.php");
-        exit();
-    }
-
-    $_SESSION["mensaje_accion"]="¡¡ Grupo agregado con éxito !!";
-    $_SESSION["profesores"]=$_POST["profesores"];
-    $_SESSION["dia"]=$_POST["dia"];
-    $_SESSION["hora"]=$_POST["hora"];
-
-    header("Location:index.php");
-    exit;
-}
+ {
+     $respuesta=consumir_servicios_REST(DIR_SERV."/agregarGrupo/".$_POST["dia"]."/".$_POST["hora"]."/".$_POST["profesores"]."/".$_POST["grupo"],"POST",$datos_env);
+     $json=json_decode($respuesta,true);
+     if(!$json)
+     {
+         session_destroy();
+         die(error_page("Examen2 PHP con SW","<h1>Examen2 PHP con SW</h1><p>Sin respuesta oportuna de la API</p>"));  
+     }
+     if(isset($json["error"]))
+     {
+ 
+         session_destroy();
+         consumir_servicios_REST(DIR_SERV."/salir","POST",$datos_env);
+         die(error_page("Examen2 PHP con SW","<h1>Examen2 PHP con SW</h1><p>".$json["error"]."</p>"));
+     }
+ 
+     if(isset($json["no_auth"]))
+     {
+         session_unset();
+         $_SESSION["seguridad"]="Usted ha dejado de tener acceso a la API. Por favor vuelva a loguearse.";
+         header("Location:index.php");
+         exit();
+     }
+ 
+     $_SESSION["mensaje_accion"]="¡¡ Grupo agregado con éxito !!";
+     $_SESSION["profesores"]=$_POST["profesores"];
+     $_SESSION["dia"]=$_POST["dia"];
+     $_SESSION["hora"]=$_POST["hora"];
+ 
+     header("Location:index.php");
+     exit;
+ }
 
  if(isset($_SESSION["mensaje_accion"]))
 {
@@ -79,6 +79,7 @@
     unset($_SESSION["dia"]);
     unset($_SESSION["hora"]);
 }
+
 
 
 if (isset($_POST["profesores"])) {
