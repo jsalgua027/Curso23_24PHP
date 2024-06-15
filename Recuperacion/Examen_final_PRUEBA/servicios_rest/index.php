@@ -21,22 +21,4 @@ $app->get('/login', function ($request) {
    echo json_encode(login($usuario, $clave));
 });
 
-$app->get('/logueado', function ($request) {
-
-   session_id($request->getParam("api_session"));
-   session_start();
-
-   if (isset($_SESSION["usuario"])) {
-      $usuario = $_SESSION["usuario"];
-      $clave = $_SESSION["clave"];
-      echo json_encode(logueado($usuario, $clave));
-   } else {
-
-      session_destroy();
-      $respuesta["no_auth"] = "No tienes permiso para usar este servicio";
-      echo json_encode($respuesta);
-   }
-});
-
-
 $app->run();
