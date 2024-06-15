@@ -90,9 +90,57 @@ $app->get('/logueado',function($request){
       
    });
   
+   $app->get('/gruposNoHorario/{dia}/{hora}/{cod_prof}',function($request){
 
+    session_id($request->getParam("api_session"));
+    session_start();
+    if(isset($_SESSION["usuario"]))
+    {
+      
+        echo json_encode(obtener_grupos_no_horario($request->getAttribute("dia"),$request->getAttribute("hora"),$request->getAttribute("cod_prof")));
+    }
+    else
+    {
+        session_destroy();
+        $respuesta["no_auth"]="No tienes permisos para usar este servicio";
+        echo json_encode($respuesta);
+    }
 
+});
+$app->delete('/borrarGrupo/{id_horario}',function($request){
 
+    session_id($request->getParam("api_session"));
+    session_start();
+    if(isset($_SESSION["usuario"]))
+    {
+      
+        echo json_encode(borrar_grupo($request->getAttribute("id_horario")));
+    }
+    else
+    {
+        session_destroy();
+        $respuesta["no_auth"]="No tienes permisos para usar este servicio";
+        echo json_encode($respuesta);
+    }
+
+});
+$app->post('/agregarGrupo/{dia}/{hora}/{cod_prof}/{id_grupo}',function($request){
+
+    session_id($request->getParam("api_session"));
+    session_start();
+    if(isset($_SESSION["usuario"]))
+    {
+      
+        echo json_encode(agregar_grupo($request->getAttribute("dia"),$request->getAttribute("hora"),$request->getAttribute("cod_prof"),$request->getAttribute("id_grupo")));
+    }
+    else
+    {
+        session_destroy();
+        $respuesta["no_auth"]="No tienes permisos para usar este servicio";
+        echo json_encode($respuesta);
+    }
+
+});
 
 // Una vez creado servicios los pongo a disposición
 $app->run();
