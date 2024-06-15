@@ -21,6 +21,6 @@ function error_page($title,$body)
 }
 
 
-define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen_Final_PRUEBA/servicios_rest");
+define("DIR_SERV","http://localhost/Proyectos/Curso23_24PHP/Recuperacion/Examen_final_PRUEBA/servicios_rest");
 define("MINUTOS",10);
 ?>
