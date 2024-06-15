@@ -6,8 +6,43 @@ if(isset($_POST["btnLogin"]))
     $error_form=$error_usuario||$error_clave;
     if(!$error_form)
     {
+        $datos_env["usuario"]=$_POST["usuario"];
+        $datos_env["clave"]=md5($_POST["clave"]);
 
-       
+        $respuesta=consumir_servicios_REST(DIR_SERV.'/login',"GET",$datos_env);
+        $obj=json_decode($respuesta,true);
+        if(!$obj)
+        {
+            session_destroy();
+            die(error_page("Examen Final PHP","<h1>Examen Final PHP</h1><p>Error consumiendo el servicio: ".$url."</p>"));
+        }
+
+        if(isset($obj["error"]))
+        {
+            session_destroy();
+            die(error_page("Examen Final PHP","<h1>Examen Final PHP</h1><p>".$obj["error"]."</p>"));
+        }
+
+        if(isset($obj["mensaje"]))
+        {
+            $error_usuario=true;
+        }
+        else
+        {
+
+            $_SESSION["usuario"]=$obj["usuario"]["usuario"];
+            $_SESSION["clave"]=$obj["usuario"]["clave"];
+            $_SESSION["id_usuario"]=$obj["usuario"]["id_usuario"];
+            $_SESSION["nombre"]=$obj["usuario"]["nombre"];
+            $_SESSION["ult_accion"]=time();
+            $_SESSION["api_session"]=$obj["api_session"];
+            
+            
+            header("Location:index.php");
+            exit();
+            
+        }
+
     }
 }
 ?>
